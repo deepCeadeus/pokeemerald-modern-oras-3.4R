@@ -39,13 +39,7 @@ MagmaHideout_3F_1R_EntranceTrigger::
 	end
 
 MagmaHideout_3F_1R_EntranceTrigger_Text:
-	.string "A deep roar shakes the MAGMA HIDEOUT.\n"
-	.string "The sound belongs to a menacing\n"
-	.string "POKéMON, yet something feels off.\p"
-	.string "The POKéMON senses your intent\n"
-	.string "to capture it…\p"
-	.string "Using POKé BALLS now might\n"
-	.string "just be a waste.$"
+	.string "A deep roar shakes the Magma Hideout.$"
 
 MagmaHideout_3F_1R_EntranceTriggerMovement:
 	face_right
@@ -62,6 +56,8 @@ MagmaHideout_3F_1R_Entei_EnteiBattle1::
 	playmoncry SPECIES_ENTEI, CRY_MODE_ENCOUNTER
 	delay 40
 	waitmoncry
+	msgbox MagmaHideout_3F_1R_Entei_EnteiBattle_CantCatch_Text, MSGBOX_DEFAULT
+	closemessage
 	setwildbattle SPECIES_ENTEI, 40
 	setflag FLAG_SYS_CTRL_OBJ_DELETE
 	setflag FLAG_SYS_NO_CATCHING
@@ -109,8 +105,13 @@ MagmaHideout_3F_1R_EnteiBattle1_Movement:
 	walk_fast_down
 	step_end
 
+MagmaHideout_3F_1R_Entei_EnteiBattle_CantCatch_Text:
+	.string "Entei roars with immense power!\p"
+	.string "Its power prevents the use of\n"
+	.string "Pokéballs.$"
+
 MagmaHideout_3F_1R_EnteiBattle1_Text:
-	.string "ENTEI ran away!$"
+	.string "Entei ran away!$"
 
 @@Second encounter with Entei. Has 750HP and is now level 50. Atk and Sp.Atk are getting stronger.
 
@@ -173,7 +174,7 @@ MagmaHideout_3F_1R_EnteiBattle2_Movement:
 	step_end
 
 MagmaHideout_3F_1R_EnteiBattle2_Text:
-	.string "ENTEI ran away, but not\n"
+	.string "Entei ran away, but not\n"
 	.string "as fast as before.$"
 
 @@Third and last encounter with Entei before catching it. Has 800HP and is now level 60, and it's sunny. More atk and sp.atk.
@@ -240,7 +241,7 @@ MagmaHideout_3F_1R_EnteiBattle3_Movement:
 	step_end
 
 MagmaHideout_3F_1R_EnteiBattle3_Text:
-	.string "ENTEI fled, but far more\n"
+	.string "Entei fled, but far more\n"
 	.string "slowly than before.$"
 
 @@Final battle with Entei, now you can catch it. Has 900HP, holds charcoal and it's sunny. Way stronger as well.
@@ -270,7 +271,7 @@ MagmaHideout_3F_1R_Entei_EnteiFinalBattle::
 	waitmoncry
 	msgbox MagmaHideout_3F_1R_EnteiBattleFinal_Text, MSGBOX_DEFAULT
 	closemessage
-	setwildbattle SPECIES_ENTEI, 70, ITEM_CHARCOAL
+	seteventmon SPECIES_ENTEI, 70, ITEM_CHARCOAL
 	setflag FLAG_SYS_CTRL_OBJ_DELETE
 	call_if_set FLAG_DIFFICULTY_HARD, MagmaHideout_3F_1R_Entei_EnteiBattle4_Stats
 	special BattleSetup_StartLegendaryBattle
@@ -295,10 +296,9 @@ MagmaHideout_3F_1R_Entei_EnteiBattle4_Stats::
 	return
 
 MagmaHideout_3F_1R_EnteiBattleFinal_Text:
-	.string "It seems ENTEI wasn't using its\n"
-	.string "full power.\p"
-	.string "Now that it focusing on it, capture\n"
-	.string "might finally be possible.$"
+	.string "A blazing aura erupts from Entei,\n"
+	.string "now at its full power!\p"
+	.string "Pokéballs seem to work again.$"
 
 MagmaHideout_3F_1R_EnteiFinalBattle_Won::
 	setflag FLAG_DEFEATED_ENTEI

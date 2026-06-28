@@ -26,6 +26,7 @@
 #include "pokedex_area_screen.h"
 #include "pokedex_cry_screen.h"
 #include "pokemon_icon.h"
+#include "pokemon_animation.h"
 #include "pokemon_summary_screen.h"
 #ifdef POKEMON_EXPANSION
 #include "region_map.h"
@@ -49,6 +50,7 @@
 #include "constants/party_menu.h"
 #include "constants/rgb.h"
 #include "constants/songs.h"
+#include "region_map.h"  // for GetMapName
 #ifdef TX_RANDOMIZER_AND_CHALLENGES
     #include "tx_randomizer_and_challenges.h"
 #endif
@@ -169,6 +171,7 @@ static EWRAM_DATA struct PokedexView *sPokedexView = NULL;
 static EWRAM_DATA u16 sLastSelectedPokemon = 0;
 static EWRAM_DATA u8 sPokeBallRotation = 0;
 static EWRAM_DATA struct PokedexListItem *sPokedexListItem = NULL;
+static EWRAM_DATA void (*sExternalReturnCallback)(void) = NULL;
 //Pokedex Plus HGSS_Ui
 #ifndef BATTLE_ENGINE
 #define MOVES_COUNT_TOTAL (EGG_MOVES_ARRAY_COUNT + MAX_LEVEL_UP_MOVES + NUM_TECHNICAL_MACHINES + NUM_HIDDEN_MACHINES + TUTOR_MOVE_COUNT)
@@ -356,6 +359,7 @@ struct PokedexView
     s16 menuY;     //Menu Y position (inverted because we use REG_BG0VOFS for this)
     u8 unkArr2[8]; // Cleared, never read
     u8 unkArr3[8]; // Cleared, never read
+    bool8 isShowingShiny;
 };
 
 
@@ -426,16 +430,23 @@ static void Task_HandleInfoScreenInput(u8);
 static void Task_SwitchScreensFromInfoScreen(u8);
 static void Task_LoadInfoScreenWaitForFade(u8);
 static void Task_ExitInfoScreen(u8);
+static void Task_ExitInfoScreenToExternal(u8);
 static void Task_LoadAreaScreen(u8);
 static void Task_WaitForAreaScreenInput(u8 taskId);
 static void Task_SwitchScreensFromAreaScreen(u8);
+static void Task_ExitAreaScreen(u8);
+static void Task_ExitAreaScreenToExternal(u8);
 static void Task_LoadCryScreen(u8);
 static void Task_HandleCryScreenInput(u8);
 static void Task_SwitchScreensFromCryScreen(u8);
 static void LoadPlayArrowPalette(bool8);
+static void Task_ExitCryScreen(u8);
+static void Task_ExitCryScreenToExternal(u8);
 static void Task_LoadSizeScreen(u8);
 static void Task_HandleSizeScreenInput(u8);
 static void Task_SwitchScreensFromSizeScreen(u8);
+static void Task_ExitSizeScreen(u8);
+static void Task_ExitSizeScreenToExternal(u8);
 static void LoadScreenSelectBarMain(u16);
 static void HighlightScreenSelectBarItem(u8, u16);
 static void HighlightSubmenuScreenSelectBarItem(u8, u16);
@@ -497,6 +508,7 @@ static void Task_HandleStatsScreenInput(u8 taskId);
 static void Task_LoadStatsScreen(u8 taskId);
 static void Task_SwitchScreensFromStatsScreen(u8 taskId);
 static void Task_ExitStatsScreen(u8 taskId);
+static void Task_ExitStatsScreenToExternal(u8 taskId);
 static bool8 CalculateMoves(void);
 static void PrintStatsScreen_NameGender(u8 taskId, u32 num, u32 value);
 static void PrintStatsScreen_DestroyMoveItemIcon(u8 taskId);
@@ -509,10 +521,12 @@ static void PrintStatsScreen_Abilities(u8 taskId);
 static void PrintInfoScreenTextWhite(const u8* str, u8 left, u8 top);
 static void PrintInfoScreenTextSmall(const u8* str, u8 left, u8 top);
 static void PrintInfoScreenTextSmallWhite(const u8* str, u8 left, u8 top);
+static void PrintShinyToggleLabel(bool8 isShowingShiny);
 static void Task_LoadEvolutionScreen(u8 taskId);
 static void Task_HandleEvolutionScreenInput(u8 taskId);
 static void Task_SwitchScreensFromEvolutionScreen(u8 taskId);
 static void Task_ExitEvolutionScreen(u8 taskId);
+static void Task_ExitEvolutionScreenToExternal(u8 taskId);
 static u8 PrintEvolutionTargetSpeciesAndMethod(u8 taskId, u16 species, u8 depth, u8 depth_i);
 static u8 PrintPreEvolutions(u8 taskId, u16 species);
 //Stat bars on scrolling screens
@@ -530,6 +544,7 @@ static void Task_HandleFormsScreenInput(u8 taskId);
 static void PrintForms(u8 taskId, u16 species);
 static void Task_SwitchScreensFromFormsScreen(u8 taskId);
 static void Task_ExitFormsScreen(u8 taskId);
+static void Task_ExitFormsScreenToExternal(u8 taskId);
 #endif
 
 //HGSS_UI Physical Special Split icon for BattleEngine (rhh)
@@ -2351,6 +2366,7 @@ static void Task_WaitForExitInfoScreen(u8 taskId)
     else
     {
         // Exiting, back to list view
+        sPokedexView->sEvoScreenData.fromEvoPage = FALSE;
         sLastSelectedPokemon = sPokedexView->selectedPokemon;
         sPokeBallRotation = sPokedexView->pokeBallRotation;
         gTasks[taskId].func = Task_OpenPokedexMainPage;
@@ -2946,7 +2962,23 @@ static u16 TryDoPokedexScroll(u16 selectedMon, u16 ignored)
     u16 startingPos;
     u8 scrollDir = 0;
 
-    if (JOY_HELD(DPAD_UP) && (selectedMon > 0))
+    if(JOY_NEW(DPAD_UP) && (selectedMon == 0))
+    {
+        selectedMon = sPokedexView->pokemonListCount - 1;
+        ClearMonSprites();
+        CreateMonSpritesAtPos(selectedMon, 0xE);
+        sPokedexView->justScrolled = TRUE; //HGSS_Ui
+        PlaySE(SE_DEX_SCROLL);
+    }
+    else if (JOY_NEW(DPAD_DOWN) && (selectedMon == sPokedexView->pokemonListCount - 1))
+    {
+        selectedMon = 0;
+        ClearMonSprites();
+        CreateMonSpritesAtPos(selectedMon, 0xE);
+        sPokedexView->justScrolled = TRUE; //HGSS_Ui
+        PlaySE(SE_DEX_SCROLL);
+    }
+    else if (JOY_HELD(DPAD_UP) && (selectedMon > 0))
     {
         scrollDir = 1;
         selectedMon = GetNextPosition(1, selectedMon, 0, sPokedexView->pokemonListCount - 1);
@@ -3749,6 +3781,9 @@ static u8 LoadInfoScreen(struct PokedexListItem *item, u8 monSpriteId)
 {
     u8 taskId;
 
+    // Clear party menu callback when opening from normal Pokédex
+    sExternalReturnCallback = NULL;
+    
     sPokedexListItem = item;
     taskId = CreateTask(Task_LoadInfoScreen, 0);
     gTasks[taskId].tScrolling = FALSE;
@@ -3779,12 +3814,66 @@ static bool8 IsInfoScreenScrolling(u8 taskId)
 
 static u8 StartInfoScreenScroll(struct PokedexListItem *item, u8 taskId)
 {
+    // Clear party menu callback when scrolling in normal Pokédex
+    sExternalReturnCallback = NULL;
+    
     sPokedexListItem = item;
     gTasks[taskId].tScrolling = TRUE;
     gTasks[taskId].tMonSpriteDone = FALSE;
     gTasks[taskId].tBgLoaded = FALSE;
     gTasks[taskId].tSkipCry = FALSE;
+    sPokedexView->isShowingShiny = FALSE; // Reset shiny toggle when changing entries
     return taskId;
+}
+
+// Task that waits for the front sprite animation to finish, then resets to frame 0
+#define tSpriteId data[0]
+static void Task_ResetSpriteAnimAfterDone(u8 taskId)
+{
+    u8 spriteId = gTasks[taskId].tSpriteId;
+    struct Sprite *sprite = &gSprites[spriteId];
+
+    if (!sprite->inUse)
+    {
+        DestroyTask(taskId);
+        return;
+    }
+    if (sprite->callback == SpriteCallbackDummy)
+    {
+        StartSpriteAnim(sprite, 0);
+        DestroyTask(taskId);
+    }
+}
+#undef tSpriteId
+
+// Stop any running sprite animation and destroy all associated tasks before freeing.
+static void StopMonSpriteAnimation(u8 spriteId)
+{
+    struct Sprite *sprite = &gSprites[spriteId];
+    u8 taskIdToDestroy;
+    u16 paletteIndex;
+    u16 i;
+
+    // Reset sprite position offset in case animation was mid-shake
+    sprite->x2 = 0;
+    sprite->y2 = 0;
+    sprite->callback = SpriteCallbackDummy;
+
+    // Restore sprite palette in case a glow/flash animation was mid-blend
+    paletteIndex = OBJ_PLTT_ID(sprite->oam.paletteNum);
+    for (i = 0; i < 16; i++)
+        gPlttBufferFaded[paletteIndex + i] = gPlttBufferUnfaded[paletteIndex + i];
+
+    // Directly destroy Task_HandleMonAnimation (the persistent animation driver)
+    StopMonFrontSpriteAnimationTask();
+
+    // Kill the delay task if the movement animation hasn't started yet
+    StopFrontSpriteAnimationDelayTask();
+
+    // Destroy the reset-after-done task
+    taskIdToDestroy = FindTaskIdByFunc(Task_ResetSpriteAnimAfterDone);
+    if (taskIdToDestroy != TASK_NONE)
+        DestroyTask(taskIdToDestroy);
 }
 
 static void Task_LoadInfoScreen(u8 taskId)
@@ -3836,6 +3925,9 @@ static void Task_LoadInfoScreen(u8 taskId)
         PrintMonInfo(sPokedexListItem->dexNum, sPokedexView->dexMode == DEX_MODE_HOENN ? FALSE : TRUE, sPokedexListItem->owned, 0);
         if (!sPokedexListItem->owned)
             LoadPalette(gPlttBufferUnfaded + 1, BG_PLTT_ID(3) + 1, PLTT_SIZEOF(16 - 1));
+        // Show shiny toggle label if this species has a shiny unlocked
+        if (GetShinySeenFlag(sPokedexListItem->dexNum))
+            PrintShinyToggleLabel(FALSE);
         CopyWindowToVram(WIN_INFO, COPYWIN_FULL);
         CopyBgTilemapBufferToVram(1);
         CopyBgTilemapBufferToVram(2);
@@ -3887,6 +3979,26 @@ static void Task_LoadInfoScreen(u8 taskId)
             {
                 gMain.state++;
             }
+            // Play the front sprite animation (use DoMonFrontSpriteAnimation
+            // instead of PokemonSummaryDoMonAnimation to avoid flipping the sprite,
+            // since the Pokedex shows mons facing the same way as battle)
+            {
+                u16 species = NationalPokedexNumToSpecies(sPokedexListItem->dexNum);
+                u8 spriteId = gTasks[taskId].tMonSpriteId;
+                struct Sprite *monSprite = &gSprites[spriteId];
+                // Swap anim table from the generic gAnims_MonPic to the per-species
+                // front anim table so that frame 0/1 switching uses species-specific
+                // timing (matches battle/summary behavior)
+                monSprite->anims = gMonFrontAnimsPtrTable[species];
+                if (HasTwoFramesAnimation(species))
+                    StartSpriteAnim(monSprite, 1);
+                DoMonFrontSpriteAnimation(monSprite, species, TRUE, 0);
+                // Create a task to reset sprite back to frame 0 after animation ends
+                {
+                    u8 resetTaskId = CreateTask(Task_ResetSpriteAnimAfterDone, 10);
+                    gTasks[resetTaskId].data[0] = spriteId;
+                }
+            }
         }
         break;
     case 9:
@@ -3898,6 +4010,7 @@ static void Task_LoadInfoScreen(u8 taskId)
         gTasks[taskId].tMonSpriteDone = FALSE; // Reload next time screen comes up
         gTasks[taskId].tBgLoaded = TRUE;
         gTasks[taskId].tSkipCry = TRUE;
+        sPokedexView->isShowingShiny = FALSE; // Reset shiny toggle when returning from sub-screens
         gTasks[taskId].func = Task_HandleInfoScreenInput;
         gMain.state = 0;
         break;
@@ -3928,6 +4041,7 @@ static void Task_HandleInfoScreenInput(u8 taskId)
     if (gTasks[taskId].tScrolling)
     {
         // Scroll up/down
+        StopMonSpriteAnimation(gTasks[taskId].tMonSpriteId);
         BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB_BLACK);
         gTasks[taskId].func = Task_LoadInfoScreenWaitForFade;
         PlaySE(SE_DEX_SCROLL);
@@ -3935,15 +4049,44 @@ static void Task_HandleInfoScreenInput(u8 taskId)
     }
     if (JOY_NEW(B_BUTTON))
     {
+        StopMonSpriteAnimation(gTasks[taskId].tMonSpriteId);
         BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB_BLACK);
-        gTasks[taskId].func = Task_ExitInfoScreen;
+        // Use special exit handler if called from party menu
+        if (sExternalReturnCallback != NULL)
+            gTasks[taskId].func = Task_ExitInfoScreenToExternal;
+        else
+            gTasks[taskId].func = Task_ExitInfoScreen;
         PlaySE(SE_PC_OFF);
+        return;
+    }
+
+    // Shiny toggle on A button (only if shiny has been seen for this species)
+    if (JOY_NEW(A_BUTTON))
+    {
+        u16 species = NationalPokedexNumToSpecies(sPokedexListItem->dexNum);
+        if (GetShinySeenFlag(sPokedexListItem->dexNum))
+        {
+            u8 paletteNum = gSprites[gTasks[taskId].tMonSpriteId].oam.paletteNum;
+            const u32 *palData;
+
+            sPokedexView->isShowingShiny = !sPokedexView->isShowingShiny;
+
+            if (sPokedexView->isShowingShiny)
+                palData = GetMonSpritePalFromSpeciesAndPersonality(species, 0, 0); // otId=0, personality=0 forces shiny
+            else
+                palData = gMonPaletteTable[species].data;
+
+            LoadCompressedPalette(palData, OBJ_PLTT_ID(paletteNum), PLTT_SIZE_4BPP);
+            PrintShinyToggleLabel(sPokedexView->isShowingShiny);
+            PlaySE(SE_DEX_PAGE);
+        }
         return;
     }
 
     if ((JOY_NEW(DPAD_RIGHT) || (JOY_NEW(R_BUTTON) && gSaveBlock2Ptr->optionsButtonMode == OPTIONS_BUTTON_MODE_LR)))
     {
         sPokedexView->selectedScreen = AREA_SCREEN;
+        StopMonSpriteAnimation(gTasks[taskId].tMonSpriteId);
         BeginNormalPaletteFade(0xFFFFFFEB, 0, 0, 0x10, RGB_BLACK);
         sPokedexView->screenSwitchState = 1;
         gTasks[taskId].func = Task_SwitchScreensFromInfoScreen;
@@ -3956,6 +4099,7 @@ static void Task_SwitchScreensFromInfoScreen(u8 taskId)
 {
     if (!gPaletteFade.active)
     {
+        StopMonSpriteAnimation(gTasks[taskId].tMonSpriteId);
         FreeAndDestroyMonPicSprite(gTasks[taskId].tMonSpriteId);
         switch (sPokedexView->screenSwitchState)
         {
@@ -3977,6 +4121,7 @@ static void Task_LoadInfoScreenWaitForFade(u8 taskId)
 {
     if (!gPaletteFade.active)
     {
+        StopMonSpriteAnimation(gTasks[taskId].tMonSpriteId);
         FreeAndDestroyMonPicSprite(gTasks[taskId].tMonSpriteId);
         gTasks[taskId].func = Task_LoadInfoScreen;
     }
@@ -3986,13 +4131,130 @@ static void Task_ExitInfoScreen(u8 taskId)
 {
     if (!gPaletteFade.active)
     {
+        StopMonSpriteAnimation(gTasks[taskId].tMonSpriteId);
         FreeAndDestroyMonPicSprite(gTasks[taskId].tMonSpriteId);
         FreeInfoScreenWindowAndBgBuffers();
         DestroyTask(taskId);
     }
 }
 
+static void Task_ExitInfoScreenToExternal(u8 taskId)
+{
+    if (!gPaletteFade.active)
+    {
+        StopMonSpriteAnimation(gTasks[taskId].tMonSpriteId);
+        FreeAndDestroyMonPicSprite(gTasks[taskId].tMonSpriteId);
+        FreeInfoScreenWindowAndBgBuffers();
+        DestroyTask(taskId);
+        
+        if (sExternalReturnCallback != NULL)
+        {
+            void (*callback)(void) = sExternalReturnCallback;
+            sExternalReturnCallback = NULL;
+            SetMainCallback2(callback);
+        }
+    }
+}
+
 #undef tMonSpriteId
+
+static void CB2_PartyPokedexInfoScreen(void)
+{
+    RunTasks();
+    AnimateSprites();
+    BuildOamBuffer();
+    DoScheduledBgTilemapCopiesToVram();
+    UpdatePaletteFade();
+}
+
+// Called from party menu to open Pokedex detail view for a specific Pokemon
+void OpenPokedexInfoScreen(u16 species, void (*returnCallback)(void))
+{
+    u8 taskId;
+    u16 dexNum;
+    static struct PokedexListItem partyMonItem;
+    
+    // Temporarily define task data accessors for this function
+    #define tScrolling       data[0]
+    #define tMonSpriteDone   data[1]
+    #define tBgLoaded        data[2]
+    #define tSkipCry         data[3]
+    #define tMonSpriteId     data[4]
+    #define tTrainerSpriteId data[5]
+    
+    // Store the return callback
+    sExternalReturnCallback = returnCallback;
+    
+    // Clear video hardware to prevent artifacts from the previous screen
+    // (matches the full init sequence used when opening Pokedex from the menu)
+    ResetOtherVideoRegisters(0);
+    DmaFillLarge16(3, 0, (u8 *)VRAM, VRAM_SIZE, 0x1000);
+    DmaClear32(3, OAM, OAM_SIZE);
+    DmaClear16(3, PLTT, PLTT_SIZE);
+    ScanlineEffect_Stop();
+    ResetSpriteData();
+    ResetPaletteFade();
+    FreeAllSpritePalettes();
+    gReservedSpritePaletteCount = 8;
+    ResetAllPicSprites();
+    
+    // Convert species to dex number
+    dexNum = SpeciesToNationalPokedexNum(species);
+    
+    // Set up the list item for this Pokemon
+    partyMonItem.dexNum = dexNum;
+    partyMonItem.seen = TRUE;
+    partyMonItem.owned = GetSetPokedexFlag(dexNum, FLAG_GET_CAUGHT);
+    
+    // Point to our party mon item
+    sPokedexListItem = &partyMonItem;
+    
+    // Create the task and load the info screen
+    /* Note from Skeletonkey36: 
+    - You can change the Task_LoadInfoScreen to a different Task_LoadXXXScreen if you want to 
+        start on a different screen
+    - Reminder if you change Task_LoadInfoScreen, be sure to update name of OpenPokedexInfoScreen() 
+        above as well just for code clarity (and the call in party_menu.c)
+    */
+    taskId = CreateTask(Task_LoadInfoScreen, 0);
+    gTasks[taskId].tScrolling = FALSE;
+    gTasks[taskId].tMonSpriteDone = FALSE;
+    gTasks[taskId].tBgLoaded = FALSE;
+    gTasks[taskId].tSkipCry = FALSE;
+    gTasks[taskId].tMonSpriteId = SPRITE_NONE;
+    gTasks[taskId].tTrainerSpriteId = SPRITE_NONE;
+    
+    // Clean up local macros
+    #undef tScrolling
+    #undef tMonSpriteDone
+    #undef tBgLoaded
+    #undef tSkipCry
+    #undef tMonSpriteId
+    #undef tTrainerSpriteId
+    
+    // Initialize backgrounds
+    ResetBgsAndClearDma3BusyFlags(0);
+    InitBgsFromTemplates(0, sInfoScreen_BgTemplate, ARRAY_COUNT(sInfoScreen_BgTemplate));
+    SetBgTilemapBuffer(3, AllocZeroed(BG_SCREEN_SIZE));
+    SetBgTilemapBuffer(2, AllocZeroed(BG_SCREEN_SIZE));
+    SetBgTilemapBuffer(1, AllocZeroed(BG_SCREEN_SIZE));
+    SetBgTilemapBuffer(0, AllocZeroed(BG_SCREEN_SIZE));
+    InitWindows(sInfoScreen_WindowTemplates);
+    DeactivateAllTextPrinters();
+    
+    // Set main state to 0 to start the loading process
+    gMain.state = 0;
+    
+    // Allocate PokedexView if needed (for screen switching)
+    if (sPokedexView == NULL)
+        sPokedexView = AllocZeroed(sizeof(struct PokedexView));
+    
+    sPokedexView->currentPage = PAGE_INFO;
+    sPokedexView->selectedScreen = INFO_SCREEN;
+    
+    SetVBlankCallback(VBlankCB_Pokedex);
+    SetMainCallback2(CB2_PartyPokedexInfoScreen);
+}
 
 //************************************
 //*                                  *
@@ -4053,7 +4315,34 @@ static void Task_SwitchScreensFromAreaScreen(u8 taskId)
             else
                 gTasks[taskId].func = Task_LoadStatsScreen;
             break;
+        case 3:
+            // Use special exit handler if called from party menu
+            if (sExternalReturnCallback != NULL)
+                gTasks[taskId].func = Task_ExitAreaScreenToExternal;
+            else
+                gTasks[taskId].func = Task_ExitAreaScreen;
+            break;
         }
+    }
+}
+
+static void Task_ExitAreaScreen(u8 taskId)
+{
+    if (!gPaletteFade.active)
+    {
+        FreeInfoScreenWindowAndBgBuffers();
+        DestroyTask(taskId);
+    }
+}
+
+static void Task_ExitAreaScreenToExternal(u8 taskId)
+{
+    if (!gPaletteFade.active)
+    {
+        FreeInfoScreenWindowAndBgBuffers();
+        DestroyTask(taskId);
+        if (sExternalReturnCallback != NULL)
+            SetMainCallback2(sExternalReturnCallback);
     }
 }
 
@@ -4357,6 +4646,36 @@ static void PrintInfoScreenTextSmallWhite(const u8* str, u8 left, u8 top)
 
     AddTextPrinterParameterized4(0, 0, left, top, 0, 0, color, 0, str);
 }
+
+// Draws or redraws the shiny toggle indicator using tileset tiles on BG3
+static void PrintShinyToggleLabel(bool8 isShowingShiny)
+{
+    u16 *tilemapBuf = (u16 *)GetBgTilemapBuffer(3);
+    // Box position: 3 rows × 4 cols
+    u8 startRow = 9;
+    u8 startCol = 14;
+
+    // Top row
+    tilemapBuf[(startRow) * 32 + startCol]     = 208;
+    tilemapBuf[(startRow) * 32 + startCol + 1] = 209;
+    tilemapBuf[(startRow) * 32 + startCol + 2] = 210;
+    tilemapBuf[(startRow) * 32 + startCol + 3] = 211;
+
+    // Middle row
+    tilemapBuf[(startRow + 1) * 32 + startCol]     = 212;
+    tilemapBuf[(startRow + 1) * 32 + startCol + 1] = 213;
+    tilemapBuf[(startRow + 1) * 32 + startCol + 2] = isShowingShiny ? 220 : 214;
+    tilemapBuf[(startRow + 1) * 32 + startCol + 3] = 215;
+
+    // Bottom row
+    tilemapBuf[(startRow + 2) * 32 + startCol]     = 216;
+    tilemapBuf[(startRow + 2) * 32 + startCol + 1] = 217;
+    tilemapBuf[(startRow + 2) * 32 + startCol + 2] = 218;
+    tilemapBuf[(startRow + 2) * 32 + startCol + 3] = 219;
+
+    CopyBgTilemapBufferToVram(3);
+}
+
 //Stats screen
 static void PrintStatsScreenTextSmall(u8 windowId, const u8* str, u8 left, u8 top)
 {
@@ -5304,7 +5623,11 @@ static void Task_HandleStatsScreenInput(u8 taskId)
     if (JOY_NEW(B_BUTTON))
     {
         BeginNormalPaletteFade(0xFFFFFFFF, 0, 0, 16, RGB_BLACK);
-        gTasks[taskId].func = Task_ExitStatsScreen;
+        // Use special exit handler if called from party menu
+        if (sExternalReturnCallback != NULL)
+            gTasks[taskId].func = Task_ExitStatsScreenToExternal;
+        else
+            gTasks[taskId].func = Task_ExitStatsScreen;
         PlaySE(SE_PC_OFF);
         return;
     }
@@ -6262,6 +6585,8 @@ static void Task_SwitchScreensFromStatsScreen(u8 taskId)
             gTasks[taskId].func = Task_LoadEvolutionScreen;
             break;
         default:
+            FreeAllWindowBuffers();
+            InitWindows(sInfoScreen_WindowTemplates);
             gTasks[taskId].func = Task_LoadInfoScreen;
             break;
         }
@@ -6282,6 +6607,25 @@ static void Task_ExitStatsScreen(u8 taskId)
         FreeAndDestroyMonPicSprite(gTasks[taskId].tMonSpriteId);
         FreeInfoScreenWindowAndBgBuffers();
         DestroyTask(taskId);
+    }
+}
+
+static void Task_ExitStatsScreenToExternal(u8 taskId)
+{
+    if (!gPaletteFade.active)
+    {
+        FreeSpriteTilesByTag(ITEM_TAG);                         //Destroy item icon
+        FreeSpritePaletteByTag(ITEM_TAG);                       //Destroy item icon
+        FreeSpriteOamMatrix(&gSprites[gTasks[taskId].data[3]]); //Destroy item icon
+        DestroySprite(&gSprites[gTasks[taskId].data[3]]);       //Destroy item icon
+        FreeMonIconPalettes();                                          //Destroy pokemon icon sprite
+        FreeAndDestroyMonIconSprite(&gSprites[gTasks[taskId].data[4]]); //Destroy pokemon icon sprite
+
+        FreeAndDestroyMonPicSprite(gTasks[taskId].tMonSpriteId);
+        FreeInfoScreenWindowAndBgBuffers();
+        DestroyTask(taskId);
+        if (sExternalReturnCallback != NULL)
+            SetMainCallback2(sExternalReturnCallback);
     }
 }
 
@@ -6554,7 +6898,11 @@ static void Task_HandleEvolutionScreenInput(u8 taskId)
     if (JOY_NEW(B_BUTTON))
     {
         BeginNormalPaletteFade(0xFFFFFFFF, 0, 0, 16, RGB_BLACK);
-        gTasks[taskId].func = Task_ExitEvolutionScreen;
+        // Use special exit handler if called from party menu
+        if (sExternalReturnCallback != NULL)
+            gTasks[taskId].func = Task_ExitEvolutionScreenToExternal;
+        else
+            gTasks[taskId].func = Task_ExitEvolutionScreen;
         PlaySE(SE_PC_OFF);
         return;
     }
@@ -7000,6 +7348,8 @@ static void Task_SwitchScreensFromEvolutionScreen(u8 taskId)
                 break;
         #endif
         default:
+            FreeAllWindowBuffers();
+            InitWindows(sInfoScreen_WindowTemplates);
             gTasks[taskId].func = Task_LoadInfoScreen;
             break;
         }
@@ -7021,6 +7371,26 @@ static void Task_ExitEvolutionScreen(u8 taskId)
 
         FreeInfoScreenWindowAndBgBuffers();
         DestroyTask(taskId);
+    }
+}
+
+static void Task_ExitEvolutionScreenToExternal(u8 taskId)
+{
+    u8 i;
+    if (!gPaletteFade.active)
+    {
+        FreeMonIconPalettes();                                          //Destroy pokemon icon sprite
+        FreeAndDestroyMonIconSprite(&gSprites[gTasks[taskId].data[4]]); //Destroy pokemon icon sprite
+        for (i = 1; i <= gTasks[taskId].data[3]; i++)
+        {
+            FreeAndDestroyMonIconSprite(&gSprites[gTasks[taskId].data[4+i]]); //Destroy pokemon icon sprite
+        }
+        FreeAndDestroyMonPicSprite(gTasks[taskId].tMonSpriteId);
+
+        FreeInfoScreenWindowAndBgBuffers();
+        DestroyTask(taskId);
+        if (sExternalReturnCallback != NULL)
+            SetMainCallback2(sExternalReturnCallback);
     }
 }
 
@@ -7163,7 +7533,11 @@ static void Task_HandleFormsScreenInput(u8 taskId)
         if (JOY_NEW(B_BUTTON))
         {
             BeginNormalPaletteFade(0xFFFFFFFF, 0, 0, 16, RGB_BLACK);
-            gTasks[taskId].func = Task_ExitFormsScreen;
+            // Use special exit handler if called from party menu
+            if (sExternalReturnCallback != NULL)
+                gTasks[taskId].func = Task_ExitFormsScreenToExternal;
+            else
+                gTasks[taskId].func = Task_ExitFormsScreen;
             PlaySE(SE_PC_OFF);
             return;
         }
@@ -7305,6 +7679,8 @@ static void Task_SwitchScreensFromFormsScreen(u8 taskId)
             gTasks[taskId].func = Task_LoadEvolutionScreen;
             break;
         default:
+            FreeAllWindowBuffers();
+            InitWindows(sInfoScreen_WindowTemplates);
             gTasks[taskId].func = Task_LoadInfoScreen;
             break;
         }
@@ -7326,6 +7702,26 @@ static void Task_ExitFormsScreen(u8 taskId)
 
         FreeInfoScreenWindowAndBgBuffers();
         DestroyTask(taskId);
+    }
+}
+
+static void Task_ExitFormsScreenToExternal(u8 taskId)
+{
+    u8 i;
+    if (!gPaletteFade.active)
+    {
+        FreeMonIconPalettes();                                          //Destroy pokemon icon sprite
+        FreeAndDestroyMonIconSprite(&gSprites[gTasks[taskId].data[4]]); //Destroy pokemon icon sprite
+        for (i = 1; i <= gTasks[taskId].data[3]; i++)
+        {
+            FreeAndDestroyMonIconSprite(&gSprites[gTasks[taskId].data[4+i]]); //Destroy pokemon icon sprite
+        }
+        FreeAndDestroyMonPicSprite(gTasks[taskId].tMonSpriteId);
+
+        FreeInfoScreenWindowAndBgBuffers();
+        DestroyTask(taskId);
+        if (sExternalReturnCallback != NULL)
+            SetMainCallback2(sExternalReturnCallback);
     }
 }
 #endif
@@ -7468,8 +7864,11 @@ static void Task_HandleCryScreenInput(u8 taskId)
         {
             BeginNormalPaletteFade(PALETTES_ALL & ~(0x14), 0, 0, 0x10, RGB_BLACK);
             m4aMPlayContinue(&gMPlayInfo_BGM);
-            sPokedexView->screenSwitchState = 1;
-            gTasks[taskId].func = Task_SwitchScreensFromCryScreen;
+            // Use special exit handler if called from party menu
+            if (sExternalReturnCallback != NULL)
+                gTasks[taskId].func = Task_ExitCryScreenToExternal;
+            else
+                gTasks[taskId].func = Task_ExitCryScreen;
             PlaySE(SE_PC_OFF);
             return;
         }
@@ -7522,6 +7921,30 @@ static void Task_SwitchScreensFromCryScreen(u8 taskId)
             gTasks[taskId].func = Task_LoadSizeScreen;
             break;
         }
+    }
+}
+
+static void Task_ExitCryScreen(u8 taskId)
+{
+    if (!gPaletteFade.active)
+    {
+        FreeCryScreen();
+        FreeAndDestroyMonPicSprite(gTasks[taskId].tMonSpriteId);
+        FreeInfoScreenWindowAndBgBuffers();
+        DestroyTask(taskId);
+    }
+}
+
+static void Task_ExitCryScreenToExternal(u8 taskId)
+{
+    if (!gPaletteFade.active)
+    {
+        FreeCryScreen();
+        FreeAndDestroyMonPicSprite(gTasks[taskId].tMonSpriteId);
+        FreeInfoScreenWindowAndBgBuffers();
+        DestroyTask(taskId);
+        if (sExternalReturnCallback != NULL)
+            SetMainCallback2(sExternalReturnCallback);
     }
 }
 
@@ -7644,8 +8067,11 @@ static void Task_HandleSizeScreenInput(u8 taskId)
     if (JOY_NEW(B_BUTTON))
     {
         BeginNormalPaletteFade(PALETTES_ALL & ~(0x14), 0, 0, 0x10, RGB_BLACK);
-        sPokedexView->screenSwitchState = 1;
-        gTasks[taskId].func = Task_SwitchScreensFromSizeScreen;
+        // Use special exit handler if called from party menu
+        if (sExternalReturnCallback != NULL)
+            gTasks[taskId].func = Task_ExitSizeScreenToExternal;
+        else
+            gTasks[taskId].func = Task_ExitSizeScreen;
         PlaySE(SE_PC_OFF);
     }
     else if (JOY_NEW(DPAD_LEFT)
@@ -7674,6 +8100,30 @@ static void Task_SwitchScreensFromSizeScreen(u8 taskId)
             gTasks[taskId].func = Task_LoadCryScreen;
             break;
         }
+    }
+}
+
+static void Task_ExitSizeScreen(u8 taskId)
+{
+    if (!gPaletteFade.active)
+    {
+        FreeAndDestroyMonPicSprite(gTasks[taskId].tMonSpriteId);
+        FreeAndDestroyTrainerPicSprite(gTasks[taskId].tTrainerSpriteId);
+        FreeInfoScreenWindowAndBgBuffers();
+        DestroyTask(taskId);
+    }
+}
+
+static void Task_ExitSizeScreenToExternal(u8 taskId)
+{
+    if (!gPaletteFade.active)
+    {
+        FreeAndDestroyMonPicSprite(gTasks[taskId].tMonSpriteId);
+        FreeAndDestroyTrainerPicSprite(gTasks[taskId].tTrainerSpriteId);
+        FreeInfoScreenWindowAndBgBuffers();
+        DestroyTask(taskId);
+        if (sExternalReturnCallback != NULL)
+            SetMainCallback2(sExternalReturnCallback);
     }
 }
 
@@ -7891,6 +8341,7 @@ static void Task_WaitForExitSearchResultsInfoScreen(u8 taskId)
     else
     {
         // Exiting, back to search results
+        sPokedexView->sEvoScreenData.fromEvoPage = FALSE;
         gTasks[taskId].func = Task_OpenSearchResults;
     }
 }

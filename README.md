@@ -2,7 +2,7 @@
 
 This is a decompilation of Pokémon Emerald, edited to be "Pokémon Modern Emerald".
 You can get more information about Modern Emerald at [Pokecommunity](https://www.pokecommunity.com/showthread.php?t=494005)
-You can the hackrom documentation following [this link](https://docs.google.com/spreadsheets/d/1QEFJmFhfaZqgxSUnM7MFpufrnrRk_NMzNoNWl2m3y_0/edit#gid=414283818)
+You can get the hackrom documentation following [this link](https://docs.google.com/spreadsheets/d/1QEFJmFhfaZqgxSUnM7MFpufrnrRk_NMzNoNWl2m3y_0/edit#gid=414283818)
 
 # If you want to compile:
 
@@ -28,15 +28,15 @@ Gamemode page:
 
 * Choose between a "Classic" or "Modern" preset, or customize it to your liking. **WARNING! All selected options are permanent until starting a new game.**
 * Encounter modes: Original, New (aka Modern), and Post-game.
-    - "Original encounters" are vanilla Emerald encounters with zero changes.
+    - "Original encounters" are vanilla Emerald encounters with zero changes. R/S exclusives are NOT included.
     - "New (modern) encounters" include all 423 Pokémon between the game and the post-game.
     - "Post-game encounters" are vanilla Emerald encounters UNTIL beating the game. Afterwards, it uses the "New encounters" tables.
 * Modern Typings: Some Pokémon have their types changed to buff them (Check docs).
-* Add Fairy Type: Adds Fairy Type to Pokémon that had it added in Generation 6.
+* Add Fairy Type: Adds Fairy Type to Pokémon that had it added in Generation 6. Note: Only affects Pokémon typing. Moves are controlled by "Pokémon Movepool" option.
 * Better Stats: Some Pokémon have their stats changed to buff them (Check docs).
 * Extra Legendaries: Adds new legendaries that weren't available in vanilla Emerald. Check docs for the location, or explore by yourself!
 * Legendary abilities: Buffs some legendaries giving them a better ability than "Pressure".
-* Modern Movepool: Adds 15 new moves, and modifies all Pokémon movepool to add them. TM/HMs and egg moves are also modified.
+* Pokémon Movepool: Adds 14 new moves, and modifies all Pokémon movepool to add them. TM/HMs and egg moves are also modified.
 * Type chart: The type effectiveness has been slightly balanced to slightly power up less useful types. 
     - Dark and Ghost do 1x to Steel
     - Water does 0.5x damage to Ice
@@ -114,15 +114,19 @@ Challenges page:
 * 44 new Pokémon species, mostly from Generation 4, and a few Gen 9 (Annihilape, Dudunsparce, Farigiraf).
 * 1 new box space, for a total of 450 Pokémon box space.
 * Birch's bag can show shiny starters!
+* New shiny star (like FRLG) in the summary page. Also shows up in eggs that have shiny species inside!
 * All the buffs from later generations are in _(Optional)_.
 * Extra buffs for other Pokémon are in. Includes stats, abilities and/or typings. (Ex. Arbok is now POISON / DARK and Meganium is now GRASS / FAIRY) _(Optional)_.
 * Pokémon have new learnsets, which are a mix from Gen 3 and newer generations _(Optional)_.
 * All Egg moves and tutor moves have been improved with data from later generations, plus some extra ones.
 * New evolution methods.
 * Pokémon inherit 5 IV's from their parents, no item is needed.
+* The number of steps needed for leveling up Pokémon in the daycare has been decreased.
 * Everstone works on male or female Pokémon and guarantees nature.
 * Gen. VIII Synchronize _(Optional)_.
 * Shuckle can make berry juice just like in Gen. II!! Yay?
+* Groudon has STAB with Fire moves, but retains its Ground-only typing.
+* Spinda has a 2% chance of multiplying by two the damage of moves.
 * Nature Mints are available to buy in the Flower Shop after the 4th Gym _(Optional)_, or after becoming champion if not enabled from the start.
 * Deoxys forms can be changed at Birth Island, using the meteorites.
 * All Hoenn and National Dex Pokémon need to be obtained to obtain the Completion Diploma, or it won't count as completed.
@@ -130,7 +134,6 @@ Challenges page:
 
 **Battle related:**
 * Modern Battle Frontier, Battle Tents and Trainer Hill. Your Pokémon will be limited to level 50 when playing in those battle facilities, even if your level is 1 or 100.
-* Trainer Hill also gives money depending on your finishing time, up to 1.000.000$ if you finish in 10 minutes or less.
 * Some of the Move buffs AND nerfs from later generations are in, with small changes to make them work in a 3rd gen game _(Optional)_.
 * HM01 Cut is now Grass type, Night Shade does 50 static damage, Hidden Power is now 60 static damage and shows the type in the summary screen and in battle, and more move buffs and changes.
 * 15 new Moves from Gen IV to buff typings that didn't have a certain Physical / Special move. (Ex. Dark Pulse, as Dark type didn't have a Special Dark type move). _(Optional)_.
@@ -140,7 +143,7 @@ Challenges page:
 * A new ability tutor, after becoming champion, is available in Lilycove.
 * EV Training is available in Lilycove.
 * IV Maximizer is available in Lylicove, after beating the game, with the option to set IVs to 30 or 31 to allow different Hidden Potentials. Needs a level 100 Pokémon.
-* A nurse NPC is available after beating the game to farm EXP in Lilycove.
+* A nurse NPC is available after beating the game to farm EXP. in Lilycove.
 * New battle backgrounds, completely optional, in the options menu.
 * Faster battle intros. Enable "Fast Intros" option in the options menu.
 * Faster-paced battles. Enable "Fast Battles" option in the options menu.
@@ -154,6 +157,7 @@ Challenges page:
 
 
 **UI related:**
+* The game has been fully decapped! Hard work made by @fanyx
 * New Pokédex! You can now see important information on the new "Stats" page. It's very, VERY useful, and it's like having the game documentation in-game.
 * The Pokédex can now be scrolled faster: if you hold left or right, it will advance like before, but without the need to keep pressing left and right.
 * The Pokédex can now be scrolled faster than faster! If you hold left or right AND you hold the R button, it will scroll even faster than explained above!
@@ -183,7 +187,7 @@ Challenges page:
 * Wonder Trade uses a tier system, so rare Pokémon are rare to obtain as well. 
 * 3 difficulty modes (EASY, NORMAL and HARD). Selected at the start of the game, can be changed anytime from the options menu (unless using the "Limit difficulty" option).
 
-    EASY mode: Makes the game quite a lot easier by scaling levels down, and obtaining more EXP (+20%).
+    EASY mode: Makes the game quite a lot easier by scaling levels down, and obtaining more EXP. (+20%).
     - Trainer Pokémon and Wild Pokémon scale down to 10 levels compared to the original game. More badges, lower levels.
     - There are no restrictions on the Battle Frontier.
 
@@ -195,6 +199,7 @@ Challenges page:
     - Trainer Pokémon and Wild Pokémon scale up to 10 levels compared to the original game. More badges, more levels.
     - Certain ace Pokémon have had their abilities or items changed to make everything a bit more difficult. This mode does not change anything else in most trainer parties or their strategies.
     - "SET MODE" is automatically selected and can't be disabled if you lock the difficulty.
+    - Only four items can be used in battle.
     - There are more restrictions on the Battle Frontier _(Optional)_.
     - The GEN VI Exp. Share will give less Exp. to the battling Pokémon.
     - Legendaries will have higher stats WHILE battling, to make it more challenging, and some will have their catch rate reduced. They are now true Boss Battles! Good luck!
@@ -204,9 +209,10 @@ Challenges page:
 * Run everywhere.
 * Autorun (in the options menu).
 * HM moves text and interaction is way faster.
+* Rock smash provides Shards and Heart Scales.
 * Link with Fire Red / Leaf Green available from the start.
 * One-time tutors are infinite, but you have to pay now (only if Infinite TMs is on).
-* Trainer Hill prizes are the berries that were not available in the GBA games.
+* Trainer Hill rewards have been greatly improved: You'll always get 20BP for each win and, if you finish within 10min or less, you can obtain Gamecube exclusive berries (Ganlon, Petaya, Salac & Apicot Berry) and up to 1.000.000$ (scales with time spent during the Trainer Hill challenge). 
 * Match and Acro Bike are now one. Change between them by pressing "R".
 * Easier fishing has been added to the options menu (FR/LG fishing).
 * All tickets are available to buy in the Battle Frontier.

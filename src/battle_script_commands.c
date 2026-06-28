@@ -1186,7 +1186,7 @@ static void Cmd_accuracycheck(void)
         if (gSaveBlock2Ptr->optionStyle == 1)
             if (gBattleMons[gBattlerAttacker].ability == ABILITY_HUSTLE && IS_TYPE_PHYSICAL(type))
                 calc = (calc * 80) / 100; // 1.2 hustle loss
-        if (gSaveBlock2Ptr->optionStyle == 0)
+        else if (gSaveBlock2Ptr->optionStyle == 0)
             if (gBattleMons[gBattlerAttacker].ability == ABILITY_HUSTLE && IS_MOVE_PHYSICAL(move))
                 calc = (calc * 80) / 100; // 1.2 hustle loss
 
@@ -2403,6 +2403,7 @@ static void Cmd_datahpupdate(void)
                 if (gSpecialStatuses[gActiveBattler].shellBellDmg == 0 && !(gHitMarker & HITMARKER_PASSIVE_DAMAGE))
                     gSpecialStatuses[gActiveBattler].shellBellDmg = gHpDealt;
                 if (gSaveBlock2Ptr->optionStyle == 0)
+                {
                     if (IS_MOVE_PHYSICAL(gCurrentMove) && !(gHitMarker & HITMARKER_PASSIVE_DAMAGE) && gCurrentMove != MOVE_PAIN_SPLIT)
                     {
                         gProtectStructs[gActiveBattler].physicalDmg = gHpDealt;
@@ -2433,7 +2434,9 @@ static void Cmd_datahpupdate(void)
                             gSpecialStatuses[gActiveBattler].specialBattlerId = gBattlerTarget;
                         }
                     }
-                if (gSaveBlock2Ptr->optionStyle == 1)
+                }
+                else if (gSaveBlock2Ptr->optionStyle == 1)
+                {
                     if (IS_TYPE_PHYSICAL(moveType) && !(gHitMarker & HITMARKER_PASSIVE_DAMAGE) && gCurrentMove != MOVE_PAIN_SPLIT)
                     {
                         gProtectStructs[gActiveBattler].physicalDmg = gHpDealt;
@@ -2464,6 +2467,7 @@ static void Cmd_datahpupdate(void)
                             gSpecialStatuses[gActiveBattler].specialBattlerId = gBattlerTarget;
                         }
                     }
+                }
             }
             gHitMarker &= ~HITMARKER_PASSIVE_DAMAGE;
 
@@ -3800,8 +3804,11 @@ static void Cmd_getexp(void)
 
             for (viaSentIn = 0, i = 0; i < PARTY_SIZE; i++)
             {
-                if (GetMonData(&gPlayerParty[i], MON_DATA_SPECIES) == SPECIES_NONE || GetMonData(&gPlayerParty[i], MON_DATA_IS_EGG)
-                    || GetMonData(&gPlayerParty[i], MON_DATA_HP) == 0)
+                if (GetMonData(&gPlayerParty[i], MON_DATA_SPECIES) == SPECIES_NONE
+                || GetMonData(&gPlayerParty[i], MON_DATA_IS_EGG)
+                || GetMonData(&gPlayerParty[i], MON_DATA_HP) == 0
+                || GetMonData(&gPlayerParty[i], MON_DATA_LEVEL) == MAX_LEVEL //lvl 100 Pokémon don't absorb Exp.
+                || ((gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER) && i >= 3)) //Steven doesn't get Exp. Sorry.
                     continue;
                 if (gBitTable[i] & sentIn)
                     viaSentIn++;
@@ -3841,13 +3848,17 @@ static void Cmd_getexp(void)
 
             if (gSaveBlock2Ptr->optionsDifficulty == 2) //Only if playing HARD MODE
             {
-                if (gSaveBlock1Ptr->tx_Difficulty_HardExp == 0) //Exp decrease for HARD MODE
+                if ((gSaveBlock1Ptr->tx_Difficulty_HardExp == 0) && (FlagGet(FLAG_IS_CHAMPION) == FALSE)) 
+                //Exp decrease for HARD MODE (60%)
                     calculatedExp *= 0.60;
-                else if (gSaveBlock1Ptr->tx_Difficulty_HardExp == 1) //Maintain default exp. gain for HARD MODE
+                else if ((gSaveBlock1Ptr->tx_Difficulty_HardExp == 1) || (gSaveBlock1Ptr->tx_Difficulty_HardExp == 0) && (FlagGet(FLAG_IS_CHAMPION) == TRUE)) 
+                //Maintain default exp. gain for HARD MODE
+                //Also the option gets disabled after becoming champion because there's easy access to EXP. training.
+                //The Flag checks ensure save compatibility, as you'd need to become champion again in old saves for this to activate.
                     calculatedExp *= 1;
             }
             else if (gSaveBlock2Ptr->optionsDifficulty == 0) //exp increase for easy mode
-                calculatedExp *= 1.2;
+                calculatedExp *= 1.3;
 
             if (FlagGet(FLAG_EXP_SHARE) == FALSE)
             {
@@ -3969,7 +3980,7 @@ static void Cmd_getexp(void)
                 gBattleScripting.getexpState = 5;
                 gBattleMoveDamage = 0; // used for exp
             }
-            else if (GetMonData(&gPlayerParty[gBattleStruct->expGetterMonId], MON_DATA_LEVEL) >= GetCurrentPartyLevelCap())
+            else if ((GetMonData(&gPlayerParty[gBattleStruct->expGetterMonId], MON_DATA_LEVEL) >= GetCurrentPartyLevelCap()) || (gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER && gBattleStruct->expGetterMonId >= 3))
             {
                 if ((FlagGet(FLAG_EXP_SHARE) == FALSE))
                     *(&gBattleStruct->sentInPokes) >>= 1;
@@ -5426,7 +5437,7 @@ static void Cmd_switchinanim(void)
                                  | BATTLE_TYPE_RECORDED_LINK
                                  | BATTLE_TYPE_TRAINER_HILL
                                  | BATTLE_TYPE_FRONTIER)))
-        HandleSetPokedexFlag(SpeciesToNationalPokedexNum(gBattleMons[gActiveBattler].species), FLAG_SET_SEEN, gBattleMons[gActiveBattler].personality);
+        HandleSetPokedexFlag(SpeciesToNationalPokedexNum(gBattleMons[gActiveBattler].species), FLAG_SET_SEEN, gBattleMons[gActiveBattler].personality, gBattleMons[gActiveBattler].otId);
 
     gAbsentBattlerFlags &= ~(gBitTable[gActiveBattler]);
 
@@ -10951,6 +10962,7 @@ static void Cmd_trysetcaughtmondexflags(void)
 {
     u16 species = GetMonData(&gEnemyParty[0], MON_DATA_SPECIES, NULL);
     u32 personality = GetMonData(&gEnemyParty[0], MON_DATA_PERSONALITY, NULL);
+    u32 otId = GetMonData(&gEnemyParty[0], MON_DATA_OT_ID, NULL);
 
     if (GetSetPokedexFlag(SpeciesToNationalPokedexNum(species), FLAG_GET_CAUGHT))
     {
@@ -10958,7 +10970,7 @@ static void Cmd_trysetcaughtmondexflags(void)
     }
     else
     {
-        HandleSetPokedexFlag(SpeciesToNationalPokedexNum(species), FLAG_SET_CAUGHT, personality);
+        HandleSetPokedexFlag(SpeciesToNationalPokedexNum(species), FLAG_SET_CAUGHT, personality, otId);
         gBattlescriptCurrInstr += 5;
     }
 }

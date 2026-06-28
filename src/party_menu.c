@@ -3830,8 +3830,21 @@ static void CursorCb_FieldMove(u8 taskId)
         // All field moves before WATERFALL are HMs.
         if (fieldMove <= FIELD_MOVE_WATERFALL && FlagGet(FLAG_BADGE01_GET + fieldMove) != TRUE)
         {
-            DisplayPartyMenuMessage(gText_CantUseUntilNewBadge, TRUE);
-            gTasks[taskId].func = Task_ReturnToChooseMonAfterText;
+            if (fieldMove == FIELD_MOVE_FLY)
+            {
+                DisplayPartyMenuMessage(gText_CantUseUntilNewBadge_Fly, TRUE);
+                gTasks[taskId].func = Task_ReturnToChooseMonAfterText;
+            }
+            else if (fieldMove == FIELD_MOVE_FLASH)
+            {
+                DisplayPartyMenuMessage(gText_CantUseUntilNewBadge_Flash, TRUE);
+                gTasks[taskId].func = Task_ReturnToChooseMonAfterText;
+            }
+            else
+            {
+                DisplayPartyMenuMessage(gText_CantUseUntilNewBadge, TRUE);
+                gTasks[taskId].func = Task_ReturnToChooseMonAfterText;
+            }
         }
         else if (sFieldMoveCursorCallbacks[fieldMove].fieldMoveFunc() == TRUE)
         {
@@ -4551,8 +4564,8 @@ void ItemUseCB_Medicine(u8 taskId, TaskFunc task)
     {
         cannotUse = TRUE;
     }
-    else if ((EV_Item_With_EVs_Disabled(item) == FALSE) && (gSaveBlock1Ptr->tx_Challenges_NoEVs == 1))
-    //Disable the use of EV items with the challenge NO EVs.
+    else if ((EV_Item_With_EVs_Disabled(item) == FALSE) && (gSaveBlock1Ptr->tx_Challenges_NoEVs == 1) && FlagGet(FLAG_SYS_GAME_CLEAR) == 0)
+    //Disable the use of EV items with the challenge NO EVs, only if you haven't become Champion
     {
         cannotUse = TRUE;
     }

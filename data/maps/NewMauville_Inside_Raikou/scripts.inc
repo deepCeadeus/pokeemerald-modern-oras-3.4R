@@ -23,7 +23,7 @@ NewMauville_Inside_Raikou_EntranceTrigger::
 
 NewMauville_Inside_Raikou_EntranceTrigger_Text:
 	.string "A thunderous roar rumbles through\n"
-	.string "the halls of NEW MAUVILLE.$"
+	.string "the halls of New Mauville.$"
 
 NewMauville_Inside_Raikou_EntranceTrigger_Movement:
 	delay_16
@@ -39,6 +39,8 @@ NewMauville_Inside_Raikou_RaikouBattle_1::
 	playmoncry SPECIES_RAIKOU, CRY_MODE_ENCOUNTER
 	delay 40
 	waitmoncry
+	msgbox NewMauville_Inside_Raikou_RaikouBattle_CantCatch_Text, MSGBOX_DEFAULT
+	closemessage
 	setwildbattle SPECIES_RAIKOU, 70
 	setflag FLAG_SYS_CTRL_OBJ_DELETE
 	setflag FLAG_SYS_NO_CATCHING
@@ -79,8 +81,13 @@ NewMauville_Inside_Raikou_RaikouBattle_1_Movement:
 	walk_fast_down
 	step_end
 
+NewMauville_Inside_Raikou_RaikouBattle_CantCatch_Text:
+	.string "Raikou's power is surging wildly!\p"
+	.string "Its power prevents the use of\n"
+	.string "Pokéballs.$"
+
 NewMauville_Inside_Raikou_RaikouBattle_1_Text:
-	.string "RAIKOU ran away swiftly!$"
+	.string "Raikou ran away swiftly!$"
 
 @@Second encounter with Raikou. Level 70, 400 speed, 300hp
 
@@ -131,7 +138,7 @@ NewMauville_Inside_Raikou_RaikouBattle_2_Movement:
 	step_end
 
 NewMauville_Inside_Raikou_RaikouBattle_2_Text:
-	.string "RAIKOU swiftly escaped again!$"
+	.string "Raikou swiftly escaped again!$"
 
 @@ Final battle with Raikou, has 600hp and 400 speed, with magnet
 NewMauville_Inside_Raikou_RaikouBattle::
@@ -143,7 +150,7 @@ NewMauville_Inside_Raikou_RaikouBattle::
 	waitmoncry
 	msgbox NewMauville_Inside_Raikou_RaikouBattle_Text, MSGBOX_DEFAULT
 	closemessage
-	setwildbattle SPECIES_RAIKOU, 70, ITEM_MAGNET
+	seteventmon SPECIES_RAIKOU, 70, ITEM_MAGNET
 	setflag FLAG_SYS_CTRL_OBJ_DELETE
 	call_if_set FLAG_DIFFICULTY_HARD, NewMauville_Inside_Raikou_RaikouBattle_3_Stats
 	special BattleSetup_StartLegendaryBattle
@@ -166,7 +173,8 @@ NewMauville_Inside_Raikou_RaikouBattle_3_Stats::
 	return
 
 NewMauville_Inside_Raikou_RaikouBattle_Text::
-	.string "RAIKOU stopped running away.$"
+	.string "Raikou stopped running away.\p"
+	.string "Pokéballs seem to work again.$"
 
 NewMauville_Inside_Raikou_Won::
 	setflag FLAG_DEFEATED_RAIKOU

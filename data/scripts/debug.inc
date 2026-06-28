@@ -115,17 +115,17 @@ Debug_Script_2_SelectFrontierBanOption_One:
 	end
 
 Debug_Script_2_Text:
-	.string "{COLOR RED}WARNING! DON'T RUN THIS SCRIPT IF\n"
-	.string "YOU'RE IN VERSION 3.3 OR UP!\p"
-	.string "ONLY RUN THIS SCRIPT ONCE, FROM VERSION\n"
-	.string "3.0 TO 3.2!\p"
+	.string "{COLOR RED}WARNING! DON'T run this script if\n"
+	.string "you're in Version 3.3 or up!\p"
+	.string "ONLY run this script ONCE, from Version\n"
+	.string "3.0 to 3.2!\p"
 	.string "This script will let you name your\n"
 	.string "rival, fix other stuff, then teleport\l"
-	.string "you to PETALBURG CITY, to fix maps.\p"
+	.string "you to Petalburg City, to fix maps.\p"
 	.string "Continue?$"
 
 Debug_Script_2_Text_Which_WT:
-	.string "UNLIMITED WONDERTRADE option needs to\n"
+	.string "Unlimited Wondertrade option needs to\n"
 	.string "be reset. Will you enable it?$"
 
 Debug_Script_2_SelectFrontierBanOption_Text:

@@ -18,6 +18,8 @@
 #include "international_string_util.h" // for GetStringRightAlignXOffset
 #include "strings.h"
 #include "gba/m4a_internal.h"
+
+extern struct MusicPlayerInfo *gMPlay_PokemonCry;
 #include "constants/rgb.h"
 #include "event_data.h"
 #include "tx_randomizer_and_challenges.h"
@@ -191,34 +193,34 @@ static const u8 sText_Chk_Mirror[]            = _("MIRROR MODE");
 static const u8 sText_Chk_MirrorThief[]       = _("MIRROR THIEF");
 
 //Options
-static const u8 sText_On[]  = _("ON");
-static const u8 sText_Off[] = _("OFF");
-static const u8 sText_Yes[]   = _("YES");
-static const u8 sText_No[]    = _("NO");
-static const u8 sText_Original[]  = _("ORIGINAL");
-static const u8 sText_Modern[]    = _("MODERN");
+static const u8 sText_On[]  = _("On");
+static const u8 sText_Off[] = _("Off");
+static const u8 sText_Yes[]   = _("Yes");
+static const u8 sText_No[]    = _("No");
+static const u8 sText_Original[]  = _("Original");
+static const u8 sText_Modern[]    = _("Modern");
 static const u8 sText_RTC[]     = _("RTC");
-static const u8 sText_FakeRTC[] = _("FAKE RTC");
-static const u8 sText_Frontier_Ban[]     = _("BAN");
-static const u8 sText_Frontier_Unban[]   = _("UNBAN");
-static const u8 sText_Nuz_Mode_Off[]        = _("OFF");
-static const u8 sText_Nuz_Mode_Easy[]       = _("EASY");
-static const u8 sText_Nuz_Mode_Standard[]   = _("NORMAL");
-static const u8 sText_Nuz_Mode_Hardcore[]   = _("HARD");
-static const u8 sText_Nuz_Fainting_Cemetery[]   = _("CEMETERY");
-static const u8 sText_Nuz_Fainting_Release[]    = _("RELEASE");
-static const u8 sText_Mode_Effect_GenVI[]       = _("GEN VI+");
-static const u8 sText_Mode_Effect_Modern[]      = _("IMPROVED");
+static const u8 sText_FakeRTC[] = _("Fake RTC");
+static const u8 sText_Frontier_Ban[]     = _("Ban");
+static const u8 sText_Frontier_Unban[]   = _("Unban");
+static const u8 sText_Nuz_Mode_Off[]        = _("Off");
+static const u8 sText_Nuz_Mode_Easy[]       = _("Easy");
+static const u8 sText_Nuz_Mode_Standard[]   = _("Normal");
+static const u8 sText_Nuz_Mode_Hardcore[]   = _("Hard");
+static const u8 sText_Nuz_Fainting_Cemetery[]   = _("Cemetery");
+static const u8 sText_Nuz_Fainting_Release[]    = _("Release");
+static const u8 sText_Mode_Effect_GenVI[]       = _("Gen VI+");
+static const u8 sText_Mode_Effect_Modern[]      = _("Improved");
 
 //3 ENCOUNTER MODES
-static const u8 sText_Mode_Encounters_Og[]      = _("ORIG");
-static const u8 sText_Mode_Encounters_New[]     = _("NEW");
-static const u8 sText_Mode_Encounters_Post[]    = _("POST");
+static const u8 sText_Mode_Encounters_Og[]      = _("Orig");
+static const u8 sText_Mode_Encounters_New[]     = _("New");
+static const u8 sText_Mode_Encounters_Post[]    = _("Post");
 static const u8 *const sText_Mode_Encounters_Strings[] = {
     sText_Mode_Encounters_Og, sText_Mode_Encounters_New, sText_Mode_Encounters_Post
 };
 // Party Limit: OFF,5,4,3,2,1
-static const u8 sPL_Off[] = _("OFF");
+static const u8 sPL_Off[] = _("Off");
 static const u8 sPL_5[]   = _("5");
 static const u8 sPL_4[]   = _("4");
 static const u8 sPL_3[]   = _("3");
@@ -227,9 +229,9 @@ static const u8 sPL_1[]   = _("1");
 static const u8 *const sText_Diff_PartyLimit_Strings[] = {
     sPL_Off, sPL_5, sPL_4, sPL_3, sPL_2, sPL_1
 };
-static const u8 sLC_Off[]  = _("OFF");
-static const u8 sLC_Easy[] = _("EASY");
-static const u8 sLC_Hard[] = _("HARD");
+static const u8 sLC_Off[]  = _("Off");
+static const u8 sLC_Easy[] = _("Easy");
+static const u8 sLC_Hard[] = _("Hard");
 static const u8 *const sText_Diff_LevelCap_Strings[] = {
     sLC_Off, sLC_Easy, sLC_Hard
 };
@@ -240,56 +242,56 @@ static const u8 sEM_0x[]   = _("0x");
 static const u8 *const sText_Diff_ExpMult_Strings[] = {
     sEM_1x, sEM_15x, sEM_2x, sEM_0x
 };
-static const u8 sIVs_Yes[]   = _("YES");
-static const u8 sIVs_No[]    = _("NO");
-static const u8 sIVs_NoHP[]  = _("NO (HP)");
+static const u8 sIVs_Yes[]   = _("Yes");
+static const u8 sIVs_No[]    = _("No");
+static const u8 sIVs_NoHP[]  = _("No (HP)");
 static const u8 *const sText_Diff_PlayerIVs_Strings[] = {
     sIVs_Yes, sIVs_No, sIVs_NoHP
 };
-static const u8 sTrainerEVs_Off[]   = _("OFF");
-static const u8 sTrainerEVs_Scale[] = _("SCALE");
-static const u8 sTrainerEVs_Hard[]  = _("HARD");
-static const u8 sTrainerEVs_Extreme[]  = _("EXTREME");
+static const u8 sTrainerEVs_Off[]   = _("Off");
+static const u8 sTrainerEVs_Scale[] = _("Scale");
+static const u8 sTrainerEVs_Hard[]  = _("Hard");
+static const u8 sTrainerEVs_Extreme[]  = _("Extreme");
 static const u8 *const sText_TrainerEV_Strings[] = {
     sTrainerEVs_Off, sTrainerEVs_Scale, sTrainerEVs_Hard, sTrainerEVs_Extreme
 };
-static const u8 sEX_Off[]  = _("OFF");
+static const u8 sEX_Off[]  = _("Off");
 static const u8 sEX_5x[]   = _("x5");
 static const u8 sEX_10x[]  = _("x10");
 static const u8 sEX_50x[]  = _("x50!");
 static const u8 *const sText_Chk_Expensive_Strings[] = { sEX_Off, sEX_5x, sEX_10x, sEX_50x };
-static const u8 sEL_Off[]   = _("OFF");
-static const u8 sEL_First[] = _("FIRST");
-static const u8 sEL_All[]   = _("ALL");
+static const u8 sEL_Off[]   = _("Off");
+static const u8 sEL_First[] = _("First");
+static const u8 sEL_All[]   = _("All");
 static const u8 *const sText_Chk_EvoLimit_Strings[] = { sEL_Off, sEL_First, sEL_All };
-static const u8 sBE_Off[]  = _("OFF");
+static const u8 sBE_Off[]  = _("Off");
 static const u8 sBE_100[]  = _("100");
 static const u8 sBE_255[]  = _("255");
 static const u8 sBE_500[]  = _("500");
 static const u8 *const sText_Chk_BaseStatEq_Strings[] = { sBE_Off, sBE_100, sBE_255, sBE_500 };
 // --- One Type Challenge display strings (index == type constant) ---
-static const u8 sTypeName_Normal[]   = _("NORMAL");
-static const u8 sTypeName_Fighting[] = _("FIGHTING");
-static const u8 sTypeName_Flying[]   = _("FLYING");
-static const u8 sTypeName_Poison[]   = _("POISON");
-static const u8 sTypeName_Ground[]   = _("GROUND");
-static const u8 sTypeName_Rock[]     = _("ROCK");
-static const u8 sTypeName_Bug[]      = _("BUG");
-static const u8 sTypeName_Ghost[]    = _("GHOST");
-static const u8 sTypeName_Steel[]    = _("STEEL");
-static const u8 sTypeName_Mystery[]  = _("MYSTERY");
-static const u8 sTypeName_Fire[]     = _("FIRE");
-static const u8 sTypeName_Water[]    = _("WATER");
-static const u8 sTypeName_Grass[]    = _("GRASS");
-static const u8 sTypeName_Electric[] = _("ELECTRIC");
-static const u8 sTypeName_Psychic[]  = _("PSYCHIC");
-static const u8 sTypeName_Ice[]      = _("ICE");
-static const u8 sTypeName_Dragon[]   = _("DRAGON");
-static const u8 sTypeName_Dark[]     = _("DARK");
-static const u8 sTypeName_Fairy[]    = _("FAIRY");
+static const u8 sTypeName_Normal[]   = _("Normal");
+static const u8 sTypeName_Fighting[] = _("Fighting");
+static const u8 sTypeName_Flying[]   = _("Flying");
+static const u8 sTypeName_Poison[]   = _("Poison");
+static const u8 sTypeName_Ground[]   = _("Ground");
+static const u8 sTypeName_Rock[]     = _("Rock");
+static const u8 sTypeName_Bug[]      = _("Bug");
+static const u8 sTypeName_Ghost[]    = _("Ghost");
+static const u8 sTypeName_Steel[]    = _("Steel");
+static const u8 sTypeName_Mystery[]  = _("Mystery");
+static const u8 sTypeName_Fire[]     = _("Fire");
+static const u8 sTypeName_Water[]    = _("Water");
+static const u8 sTypeName_Grass[]    = _("Grass");
+static const u8 sTypeName_Electric[] = _("Electric");
+static const u8 sTypeName_Psychic[]  = _("Psychic");
+static const u8 sTypeName_Ice[]      = _("Ice");
+static const u8 sTypeName_Dragon[]   = _("Dragon");
+static const u8 sTypeName_Dark[]     = _("Dark");
+static const u8 sTypeName_Fairy[]    = _("Fairy");
 
 // Display "OFF" when value is out of range
-static const u8 sText_TypeOff[] = _("OFF");
+static const u8 sText_TypeOff[] = _("Off");
 
 // Index order matches your TYPE_* defines (0..18)
 static const u8 *const sTypeNames[19] = {
@@ -330,7 +332,7 @@ static const u8 sColorRightRedDark[3]= { TEXT_COLOR_TRANSPARENT, TEXT_COLOR_OPTI
 static const u8 sColorRightGray[3]   = { TEXT_COLOR_TRANSPARENT, TEXT_COLOR_OPTIONS_GRAY_FG,      TEXT_COLOR_OPTIONS_GRAY_SHADOW };
 
 // Top bar / desc strings
-static const u8 sViewerTopLeft[] = _("CHALLENGE VIEWER");
+static const u8 sViewerTopLeft[] = _("Challenge Viewer");
 static const u8 sViewerDesc[] = _("{A_BUTTON}/{B_BUTTON}: Exit         {DPAD_UP}/{DPAD_DOWN}: Scroll\n {L_BUTTON}/{R_BUTTON}: Change Page");
 
 // Match tx_rac_menu background (light blue)
@@ -371,12 +373,12 @@ static const u8 sText_Challenges_ShinyChance_512[]    = _("512");
 static const u8 *const sText_Challenges_ShinyChance_Strings[] = {sText_Challenges_ShinyChance_8192,  sText_Challenges_ShinyChance_4096,  sText_Challenges_ShinyChance_2048,  sText_Challenges_ShinyChance_1024,  sText_Challenges_ShinyChance_512};
 
 static const u8 sText_Difficulty_CatchRate_05x[]   = _("0.5x");
-static const u8 sText_Difficulty_CatchRate_1x[]   = _("DEFAULT");
+static const u8 sText_Difficulty_CatchRate_1x[]   = _("Default");
 static const u8 sText_Difficulty_CatchRate_2x[]   = _("2x");
 static const u8 sText_Difficulty_CatchRate_3x[]   = _("3x");
 static const u8 *const sText_Difficulty_CatchRate_Strings[] = {sText_Difficulty_CatchRate_1x, sText_Difficulty_CatchRate_05x, sText_Difficulty_CatchRate_2x,  sText_Difficulty_CatchRate_3x};
 
-static const u8 sText_Difficulty_HardmodeExp_Normal[]   = _("NORMAL");
+static const u8 sText_Difficulty_HardmodeExp_Normal[]   = _("Normal");
 static const u8 *const sText_Difficulty_HardModeExp_Strings[] = {sText_Difficulty_CatchRate_1x, sText_Difficulty_HardmodeExp_Normal};
 
 static inline void Viewer_ClearRow(u8 visRow, bool8 selected)
@@ -494,7 +496,7 @@ static u8 GetSel_Nuz_Hardcore(void)        { return gSaveBlock1Ptr->tx_Challenge
 static u8 GetSel_Nuz_SpeciesClause(void)   { return gSaveBlock1Ptr->tx_Nuzlocke_SpeciesClause      ? 1 : 0; }
 static u8 GetSel_Nuz_ShinyClause(void)     { return gSaveBlock1Ptr->tx_Nuzlocke_ShinyClause        ? 1 : 0; }
 static u8 GetSel_Nuz_Nicknaming(void)      { return gSaveBlock1Ptr->tx_Nuzlocke_Nicknaming         ? 1 : 0; }
-static u8 GetSel_Nuz_Deletion(void)        { return gSaveBlock1Ptr->tx_Nuzlocke_Deletion           ? 1 : 0; } 
+static u8 GetSel_Nuz_Deletion(void)        { return gSaveBlock1Ptr->tx_Nuzlocke_Deletion           ? 1 : 0; }
 
 // ---- Page 5 getters ----
 // Multi-choice rows
@@ -570,7 +572,7 @@ static const struct ViewerBoolRow sBoolRows[] = {
 
 static const struct ViewerBoolRow sBoolRows_Page2[] = {
     { sText_RTCType_Label,      GetSel_Feature_RTCType      },
-    { sText_ShinyChance_Label,  GetSel_Feature_ShinyChance  }, 
+    { sText_ShinyChance_Label,  GetSel_Feature_ShinyChance  },
     { sText_ShinyColors_Label,  GetSel_Feature_ShinyColors  },
     { sText_ItemDrops_Label,    GetSel_Feature_ItemDrops    },
     { sText_UnlimitedWT_Label,  GetSel_Feature_UnlimitedWT  },
@@ -879,7 +881,7 @@ static void Viewer_DrawRow_Page4(u8 visRow, u16 idx)
         Viewer_DrawSingleValueRow(visRow, sText_Nuz_Mode, val, (idx == sCurIndex));
         break;
     }
-    case 4: 
+    case 4:
         {
             const int y = visRow * 16;
             Viewer_ClearRow(visRow, selected);
@@ -1172,7 +1174,7 @@ static void Viewer_RedrawList(void)
 
 void Task_ChallengeViewer(u8 taskId)
 {
-    gMain.savedCallback = CB2_ReturnToField; // return straight to field
+    gMain.savedCallback = CB2_ReturnToFieldContinueScript; // return to continue script, prevents player moving
     SetMainCallback2(CB2_InitChallengeViewer);
     DestroyTask(taskId);
 }
@@ -1220,6 +1222,8 @@ void CB2_InitChallengeViewer(void)
     case 2:
         ResetPaletteFade();
         ScanlineEffect_Stop();
+        if (gMPlay_PokemonCry != NULL)
+            StopCryAndClearCrySongs();
         ResetTasks();
         ResetSpriteData();
         gMain.state++;
@@ -1253,7 +1257,7 @@ void CB2_InitChallengeViewer(void)
 
         sPage = VIEWER_PAGE_MODE;
         sTopIndex = 0;
-        sCurIndex = 0;   
+        sCurIndex = 0;
         Viewer_RedrawList();
 
 

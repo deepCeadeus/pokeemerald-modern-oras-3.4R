@@ -25,12 +25,12 @@ EventScript_PkmnCenterNurse_WTHasBeenEnabledExplain::
 
 EventScript_PkmnCenterNurse_WTHasBeenEnabledExplain_Text:
 	.string "Hello, and welcome to\n"
-	.string "the POKéMON CENTER.\p"
+	.string "the Pokémon Center.\p"
 	.string "We are proud to announce that\n"
-	.string "the WONDERTRADE SYSTEM is now\l"
+	.string "the Wondertrade System is now\l"
 	.string "operational.\p"
 	.string "Please be sure to visit the\n"
-	.string "second floor of the POKéCENTER!$"
+	.string "second floor of the Pokécenter!$"
 
 EventScript_PkmnCenterNurse_Goodbye::
 	message gText_WeHopeToSeeYouAgain
@@ -152,6 +152,10 @@ Movement_PkmnCenterNurse_Bow:
 	delay_4
 	step_end
 
+Movement_PkmnCenterNurse_Bow_Faster:
+	nurse_joy_bow
+	step_end
+
 EventScript_PkmnCenterNurse_PlayerTurn::
 	closemessage
 	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_FaceDown
@@ -168,6 +172,8 @@ EventScript_PkmnCenterNurse_PlayerTurnFast::
   	callnative UpdateFollowingPokemon
 	waitse
 	playse SE_M_MORNING_SUN
+	applymovement VAR_0x800B, Movement_PkmnCenterNurse_Bow_Faster
+	waitmovement 0
 	applymovement OBJ_EVENT_ID_PLAYER, Common_Movement_FaceDown
 	waitmovement 0
 	release

@@ -248,7 +248,7 @@ EWRAM_DATA u8 gLastUsedBall = 0;
 EWRAM_DATA u16 gLastThrownBall = 0;
 EWRAM_DATA u16 gBallToDisplay = 0;
 EWRAM_DATA bool8 gLastUsedBallMenuPresent = FALSE;
-//EWRAM_DATA u8 sRunHoldCounter = 0;
+EWRAM_DATA u8 gItemLimit = 0;
 
 void (*gPreBattleCallback1)(void);
 void (*gBattleMainFunc)(void);
@@ -667,25 +667,25 @@ const u8 gTypeEffectiveness_GenVI[366] = //Gen 6 type matchup, with fairy type a
 
 const u8 gTypeNames[NUMBER_OF_MON_TYPES][TYPE_NAME_LENGTH + 1] =
 {
-    [TYPE_NORMAL] = _("NORMAL"),
-    [TYPE_FIGHTING] = _("FIGHT"),
-    [TYPE_FLYING] = _("FLYING"),
-    [TYPE_POISON] = _("POISON"),
-    [TYPE_GROUND] = _("GROUND"),
-    [TYPE_ROCK] = _("ROCK"),
-    [TYPE_BUG] = _("BUG"),
-    [TYPE_GHOST] = _("GHOST"),
-    [TYPE_STEEL] = _("STEEL"),
+    [TYPE_NORMAL] = _("Normal"),
+    [TYPE_FIGHTING] = _("Fight"),
+    [TYPE_FLYING] = _("Flying"),
+    [TYPE_POISON] = _("Poison"),
+    [TYPE_GROUND] = _("Ground"),
+    [TYPE_ROCK] = _("Rock"),
+    [TYPE_BUG] = _("Bug"),
+    [TYPE_GHOST] = _("Ghost"),
+    [TYPE_STEEL] = _("Steel"),
     [TYPE_MYSTERY] = _("???"),
-    [TYPE_FIRE] = _("FIRE"),
-    [TYPE_WATER] = _("WATER"),
-    [TYPE_GRASS] = _("GRASS"),
-    [TYPE_ELECTRIC] = _("ELECTR"),
-    [TYPE_PSYCHIC] = _("PSYCHC"),
-    [TYPE_ICE] = _("ICE"),
-    [TYPE_DRAGON] = _("DRAGON"),
-    [TYPE_DARK] = _("DARK"),
-    [TYPE_FAIRY] = _("FAIRY"),
+    [TYPE_FIRE] = _("Fire"),
+    [TYPE_WATER] = _("Water"),
+    [TYPE_GRASS] = _("Grass"),
+    [TYPE_ELECTRIC] = _("Electr"),
+    [TYPE_PSYCHIC] = _("Psychc"),
+    [TYPE_ICE] = _("Ice"),
+    [TYPE_DRAGON] = _("Dragon"),
+    [TYPE_DARK] = _("Dark"),
+    [TYPE_FAIRY] = _("Fairy"),
 };
 
 // This is a factor in how much money you get for beating a trainer.
@@ -913,7 +913,7 @@ static void CB2_InitBattleInternal(void)
     LoadBattleTextboxAndBackground();
     ResetSpriteData();
     ResetTasks();
-    if (gSaveBlock2Ptr->optionsFastIntro == 1)
+    if ((gSaveBlock2Ptr->optionsFastIntro == 1) || (gBattleTypeFlags & BATTLE_TYPE_MULTI && gBattleTypeFlags & BATTLE_TYPE_INGAME_PARTNER))
     {
         DrawBattleEntryBackground();
     }
@@ -4031,7 +4031,7 @@ static void BattleIntroDrawTrainersOrMonsSprites(void)
                                       | BATTLE_TYPE_RECORDED_LINK
                                       | BATTLE_TYPE_TRAINER_HILL)))
             {
-                HandleSetPokedexFlag(SpeciesToNationalPokedexNum(gBattleMons[gActiveBattler].species), FLAG_SET_SEEN, gBattleMons[gActiveBattler].personality);
+                HandleSetPokedexFlag(SpeciesToNationalPokedexNum(gBattleMons[gActiveBattler].species), FLAG_SET_SEEN, gBattleMons[gActiveBattler].personality, gBattleMons[gActiveBattler].otId);
             }
         }
         else
@@ -4044,7 +4044,7 @@ static void BattleIntroDrawTrainersOrMonsSprites(void)
                                       | BATTLE_TYPE_RECORDED_LINK
                                       | BATTLE_TYPE_TRAINER_HILL)))
                 {
-                    HandleSetPokedexFlag(SpeciesToNationalPokedexNum(gBattleMons[gActiveBattler].species), FLAG_SET_SEEN, gBattleMons[gActiveBattler].personality);
+                    HandleSetPokedexFlag(SpeciesToNationalPokedexNum(gBattleMons[gActiveBattler].species), FLAG_SET_SEEN, gBattleMons[gActiveBattler].personality, gBattleMons[gActiveBattler].otId);
                 }
                 BtlController_EmitLoadMonSprite(BUFFER_A);
                 MarkBattlerForControllerExec(gActiveBattler);
@@ -4157,11 +4157,23 @@ static void BattleIntroPrintTrainerWantsToBattle(void)
     }
 }
 
+static void BattleIntroSafariQuickRun(void);
+
+#define RUN_HOLD_FRAMES 30  // Frames button B needs to be hold in order to run away from battle
+
 static void BattleIntroPrintWildMonAttacked(void)
 {
     if (gBattleControllerExecFlags == 0)
     {
-        if ((gSaveBlock2Ptr->optionsRunType == 1) || (gSaveBlock2Ptr->optionsRunType == 3))
+        if (gBattleTypeFlags & BATTLE_TYPE_SAFARI)
+        {
+            // Safari Zone: route to dedicated handler that bypasses escape checks
+            if ((gSaveBlock2Ptr->optionsRunType == 1) || (gSaveBlock2Ptr->optionsRunType == 3))
+                gBattleMainFunc = BattleIntroSafariQuickRun;
+            else
+                gBattleMainFunc = BattleIntroPrintPlayerSendsOut;
+        }
+        else if ((gSaveBlock2Ptr->optionsRunType == 1) || (gSaveBlock2Ptr->optionsRunType == 3))
             gBattleMainFunc = BattleIntroQuickRun;
         else
             gBattleMainFunc = BattleIntroPrintPlayerSendsOut;
@@ -4169,7 +4181,54 @@ static void BattleIntroPrintWildMonAttacked(void)
     }
 }
 
-#define RUN_HOLD_FRAMES 30  // Frames button B needs to be hold in order to run away from battle
+// In the Safari Zone, running is always allowed — skip IsRunningFromBattleImpossible
+// and TryRunFromBattle entirely (both rely on gBattleMons which is zeroed for Safari).
+static void BattleIntroSafariQuickRun(void)
+{
+    if (gSaveBlock2Ptr->optionsRunType == 1)
+    {
+        if (gBattleControllerExecFlags == 0)
+        {
+            if ((JOY_HELD(R_BUTTON)) && (JOY_HELD(L_BUTTON)))
+            {
+                PlaySE(SE_FLEE);
+                gBattlerAttacker = gBattlerByTurnOrder[gCurrentTurnActionNumber];
+                gBattleOutcome = B_OUTCOME_RAN;
+                gBattleMainFunc = HandleEndTurn_RanFromBattle;
+                return;
+            }
+            gBattleMainFunc = BattleIntroPrintPlayerSendsOut;
+        }
+    }
+    else if (gSaveBlock2Ptr->optionsRunType == 3)
+    {
+        static u8 sSafariRunHoldCounter = 0;
+
+        if (gBattleControllerExecFlags == 0)
+        {
+            if (JOY_HELD(B_BUTTON))
+            {
+                if (sSafariRunHoldCounter < 0xFF)
+                    sSafariRunHoldCounter++;
+
+                if (sSafariRunHoldCounter < RUN_HOLD_FRAMES)
+                    return;
+
+                sSafariRunHoldCounter = 0;
+                PlaySE(SE_FLEE);
+                gBattlerAttacker = gBattlerByTurnOrder[gCurrentTurnActionNumber];
+                gBattleOutcome = B_OUTCOME_RAN;
+                gBattleMainFunc = HandleEndTurn_RanFromBattle;
+                return;
+            }
+            else
+            {
+                sSafariRunHoldCounter = 0;
+                gBattleMainFunc = BattleIntroPrintPlayerSendsOut;
+            }
+        }
+    }
+}
 
 static void BattleIntroQuickRun(void)
 {
@@ -4331,7 +4390,7 @@ static void BattleIntroRecordMonsToDex(void)
                                       | BATTLE_TYPE_RECORDED_LINK
                                       | BATTLE_TYPE_TRAINER_HILL)))
             {
-                HandleSetPokedexFlag(SpeciesToNationalPokedexNum(gBattleMons[gActiveBattler].species), FLAG_SET_SEEN, gBattleMons[gActiveBattler].personality);
+                HandleSetPokedexFlag(SpeciesToNationalPokedexNum(gBattleMons[gActiveBattler].species), FLAG_SET_SEEN, gBattleMons[gActiveBattler].personality, gBattleMons[gActiveBattler].otId);
             }
         }
         gBattleMainFunc = BattleIntroPrintPlayerSendsOut;
@@ -4853,28 +4912,17 @@ static void HandleTurnActionSelectionState(void)
                     }
                     break;
                 case B_ACTION_USE_ITEM:
-                #if TX_DEBUG_SYSTEM_ENABLE == TRUE
                     if (FlagGet(FLAG_SYS_NO_BAG_USE) || gBattleTypeFlags & (BATTLE_TYPE_LINK
                                             | BATTLE_TYPE_FRONTIER_NO_PYRAMID
                                             | BATTLE_TYPE_EREADER_TRAINER
-                                            | BATTLE_TYPE_RECORDED_LINK))
+                                            | BATTLE_TYPE_RECORDED_LINK) 
+                                            || ((gItemLimit >= 4) && (gSaveBlock2Ptr->optionsDifficulty == 2) && (gBattleTypeFlags & BATTLE_TYPE_NORMAL_BATTLES)))
                     {
                         RecordedBattle_ClearBattlerAction(gActiveBattler, 1);
-                        gSelectionBattleScripts[gActiveBattler] = BattleScript_ActionSelectionItemsCantBeUsed;
-                        gBattleCommunication[gActiveBattler] = STATE_SELECTION_SCRIPT;
-                        *(gBattleStruct->selectionScriptFinished + gActiveBattler) = FALSE;
-                        *(gBattleStruct->stateIdAfterSelScript + gActiveBattler) = STATE_BEFORE_ACTION_CHOSEN;
-                        return;
-                    }
-                #endif
-
-                    if (gBattleTypeFlags & (BATTLE_TYPE_LINK
-                                            | BATTLE_TYPE_FRONTIER_NO_PYRAMID
-                                            | BATTLE_TYPE_EREADER_TRAINER
-                                            | BATTLE_TYPE_RECORDED_LINK))
-                    {
-                        RecordedBattle_ClearBattlerAction(gActiveBattler, 1);
-                        gSelectionBattleScripts[gActiveBattler] = BattleScript_ActionSelectionItemsCantBeUsed;
+                        if ((gItemLimit >= 4) && (gSaveBlock2Ptr->optionsDifficulty == 2) && (gBattleTypeFlags & BATTLE_TYPE_NORMAL_BATTLES))
+                            gSelectionBattleScripts[gActiveBattler] = BattleScript_ActionSelectionFourItemsUsed;
+                        else
+                            gSelectionBattleScripts[gActiveBattler] = BattleScript_ActionSelectionItemsCantBeUsed;
                         gBattleCommunication[gActiveBattler] = STATE_SELECTION_SCRIPT;
                         *(gBattleStruct->selectionScriptFinished + gActiveBattler) = FALSE;
                         *(gBattleStruct->stateIdAfterSelScript + gActiveBattler) = STATE_BEFORE_ACTION_CHOSEN;
@@ -4884,7 +4932,8 @@ static void HandleTurnActionSelectionState(void)
                     {
                         BtlController_EmitChooseItem(BUFFER_A, gBattleStruct->battlerPartyOrders[gActiveBattler]);
                         MarkBattlerForControllerExec(gActiveBattler);
-                    }
+                        gItemLimit++;
+                       }
                     break;
                 case B_ACTION_SWITCH:
                     *(gBattleStruct->battlerPartyIndexes + gActiveBattler) = gBattlerPartyIndexes[gActiveBattler];
@@ -5633,6 +5682,7 @@ static void RunTurnActionsFunctions(void)
 static void HandleEndTurn_BattleWon(void)
 {
     gCurrentActionFuncId = 0;
+    gItemLimit = 0;
 
     if (gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_RECORDED_LINK))
     {
@@ -5793,6 +5843,7 @@ static void HandleEndTurn_BattleWon(void)
 static void HandleEndTurn_BattleLost(void)
 {
     gCurrentActionFuncId = 0;
+    gItemLimit = 0;
 
     if (gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_RECORDED_LINK))
     {
@@ -5829,6 +5880,7 @@ static void HandleEndTurn_BattleLost(void)
 static void HandleEndTurn_RanFromBattle(void)
 {
     gCurrentActionFuncId = 0;
+    gItemLimit = 0;
 
     if (gBattleTypeFlags & BATTLE_TYPE_FRONTIER && gBattleTypeFlags & BATTLE_TYPE_TRAINER)
     {
@@ -5863,6 +5915,7 @@ static void HandleEndTurn_RanFromBattle(void)
 static void HandleEndTurn_MonFled(void)
 {
     gCurrentActionFuncId = 0;
+    gItemLimit = 0;
 
     PREPARE_MON_NICK_BUFFER(gBattleTextBuff1, gBattlerAttacker, gBattlerPartyIndexes[gBattlerAttacker]);
     gBattlescriptCurrInstr = BattleScript_WildMonFled;
@@ -5873,6 +5926,7 @@ static void HandleEndTurn_MonFled(void)
 static void HandleEndTurn_FinishBattle(void)
 {
     u8 j;
+    gItemLimit = 0;
     if (gCurrentActionFuncId == B_ACTION_TRY_FINISH || gCurrentActionFuncId == B_ACTION_FINISHED)
     {
         if (gSaveBlock1Ptr->tx_Challenges_Mirror && !gSaveBlock1Ptr->tx_Challenges_Mirror_Thief && (gBattleTypeFlags & BATTLE_TYPE_TRAINER || gBattleTypeFlags & BATTLE_TYPE_DOUBLE))

@@ -6428,7 +6428,7 @@ s32 CalculateBaseDamage(struct BattlePokemon *attacker, struct BattlePokemon *de
                     spAttack = (spAttack * (attackerHoldEffectParam + 100)) / 100;
                 break;
             }
-        if (gSaveBlock2Ptr->optionStyle == 0)
+        else if (gSaveBlock2Ptr->optionStyle == 0)
             if (attackerHoldEffect == sHoldEffectToType[i][0]
                 && type == sHoldEffectToType[i][1])
             {
@@ -6553,11 +6553,15 @@ s32 CalculateBaseDamage(struct BattlePokemon *attacker, struct BattlePokemon *de
     }
     // Apply abilities / field sports
     if (gSaveBlock2Ptr->optionStyle == 0)
+    {
         if (defender->ability == ABILITY_THICK_FAT && (type == TYPE_FIRE || type == TYPE_ICE))
             gBattleMovePower /= 2;
-    if (gSaveBlock2Ptr->optionStyle == 1)
+    }
+    else if (gSaveBlock2Ptr->optionStyle == 1)
+    {
         if (defender->ability == ABILITY_THICK_FAT && (type == TYPE_FIRE || type == TYPE_ICE))
             spAttack /= 2;
+    }
     if ((defender->ability != ABILITY_NONE) 
     && (gSaveBlock2Ptr->optionsDifficulty == 2) 
     && (side == B_SIDE_PLAYER) 
@@ -6773,6 +6777,7 @@ s32 CalculateBaseDamage(struct BattlePokemon *attacker, struct BattlePokemon *de
     if (gBattleMoves[gCurrentMove].effect == EFFECT_EXPLOSION)
         defense /= 2;
     if (gSaveBlock2Ptr->optionStyle == 0)
+    {
         if (IS_MOVE_PHYSICAL(gCurrentMove))
         {
             if (gCritMultiplier == 2)
@@ -6824,7 +6829,9 @@ s32 CalculateBaseDamage(struct BattlePokemon *attacker, struct BattlePokemon *de
             if (damage == 0)
                 damage = 1;
         }
-    if (gSaveBlock2Ptr->optionStyle == 1)
+    }
+    else if (gSaveBlock2Ptr->optionStyle == 1)
+    {
         if (IS_TYPE_PHYSICAL(type))
         {
             if (gCritMultiplier == 2)
@@ -6876,11 +6883,13 @@ s32 CalculateBaseDamage(struct BattlePokemon *attacker, struct BattlePokemon *de
             if (damage == 0)
                 damage = 1;
         }
-    
+    }
+
     if (type == TYPE_MYSTERY)
         damage = 0; // is ??? type. does 0 damage.
 
     if (gSaveBlock2Ptr->optionStyle == 0)
+    {
         if (IS_MOVE_SPECIAL(gCurrentMove))
         {
             if (gCritMultiplier == 2)
@@ -6924,8 +6933,9 @@ s32 CalculateBaseDamage(struct BattlePokemon *attacker, struct BattlePokemon *de
             if ((gBattleTypeFlags & BATTLE_TYPE_DOUBLE) && gBattleMoves[move].target == MOVE_TARGET_BOTH && CountAliveMonsInBattle(BATTLE_ALIVE_DEF_SIDE) == 2)
                 damage /= 2;
         }
-
-    if (gSaveBlock2Ptr->optionStyle == 1)
+    }
+    else if (gSaveBlock2Ptr->optionStyle == 1)
+    {
         if (IS_TYPE_SPECIAL(type))
         {
             if (gCritMultiplier == 2)
@@ -7009,9 +7019,11 @@ s32 CalculateBaseDamage(struct BattlePokemon *attacker, struct BattlePokemon *de
 
             return damage + 2;
         }
+    }
 
     // Are effects of weather negated with cloud nine or air lock
     if (gSaveBlock2Ptr->optionStyle == 0)
+    {
         if (WEATHER_HAS_EFFECT2)
         {
             // Rain weakens Fire, boosts Water
@@ -7050,6 +7062,7 @@ s32 CalculateBaseDamage(struct BattlePokemon *attacker, struct BattlePokemon *de
             damage = (15 * damage) / 10;
 
         return damage + 2;
+    }
 }
 
 u8 CountAliveMonsInBattle(u8 caseId)
@@ -10485,6 +10498,21 @@ u16 GetBattleBGM(void)
         return MUS_VS_REGI;
     else if (gBattleTypeFlags & (BATTLE_TYPE_LINK | BATTLE_TYPE_RECORDED_LINK))
         return MUS_VS_TRAINER;
+    else if (gBattleTypeFlags & BATTLE_TYPE_ROAMER)
+    {
+        // Distinguish which roamer we just ran into.
+        // Enemy party should already be populated for the encounter.
+        u16 species = GetMonData(&gEnemyParty[0], MON_DATA_SPECIES);
+        switch (species)
+        {
+        case SPECIES_LATIOS:
+        case SPECIES_LATIAS:
+            return MUS_BW_VS_LEGEND;
+        default:
+            // Fallback to existing behavior if species couldn't be read.
+            return MUS_BW_VS_LEGEND;
+        }
+    }
     else if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
     {
         u8 trainerClass;
@@ -11583,6 +11611,13 @@ void StopPokemonAnimationDelayTask(void)
         DestroyTask(delayTaskId);
 }
 
+void StopFrontSpriteAnimationDelayTask(void)
+{
+    u8 delayTaskId = FindTaskIdByFunc(Task_AnimateAfterDelay);
+    if (delayTaskId != TASK_NONE)
+        DestroyTask(delayTaskId);
+}
+
 void BattleAnimateBackSprite(struct Sprite *sprite, u16 species)
 {
     if (gSaveBlock2Ptr->optionsBattleSceneOff == 1)
@@ -11665,7 +11700,7 @@ u16 PlayerGenderToFrontTrainerPicId(u8 playerGender)
         return FacilityClassToPicIndex(FACILITY_CLASS_BRENDAN);
 }
 
-void HandleSetPokedexFlag(u16 nationalNum, u8 caseId, u32 personality)
+void HandleSetPokedexFlag(u16 nationalNum, u8 caseId, u32 personality, u32 otId)
 {
     u8 getFlagCaseId = (caseId == FLAG_SET_SEEN) ? FLAG_GET_SEEN : FLAG_GET_CAUGHT;
     if (!GetSetPokedexFlag(nationalNum, getFlagCaseId)) // don't set if it's already set
@@ -11676,6 +11711,9 @@ void HandleSetPokedexFlag(u16 nationalNum, u8 caseId, u32 personality)
         if (NationalPokedexNumToSpecies(nationalNum) == SPECIES_SPINDA)
             gSaveBlock2Ptr->pokedex.spindaPersonality = personality;
     }
+    // Always check shininess regardless of whether this is a first sighting
+    if (IsPersonalityShiny(otId, personality))
+        SetShinySeenFlag(nationalNum);
 }
 
 const u8 *GetTrainerClassNameFromId(u16 trainerId)

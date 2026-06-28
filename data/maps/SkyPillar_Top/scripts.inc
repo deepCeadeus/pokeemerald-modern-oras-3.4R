@@ -53,7 +53,7 @@ SkyPillar_Top_EventScript_RayquazaNormal::
 	playmoncry SPECIES_RAYQUAZA, CRY_MODE_ENCOUNTER
 	delay 40
 	waitmoncry
-	setwildbattle SPECIES_RAYQUAZA, 70
+	seteventmon SPECIES_RAYQUAZA, 70
 	setflag FLAG_SYS_CTRL_OBJ_DELETE
 	special BattleSetup_StartLegendaryBattle
 	waitstate
@@ -72,7 +72,7 @@ SkyPillar_Top_EventScript_RayquazaHard::
 	playmoncry SPECIES_RAYQUAZA, CRY_MODE_ENCOUNTER
 	delay 40
 	waitmoncry
-	setwildbattle SPECIES_RAYQUAZA, 50
+	seteventmon SPECIES_RAYQUAZA, 50
 	setflag FLAG_SYS_CTRL_OBJ_DELETE
 	call_if_set FLAG_DIFFICULTY_HARD, SkyPillar_Top_EventScript_RayquazaHard_Stats
 	special BattleSetup_StartLegendaryBattle
@@ -93,7 +93,7 @@ SkyPillar_Top_EventScript_RayquazaHard_Stats::
 	setvar VAR_0x8002, 150 @DEF
 	setvar VAR_0x8003, 170 @SPD
 	setvar VAR_0x8005, 240 @SP. ATK
-	setvar VAR_0x8006, 150 @SP. ATK
+	setvar VAR_0x8006, 150 @SP. DEF
 	special SetHpStat
 	special SetAtkStat
 	special SetDefStat
@@ -222,5 +222,5 @@ SkyPillar_Top_Movement_CameraPanDown:
 	step_end
 
 SkyPillar_Top_Text_RayquazaFlewOff:
-	.string "The awakened RAYQUAZA flew off…$"
+	.string "The awakened Rayquaza flew off…$"
 

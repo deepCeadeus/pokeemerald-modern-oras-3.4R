@@ -227,41 +227,41 @@ static const struct WindowTemplate sStandardBattleWindowTemplates[] =
         .paletteNum = 5,
         .baseBlock = 0x0330,
     },
-    [B_WIN_PP] = {
+    [B_WIN_MOVE_TYPE_ICON] = {
         .bg = 0,
-        .tilemapLeft = 23,
-        .tilemapTop = 55,
-        .width = 2,
+        .tilemapLeft = 21,  //21 is farthest left on the screen
+        .tilemapTop = 55, //55 is first row
+        .width = 4,
         .height = 2,
-        .paletteNum = 5,
+        .paletteNum = 13,
         .baseBlock = 0x0290,
     },
     [B_WIN_PSS_ICON] = {
-        .bg = 0,
-        .tilemapLeft = 21,
-        .tilemapTop = 55,
-        .width = 2,
-        .height = 2,
-        .paletteNum = 10,
-        .baseBlock = 0x0294,
-    },
-    [B_WIN_PP_REMAINING] = {
         .bg = 0,
         .tilemapLeft = 25,
         .tilemapTop = 55,
         .width = 4,
         .height = 2,
-        .paletteNum = 5,
-        .baseBlock = 0x0298,
+        .paletteNum = 10,
+        .baseBlock = 0x02B0,
     },
-    [B_WIN_MOVE_TYPE] = {
+    [B_WIN_PP_REMAINING] = {
         .bg = 0,
         .tilemapLeft = 21,
-        .tilemapTop = 57,
-        .width = 8,
+        .tilemapTop = 57, //57 is second row
+        .width = 4,
         .height = 2,
         .paletteNum = 5,
-        .baseBlock = 0x02a0,
+        .baseBlock = 0x02F0,
+    },
+	[B_WIN_STAB] = {
+        .bg = 0,
+        .tilemapLeft = 28,
+        .tilemapTop = 57,
+        .width = 1,
+        .height = 2,
+        .paletteNum = 5,
+        .baseBlock = 0x02A4,
     },
     [B_WIN_SWITCH_PROMPT] = {
         .bg = 0,
@@ -380,29 +380,29 @@ static const struct WindowTemplate sStandardBattleWindowTemplates[] =
         .paletteNum = 0,
         .baseBlock = 0x00b0,
     },
-    [24] = { // super effective
+    [B_WIN_EFFECTIVENESS_UP] = { //Super Effective
         .bg = 0,
-        .tilemapLeft = 21,
+        .tilemapLeft = 26,
         .tilemapTop = 57,
-        .width = 8,
+        .width = 2, //Shrunk from 8 to 4 since it'll just be an icon
         .height = 2,
         .paletteNum = 5,
         .baseBlock = 0x02a0,
     },
-    [25] = { // not very effective
+	[B_WIN_EFFECTIVENESS_DOWN] = { //Not Very Effective
         .bg = 0,
-        .tilemapLeft = 21,
+        .tilemapLeft = 26,
         .tilemapTop = 57,
-        .width = 8,
+        .width = 2,
         .height = 2,
         .paletteNum = 5,
         .baseBlock = 0x02a0,
     },
-    [26] = { // no effect
+	[B_WIN_EFFECTIVENESS_NONE] = { //No Effect
         .bg = 0,
-        .tilemapLeft = 21,
+        .tilemapLeft = 26,
         .tilemapTop = 57,
-        .width = 8,
+        .width = 2,
         .height = 2,
         .paletteNum = 5,
         .baseBlock = 0x02a0,
@@ -484,41 +484,41 @@ static const struct WindowTemplate sBattleArenaWindowTemplates[] =
         .paletteNum = 5,
         .baseBlock = 0x0330,
     },
-    [B_WIN_PP] = {
+    [B_WIN_MOVE_TYPE_ICON] = {
         .bg = 0,
-        .tilemapLeft = 23,
-        .tilemapTop = 55,
-        .width = 2,
+        .tilemapLeft = 21,  //21 is farthest left on the screen
+        .tilemapTop = 55, //55 is first row
+        .width = 4,
         .height = 2,
-        .paletteNum = 5,
+        .paletteNum = 13,
         .baseBlock = 0x0290,
     },
     [B_WIN_PSS_ICON] = {
-        .bg = 0,
-        .tilemapLeft = 21,
-        .tilemapTop = 55,
-        .width = 2,
-        .height = 2,
-        .paletteNum = 10,
-        .baseBlock = 0x0294,
-    },
-    [B_WIN_PP_REMAINING] = {
         .bg = 0,
         .tilemapLeft = 25,
         .tilemapTop = 55,
         .width = 4,
         .height = 2,
-        .paletteNum = 5,
-        .baseBlock = 0x0298,
+        .paletteNum = 10,
+        .baseBlock = 0x02B0,
     },
-    [B_WIN_MOVE_TYPE] = {
+    [B_WIN_PP_REMAINING] = {
         .bg = 0,
         .tilemapLeft = 21,
-        .tilemapTop = 57,
-        .width = 8,
+        .tilemapTop = 57, //57 is second row
+        .width = 4,
         .height = 2,
         .paletteNum = 5,
-        .baseBlock = 0x02a0,
+        .baseBlock = 0x02F0,
+    },
+	[B_WIN_STAB] = {
+        .bg = 0,
+        .tilemapLeft = 28,
+        .tilemapTop = 57,
+        .width = 1,
+        .height = 2,
+        .paletteNum = 5,
+        .baseBlock = 0x02A4,
     },
     [B_WIN_SWITCH_PROMPT] = {
         .bg = 0,
@@ -637,29 +637,29 @@ static const struct WindowTemplate sBattleArenaWindowTemplates[] =
         .paletteNum = 0,
         .baseBlock = 0x00b0,
     },
-    [24] = { // super effective
+    [B_WIN_EFFECTIVENESS_UP] = { //Super Effective
         .bg = 0,
-        .tilemapLeft = 21,
+        .tilemapLeft = 26,
         .tilemapTop = 57,
-        .width = 8,
+        .width = 2, //Shrunk from 8 to 4 since it'll just be an icon
         .height = 2,
         .paletteNum = 5,
         .baseBlock = 0x02a0,
     },
-    [25] = { // not very effective
+	[B_WIN_EFFECTIVENESS_DOWN] = { //Not Very Effective
         .bg = 0,
-        .tilemapLeft = 21,
+        .tilemapLeft = 26,
         .tilemapTop = 57,
-        .width = 8,
+        .width = 2,
         .height = 2,
         .paletteNum = 5,
         .baseBlock = 0x02a0,
     },
-    [26] = { // no effect
+	[B_WIN_EFFECTIVENESS_NONE] = { //No Effect
         .bg = 0,
-        .tilemapLeft = 21,
+        .tilemapLeft = 26,
         .tilemapTop = 57,
-        .width = 8,
+        .width = 2,
         .height = 2,
         .paletteNum = 5,
         .baseBlock = 0x02a0,
@@ -944,8 +944,8 @@ void DrawMainBattleBackground(void)
         }
         else
         {
-            LZDecompressVram(gBattleTerrainTiles_Building_2, (void *)(BG_CHAR_ADDR(2)));
-            LZDecompressVram(gBattleTerrainTilemap_Building_2, (void *)(BG_SCREEN_ADDR(26)));
+            LZDecompressVram(gBattleTerrainTiles_Frontier_2, (void *)(BG_CHAR_ADDR(2)));
+            LZDecompressVram(gBattleTerrainTilemap_Frontier_2, (void *)(BG_SCREEN_ADDR(26)));
             LoadCompressedPalette(gBattleTerrainPalette_Frontier_2, BG_PLTT_ID(2), 3 * PLTT_SIZE_4BPP);
         }
     }
@@ -1260,8 +1260,8 @@ void DrawMainBattleBackground(void)
             }
             else
             {
-                LZDecompressVram(gBattleTerrainTiles_Building_2, (void *)(BG_CHAR_ADDR(2)));
-                LZDecompressVram(gBattleTerrainTilemap_Building_2, (void *)(BG_SCREEN_ADDR(26)));
+                LZDecompressVram(gBattleTerrainTiles_Frontier_2, (void *)(BG_CHAR_ADDR(2)));
+                LZDecompressVram(gBattleTerrainTilemap_Frontier_2, (void *)(BG_SCREEN_ADDR(26)));
                 LoadCompressedPalette(gBattleTerrainPalette_Frontier_2, BG_PLTT_ID(2), 3 * PLTT_SIZE_4BPP);
             }
             break;
@@ -1692,7 +1692,10 @@ bool8 LoadChosenBattleElement(u8 caseId)
                 LZDecompressVram(gBattleTerrainTiles_Stadium, (void *)(BG_CHAR_ADDR(2)));
                 break;
             case MAP_BATTLE_SCENE_FRONTIER:
+            if (gSaveBlock2Ptr->optionsNewBackgrounds == 0)
                 LZDecompressVram(gBattleTerrainTiles_Building, (void *)(BG_CHAR_ADDR(2)));
+            else
+                LZDecompressVram(gBattleTerrainTiles_Frontier_2, (void *)(BG_CHAR_ADDR(2)));
                 break;
             }
         }
@@ -1757,7 +1760,10 @@ bool8 LoadChosenBattleElement(u8 caseId)
                 LZDecompressVram(gBattleTerrainTilemap_Stadium, (void *)(BG_SCREEN_ADDR(26)));
                 break;
             case MAP_BATTLE_SCENE_FRONTIER:
+            if (gSaveBlock2Ptr->optionsNewBackgrounds == 0)
                 LZDecompressVram(gBattleTerrainTilemap_Building, (void *)(BG_SCREEN_ADDR(26)));
+            else
+                LZDecompressVram(gBattleTerrainTilemap_Frontier_2, (void *)(BG_SCREEN_ADDR(26)));
                 break;
             }
         }
@@ -1828,7 +1834,10 @@ bool8 LoadChosenBattleElement(u8 caseId)
                 LoadCompressedPalette(gBattleTerrainPalette_StadiumDrake, BG_PLTT_ID(2), 3 * PLTT_SIZE_4BPP);
                 break;
             case MAP_BATTLE_SCENE_FRONTIER:
+            if (gSaveBlock2Ptr->optionsNewBackgrounds == 0)
                 LoadCompressedPalette(gBattleTerrainPalette_Frontier, BG_PLTT_ID(2), 3 * PLTT_SIZE_4BPP);
+            else
+                LoadCompressedPalette(gBattleTerrainPalette_Frontier_2, BG_PLTT_ID(2), 3 * PLTT_SIZE_4BPP);
                 break;
             }
         }
