@@ -2238,29 +2238,29 @@ void TryShinyAnimation(u8 battler, struct Pokemon *mon)
     {
         shinyValue = GET_SHINY_VALUE(otId, personality);
 
-        if (gSaveBlock1Ptr->tx_Features_ShinyChance == 0) // 1/8192
+        if (gSaveBlock1Ptr->tx_Features_ShinyChance == 0) // 1/16
         {
             if (shinyValue < SHINY_ODDS)
                 isShiny = TRUE;
         }
-        else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 1) // 1/4096
+        else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 1) // 1/32
         {
-            if (shinyValue < 16)
+            if (shinyValue < 2048)
                 isShiny = TRUE;
         }
-        else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 2) // 1/2048
+        else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 2) // 1/64
         {
-            if (shinyValue < 32)
+            if (shinyValue < 1024)
                 isShiny = TRUE;
         }
-        else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 3) // 1/1024
+        else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 3) // 1/128
         {
-            if (shinyValue < 64)
+            if (shinyValue < 512)
                 isShiny = TRUE;
         }
-        else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 4) // 1/512
+        else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 4) // 1/256
         {
-            if (shinyValue < 128)
+            if (shinyValue < 256)
                 isShiny = TRUE;
         }
         

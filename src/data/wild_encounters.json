@@ -204,7 +204,7 @@
               {
                 "min_level": 3,
                 "max_level": 3,
-                "species": "SPECIES_ZIGZAGOON"
+                "species": "SPECIES_PIKACHU"
               },
               {
                 "min_level": 3,
@@ -4569,22 +4569,22 @@
               {
                 "min_level": 27,
                 "max_level": 27,
-                "species": "SPECIES_WOBBUFFET"
+                "species": "SPECIES_TAUROS"
               },
               {
                 "min_level": 25,
                 "max_level": 25,
-                "species": "SPECIES_PIKACHU"
-              },
-              {
-                "min_level": 27,
-                "max_level": 27,
-                "species": "SPECIES_TAUROS"
+                "species": "SPECIES_EEVEE"
               },
               {
                 "min_level": 27,
                 "max_level": 27,
                 "species": "SPECIES_SCYTHER"
+              },
+              {
+                "min_level": 27,
+                "max_level": 27,
+                "species": "SPECIES_EEVEE"
               },
               {
                 "min_level": 29,
@@ -13377,7 +13377,7 @@
               {
                 "min_level": 25,
                 "max_level": 25,
-                "species": "SPECIES_GIRAFARIG"
+                "species": "SPECIES_CHANSEY"
               },
               {
                 "min_level": 27,
@@ -13387,7 +13387,7 @@
               {
                 "min_level": 27,
                 "max_level": 27,
-                "species": "SPECIES_CHANSEY"
+                "species": "SPECIES_CROCONAW"
               },
               {
                 "min_level": 29,
@@ -13625,7 +13625,7 @@
               {
                 "min_level": 29,
                 "max_level": 29,
-                "species": "SPECIES_NATU"
+                "species": "SPECIES_KANGASKHAN"
               },
               {
                 "min_level": 29,
@@ -13635,7 +13635,7 @@
               {
                 "min_level": 27,
                 "max_level": 27,
-                "species": "SPECIES_KANGASKHAN"
+                "species": "SPECIES_NATU"
               },
               {
                 "min_level": 31,
@@ -13645,7 +13645,7 @@
               {
                 "min_level": 29,
                 "max_level": 29,
-                "species": "SPECIES_KANGASKHAN"
+                "species": "SPECIES_QUILAVA"
               }
             ]
           },
@@ -13878,7 +13878,7 @@
               {
                 "min_level": 29,
                 "max_level": 29,
-                "species": "SPECIES_TANGELA"
+                "species": "SPECIES_PINSIR"
               },
               {
                 "min_level": 29,
@@ -13888,7 +13888,7 @@
               {
                 "min_level": 27,
                 "max_level": 27,
-                "species": "SPECIES_PINSIR"
+                "species": "SPECIES_TANGELA"
               },
               {
                 "min_level": 31,
@@ -13898,7 +13898,7 @@
               {
                 "min_level": 29,
                 "max_level": 29,
-                "species": "SPECIES_PINSIR"
+                "species": "SPECIES_BAYLEEF"
               }
             ]
           },

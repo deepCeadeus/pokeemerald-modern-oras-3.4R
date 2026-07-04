@@ -1,49 +1,41 @@
 ChangeDeoxysFormNormal::
-	setvar 0x8000, SPECIES_DEOXYS_ATTACK
-	setvar 0x8001, SPECIES_DEOXYS_DEFENSE
-	setvar 0x8002, 0
-	setvar 0x8005, SPECIES_DEOXYS_SPEED
+	setvar 0x8000, SPECIES_DEOXYS
 	msgbox ChangeDeoxysForm_Text_NormalForm, MSGBOX_DEFAULT
 	closemessage
 	special CheckPkm
-	goto_if_eq VAR_RESULT, TRUE, ChangeDeoxysForm
-	goto_if_eq VAR_RESULT, FALSE, ChangeDeoxysForm_End_Nothing_Happened
+    	compare VAR_RESULT, FALSE
+    	goto_if_eq ChangeDeoxysForm_End_Nothing_Happened
+	goto ChangeDeoxysForm
 	end
 
 ChangeDeoxysFormDefense::
-	setvar 0x8000, SPECIES_DEOXYS_ATTACK
-	setvar 0x8001, 0
-	setvar 0x8002, SPECIES_DEOXYS
-	setvar 0x8005, SPECIES_DEOXYS_SPEED
+	setvar 0x8000, SPECIES_DEOXYS_DEFENSE
 	msgbox ChangeDeoxysForm_Text_DefenseForm, MSGBOX_DEFAULT
 	closemessage
 	special CheckPkm
-	goto_if_eq VAR_RESULT, TRUE, ChangeDeoxysForm
-	goto_if_eq VAR_RESULT, FALSE, ChangeDeoxysForm_End_Nothing_Happened
+    	compare VAR_RESULT, FALSE
+    	goto_if_eq ChangeDeoxysForm_End_Nothing_Happened
+	goto ChangeDeoxysForm
 	end
 
 ChangeDeoxysFormAttack::
-	setvar 0x8000, 0
-	setvar 0x8001, SPECIES_DEOXYS_DEFENSE
-	setvar 0x8002, SPECIES_DEOXYS
-	setvar 0x8005, SPECIES_DEOXYS_SPEED
+	setvar 0x8000, SPECIES_DEOXYS_ATTACK
 	msgbox ChangeDeoxysForm_Text_AttackForm, MSGBOX_DEFAULT
 	closemessage
 	special CheckPkm
-	goto_if_eq VAR_RESULT, TRUE, ChangeDeoxysForm
-	goto_if_eq VAR_RESULT, FALSE, ChangeDeoxysForm_End_Nothing_Happened
+    	compare VAR_RESULT, FALSE
+    	goto_if_eq ChangeDeoxysForm_End_Nothing_Happened
+	goto ChangeDeoxysForm
 	end
 
 ChangeDeoxysFormSpeed::
-	setvar 0x8000, SPECIES_DEOXYS_ATTACK
-	setvar 0x8001, SPECIES_DEOXYS_DEFENSE
-	setvar 0x8002, SPECIES_DEOXYS
-	setvar 0x8005, 0
+	setvar 0x8000, SPECIES_DEOXYS_SPEED
 	msgbox ChangeDeoxysForm_Text_SpeedForm, MSGBOX_DEFAULT
 	closemessage
 	special CheckPkm
-	goto_if_eq VAR_RESULT, TRUE, ChangeDeoxysForm
-	goto_if_eq VAR_RESULT, FALSE, ChangeDeoxysForm_End_Nothing_Happened
+    	compare VAR_RESULT, FALSE
+    	goto_if_eq ChangeDeoxysForm_End_Nothing_Happened
+	goto ChangeDeoxysForm
 	end
 
 ChangeDeoxysForm::

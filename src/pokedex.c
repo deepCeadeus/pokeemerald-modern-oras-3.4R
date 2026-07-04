@@ -4428,14 +4428,15 @@ bool8 IsPersonalityShiny(u32 otId, u32 personality)
     {
     case 0: // 1/8192
         return shinyValue < SHINY_ODDS;
-    case 1: // 1/4096
-        return shinyValue < 16;
-    case 2: // 1/2048
-        return shinyValue < 32;
-    case 3: // 1/1024
-        return shinyValue < 64;
     case 4: // 1/512
-        return shinyValue < 128;
+    case 1: // 1/32
+        return shinyValue < 2048;
+    case 2: // 1/64
+        return shinyValue < 1024;
+    case 3: // 1/128
+        return shinyValue < 512;
+    case 4: // 1/256
+        return shinyValue < 256;
     default:
         return shinyValue < SHINY_ODDS;
     }

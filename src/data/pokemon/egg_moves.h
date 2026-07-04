@@ -549,6 +549,7 @@ const u16 gEggMoves[] = {
               MOVE_SAFEGUARD,
               MOVE_BATON_PASS,
               MOVE_RAZOR_WIND,
+              MOVE_METAL_CLAW,
               MOVE_REVERSAL,
               MOVE_LIGHT_SCREEN,
               MOVE_ENDURE,
@@ -556,8 +557,12 @@ const u16 gEggMoves[] = {
 
     egg_moves(PINSIR,
               MOVE_FURY_ATTACK,
+              MOVE_FURY_CUTTER,
+              MOVE_METAL_CLAW,
+              MOVE_BUG_BUZZ,
               MOVE_QUICK_ATTACK,
               MOVE_FLAIL,
+              MOVE_LIGHT_SCREEN,
               MOVE_FALSE_SWIPE,
               MOVE_FAINT_ATTACK),
 
@@ -978,6 +983,7 @@ const u16 gEggMoves[] = {
               MOVE_BIDE,
               MOVE_DOUBLE_EDGE,
               MOVE_PURSUIT,
+              MOVE_METAL_CLAW,
               MOVE_REVENGE,
               MOVE_FLAIL,
               MOVE_FALSE_SWIPE),
@@ -1405,6 +1411,7 @@ const u16 gEggMoves[] = {
               MOVE_FLAIL,
               MOVE_EARTH_POWER,
               MOVE_FURY_CUTTER,
+              MOVE_METAL_CLAW,
               MOVE_QUICK_ATTACK,
               MOVE_GUST),
 

@@ -2976,6 +2976,7 @@ static const u8 sTyphlosionTutorLearnset[] =
     TUTOR(MOVE_SWAGGER),
     TUTOR(MOVE_SWIFT),
     TUTOR(MOVE_THUNDER_PUNCH),
+    TUTOR(MOVE_BLAST_BURN),
     0xFF,
 };
 
@@ -4011,10 +4012,11 @@ static const u8 sQwilfishTutorLearnset[] =
 
 static const u8 sScizorTutorLearnset[] =
 {
+    TUTOR(MOVE_BODY_SLAM),
     TUTOR(MOVE_COUNTER),
-    TUTOR(MOVE_DOUBLE_EDGE),
     TUTOR(MOVE_ENDURE),
     TUTOR(MOVE_FURY_CUTTER),
+    TUTOR(MOVE_MEGA_KICK),
     TUTOR(MOVE_MIMIC),
     TUTOR(MOVE_SLEEP_TALK),
     TUTOR(MOVE_SNORE),
@@ -4921,6 +4923,7 @@ static const u8 sBlazikenTutorLearnset[] =
     TUTOR(MOVE_SWIFT),
     TUTOR(MOVE_SWORDS_DANCE),
     TUTOR(MOVE_THUNDER_PUNCH),
+    TUTOR(MOVE_BLAST_BURN),
     0xFF,
 };
 

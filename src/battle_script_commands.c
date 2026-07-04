@@ -1152,8 +1152,8 @@ static void Cmd_accuracycheck(void)
             return;
         if (AccuracyCalcHelper(move))
             return;
-
-        if (gBattleMons[gBattlerTarget].status2 & STATUS2_FORESIGHT)
+//added keen eye to ignore evasion stages
+        if ((gBattleMons[gBattlerTarget].status2 & STATUS2_FORESIGHT) || (gBattleMons[gBattlerAttacker].ability == ABILITY_KEEN_EYE))
         {
             u8 acc = gBattleMons[gBattlerAttacker].statStages[STAT_ACC];
             buff = acc;
@@ -1303,7 +1303,9 @@ static void Cmd_critcalc(void)
                 + (gBattleMoves[gCurrentMove].effect == EFFECT_SKY_ATTACK)
                 + (gBattleMoves[gCurrentMove].effect == EFFECT_BLAZE_KICK)
                 + (gBattleMoves[gCurrentMove].effect == EFFECT_POISON_TAIL)
+                + (gBattleMoves[gCurrentMove].effect == EFFECT_RAZOR_WIND)
                 + (holdEffect == HOLD_EFFECT_SCOPE_LENS)
+                + (gBattleMons[gBattlerAttacker].ability == ABILITY_SUPER_LUCK)
                 + 2 * (holdEffect == HOLD_EFFECT_LUCKY_PUNCH && gBattleMons[gBattlerAttacker].species == SPECIES_CHANSEY)
                 + 2 * (holdEffect == HOLD_EFFECT_STICK && gBattleMons[gBattlerAttacker].species == SPECIES_FARFETCHD);
 
@@ -1350,6 +1352,26 @@ u8 CheckAbilityChangeMoveType(u16 move) // handles move type change
             moveType = TYPE_FAIRY;
         break;
         }
+        case ABILITY_DRAGONIZE:
+        {
+            moveType = TYPE_DRAGON;
+        break;
+        }
+        case ABILITY_MINDS_EYE:
+        {
+            moveType = TYPE_GHOST;
+        break;
+        }
+        case ABILITY_AERILATE:
+        {
+            moveType = TYPE_FLYING;
+        break;
+        }
+        case ABILITY_METAL_COAT:
+        {
+            moveType = TYPE_STEEL;
+        break;
+        }
         case ABILITY_FORECAST:
         {
             if (WEATHER_HAS_EFFECT && gBattleWeather & B_WEATHER_RAIN)
@@ -1381,6 +1403,26 @@ u8 DisplayMoveTypeChange(u16 move)
         case ABILITY_PIXILATE:
         {
             moveType = TYPE_FAIRY;
+        break;
+        }
+        case ABILITY_DRAGONIZE:
+        {
+            moveType = TYPE_DRAGON;
+        break;
+        }
+        case ABILITY_MINDS_EYE:
+        {
+            moveType = TYPE_GHOST;
+        break;
+        }
+        case ABILITY_AERILATE:
+        {
+            moveType = TYPE_FLYING;
+        break;
+        }
+        case ABILITY_METAL_COAT:
+        {
+            moveType = TYPE_STEEL;
         break;
         }
         case ABILITY_FORECAST:
@@ -1608,8 +1650,18 @@ static void Cmd_typecalc(void)
     // check stab
     if (IS_BATTLER_OF_TYPE(gBattlerAttacker, moveType))
     {
-        gBattleMoveDamage = gBattleMoveDamage * 15;
-        gBattleMoveDamage = gBattleMoveDamage / 10;
+    	if (gBattleMons[gBattlerAttacker].ability == ABILITY_ADAPTABILITY)
+    	{
+        	// Adaptability: 2.0x STAB
+        	gBattleMoveDamage = gBattleMoveDamage * 2;
+        	gBattleMoveDamage = gBattleMoveDamage / 1;
+    	}
+    	else
+    	{
+        	// Standard STAB: 1.5x
+        	gBattleMoveDamage = gBattleMoveDamage * 15;
+        	gBattleMoveDamage = gBattleMoveDamage / 10;
+    	}
     }
 
     if (gBattleMons[gBattlerTarget].ability == ABILITY_LEVITATE && moveType == TYPE_GROUND)
@@ -3786,7 +3838,8 @@ static void Cmd_getexp(void)
               | BATTLE_TYPE_FRONTIER
               | BATTLE_TYPE_SAFARI
               | BATTLE_TYPE_BATTLE_TOWER
-              | BATTLE_TYPE_EREADER_TRAINER)))
+              | BATTLE_TYPE_EREADER_TRAINER
+              | BATTLE_TYPE_SECRET_BASE)))
         {
             gBattleScripting.getexpState = 6; // goto last case
         }
@@ -4987,7 +5040,8 @@ static void Cmd_moveend(void)
              && gChosenMove != MOVE_STRUGGLE
              && (*choicedMoveAtk == MOVE_NONE || *choicedMoveAtk == MOVE_UNAVAILABLE))
             {
-                if (gChosenMove == MOVE_BATON_PASS && !(gMoveResultFlags & MOVE_RESULT_FAILED))
+                if ((gChosenMove == MOVE_BATON_PASS || gBattleMoves[gChosenMove].effect == EFFECT_HIT_ESCAPE)
+                    && !(gMoveResultFlags & MOVE_RESULT_FAILED))
                 {
                     gBattleScripting.moveendState++;
                     break;
@@ -5437,7 +5491,6 @@ static void Cmd_switchinanim(void)
                                  | BATTLE_TYPE_RECORDED_LINK
                                  | BATTLE_TYPE_TRAINER_HILL
                                  | BATTLE_TYPE_FRONTIER)))
-        HandleSetPokedexFlag(SpeciesToNationalPokedexNum(gBattleMons[gActiveBattler].species), FLAG_SET_SEEN, gBattleMons[gActiveBattler].personality, gBattleMons[gActiveBattler].otId);
 
     gAbsentBattlerFlags &= ~(gBitTable[gActiveBattler]);
 
@@ -7319,6 +7372,26 @@ static void Cmd_various(void)
     case VARIOUS_SAVE_BATTLER_ITEM:
         gBattleResources->battleHistory->heldItem[gActiveBattler] = gBattleMons[gActiveBattler].item;
         break;
+        
+    case VARIOUS_SUCKER_PUNCH_CHECK:
+	{
+    	u16 move =
+        	gBattleMons[gBattlerTarget]
+        	    .moves[gBattleStruct->chosenMovePositions[gBattlerTarget]];
+
+    	if (GetBattlerTurnOrderNum(gBattlerAttacker)
+        	    > GetBattlerTurnOrderNum(gBattlerTarget)
+        	|| gChosenActionByBattler[gBattlerTarget] != B_ACTION_USE_MOVE
+        	|| gBattleMoves[move].power == 0)
+    	{
+        	gBattleCommunication[0] = TRUE;
+    	}
+    	else
+    	{
+        	gBattleCommunication[0] = FALSE;
+    	}
+    	break;
+	}
     }
 
     gBattlescriptCurrInstr += 3;
@@ -7963,6 +8036,12 @@ static void Cmd_confuseifrepeatingattackends(void)
 
 static void Cmd_setmultihitcounter(void)
 {
+    if (gBattleMons[gBattlerAttacker].ability == ABILITY_SKILL_LINK)
+    {
+    	gMultiHitCounter = 5;
+    	gBattlescriptCurrInstr += 2;
+    	return;
+    }
     if (gBattlescriptCurrInstr[1])
     {
         gMultiHitCounter = gBattlescriptCurrInstr[1];
@@ -9411,7 +9490,7 @@ static void Cmd_furycuttercalc(void)
     {
         s32 i;
 
-        if (gDisableStructs[gBattlerAttacker].furyCutterCounter != 4)
+        if (gDisableStructs[gBattlerAttacker].furyCutterCounter != 3)
             gDisableStructs[gBattlerAttacker].furyCutterCounter++;
 
         gDynamicBasePower = gBattleMoves[gCurrentMove].power;

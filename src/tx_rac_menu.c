@@ -830,13 +830,13 @@ static const u8 sText_Description_Features_RTC_Type_RTC[]             = _("Use v
 static const u8 sText_Description_Features_RTC_Type_FakeRTC[]         = _("Use a fake Real Time Clock.\n1h in real life = 1 day in-game.");
 static const u8 sText_Description_Features_ItemDrop_On[]              = _("Wild {PKMN} will drop their hold item\nafter defeating them.");
 static const u8 sText_Description_Features_ItemDrop_Off[]             = _("Wild {PKMN} items will be only obtainable\nvia capture or Thief.");
-static const u8 sText_Description_Features_ShinyChance_8192[]         = _("Very low chance of Shiny encounter.\nDefault chance from Generation III.");
-static const u8 sText_Description_Features_ShinyChance_4096[]         = _("Low chance of Shiny encounter.\nDefault chance from Generation VI+.");
-static const u8 sText_Description_Features_ShinyChance_2048[]         = _("Decent chance of Shiny encounter.");
-static const u8 sText_Description_Features_ShinyChance_1024[]         = _("High chance of Shiny encounter.");
-static const u8 sText_Description_Features_ShinyChance_512[]          = _("Very high chance of Shiny encounter.");
-static const u8 sText_Description_Features_EasyFeebas_On[]            = _("Feebas is easier to catch and spawns\neverywhere in Route 119.");
-static const u8 sText_Description_Features_EasyFeebas_Off[]           = _("Feebas is encountered in random\nspots in Route 119.");
+static const u8 sText_Description_Features_ShinyChance_16[]         = _("Guaranteed Shiny Starter Included.\nPraise the Sun!.");
+static const u8 sText_Description_Features_ShinyChance_32[]         = _("Very high chance of SHINY encounter.\nAbout 3 Percent.");
+static const u8 sText_Description_Features_ShinyChance_64[]         = _("High chance of SHINY encounter.\nAbout 1.5 Percent");
+static const u8 sText_Description_Features_ShinyChance_128[]         = _("Good chance of SHINY encounter.\nLess than 1 Percent");
+static const u8 sText_Description_Features_ShinyChance_256[]          = _("Fair chance of SHINY encounter.\nLike 50th dexnav chain");
+static const u8 sText_Description_Features_EasyFeebas_On[]            = _("FEEBAS is easier to catch and spawns\neverywhere in ROUTE 119.");
+static const u8 sText_Description_Features_EasyFeebas_Off[]           = _("FEEBAS is encountered in random\nspots in ROUTE 119.");
 static const u8 sText_Description_Features_Unlimited_WT_On[]          = _("Enables a daily limit of 3\nWonderTrades. Recommended.");
 static const u8 sText_Description_Features_Unlimited_WT_Off[]         = _("WonderTrades have no daily limit.");
 static const u8 sText_Description_Features_FrontierBans_Unban[]       = _("All legendaries are allowed to\nparticipate in the Battle Frontier.");
@@ -849,7 +849,7 @@ static const u8 sText_Description_Features_Next[]                     = _("Conti
 static const u8 *const sOptionMenuItemDescriptionsFeatures[MENUITEM_FEATURES_COUNT][5] =
 {
     [MENUITEM_FEATURES_RTC_TYPE]              = {sText_Description_Features_RTC_Type_RTC,           sText_Description_Features_RTC_Type_FakeRTC,      sText_Empty,                                        sText_Empty,                                        sText_Empty},
-    [MENUITEM_FEATURES_SHINY_CHANCE]          = {sText_Description_Features_ShinyChance_8192,       sText_Description_Features_ShinyChance_4096,      sText_Description_Features_ShinyChance_2048,        sText_Description_Features_ShinyChance_1024,        sText_Description_Features_ShinyChance_512},
+    [MENUITEM_FEATURES_SHINY_CHANCE]          = {sText_Description_Features_ShinyChance_16,       sText_Description_Features_ShinyChance_32,      sText_Description_Features_ShinyChance_64,        sText_Description_Features_ShinyChance_128,        sText_Description_Features_ShinyChance_256},
     [MENUITEM_FEATURES_ITEM_DROP]             = {sText_Description_Features_ItemDrop_Off,           sText_Description_Features_ItemDrop_On,           sText_Empty,                                        sText_Empty,                                        sText_Empty},
     [MENUITEM_FEATURES_EASY_FEEBAS]           = {sText_Description_Features_EasyFeebas_Off,         sText_Description_Features_EasyFeebas_On,         sText_Empty,                                        sText_Empty,                                        sText_Empty},
     [MENUITEM_FEATURES_UNLIMITED_WT]          = {sText_Description_Features_Unlimited_WT_On,        sText_Description_Features_Unlimited_WT_Off,      sText_Empty,                                        sText_Empty,                                        sText_Empty},
@@ -2884,36 +2884,36 @@ static void DrawChoices_Challenges_PCHeal(int selection, int y)
     DrawOptionMenuChoice(sText_No, GetStringRightAlignXOffset(1, sText_On, 198), y, styles[1], active);
 }
 
-static const u8 sText_Challenges_ShinyChance_8192[]   = _("8192");
-static const u8 sText_Challenges_ShinyChance_4096[]   = _("4096");
-static const u8 sText_Challenges_ShinyChance_2048[]   = _("2048");
-static const u8 sText_Challenges_ShinyChance_1024[]   = _("1024");
-static const u8 sText_Challenges_ShinyChance_512[]    = _("512");
-static const u8 *const sText_Challenges_ShinyChance_Strings[] = {sText_Challenges_ShinyChance_8192,  sText_Challenges_ShinyChance_4096,  sText_Challenges_ShinyChance_2048,  sText_Challenges_ShinyChance_1024,  sText_Challenges_ShinyChance_512};
+static const u8 sText_Challenges_ShinyChance_16[]   = _("16");
+static const u8 sText_Challenges_ShinyChance_32[]   = _("32");
+static const u8 sText_Challenges_ShinyChance_64[]   = _("64");
+static const u8 sText_Challenges_ShinyChance_128[]   = _("128");
+static const u8 sText_Challenges_ShinyChance_256[]    = _("256");
+static const u8 *const sText_Challenges_ShinyChance_Strings[] = {sText_Challenges_ShinyChance_16,  sText_Challenges_ShinyChance_32,  sText_Challenges_ShinyChance_64,  sText_Challenges_ShinyChance_128,  sText_Challenges_ShinyChance_256};
 static void DrawChoices_Features_ShinyChance(int selection, int y)
 {
     bool8 active = CheckConditions(MENUITEM_FEATURES_SHINY_CHANCE);
     DrawChoices_Options_Five(sText_Challenges_ShinyChance_Strings, selection, y, active);
-
+    
     if (selection == 0)
     {
-        gSaveBlock1Ptr->tx_Features_ShinyChance = 0; // 1/8192
+        gSaveBlock1Ptr->tx_Features_ShinyChance = 0; // 1/16
     }
     else if (selection == 1)
     {
-        gSaveBlock1Ptr->tx_Features_ShinyChance = 1; // 1/4096 -> Gen VI
+        gSaveBlock1Ptr->tx_Features_ShinyChance = 1; // 1/32 
     }
     else if (selection == 2)
     {
-        gSaveBlock1Ptr->tx_Features_ShinyChance = 2; // 1/2048
+        gSaveBlock1Ptr->tx_Features_ShinyChance = 2; // 1/64
     }
     else if (selection == 3)
     {
-        gSaveBlock1Ptr->tx_Features_ShinyChance = 3; // 1/1024
+        gSaveBlock1Ptr->tx_Features_ShinyChance = 3; // 1/128
     }
     else //(selection == 4)
     {
-        gSaveBlock1Ptr->tx_Features_ShinyChance = 4; // 1/512
+        gSaveBlock1Ptr->tx_Features_ShinyChance = 4; // 1/256
     }
 }
 

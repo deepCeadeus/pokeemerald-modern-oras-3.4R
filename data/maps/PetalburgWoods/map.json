@@ -185,7 +185,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_ANABEL",
-      "x": 48,
+      "x": 47,
       "y": 12,
       "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_INVISIBLE",
@@ -224,7 +224,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_MON_BASE+SPECIES_CELEBI",
-      "x": 48,
+      "x": 47,
       "y": 11,
       "elevation": 0,
       "movement_type": "MOVEMENT_TYPE_INVISIBLE",

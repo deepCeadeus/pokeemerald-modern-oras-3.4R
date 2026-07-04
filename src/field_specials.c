@@ -4333,47 +4333,27 @@ u8 Script_TryGainNewFanFromCounter(void)
 
 // Changes a Deoxys' form if the following conditions are met:
 // -gSpecialVar_0x8004 is currently hosting a Deoxys form.
-// -The metatile behavior of the tile in front of the Player is MB_DEOXYS_FORM_NORMAL, MB_DEOXYS_FORM_ATTACK, MB_DEOXYS_FORM_DEFENSE or MB_DEOXYS_FORM_SPEED.
+// REMOVED MAR 19 2026-The metatile behavior of the tile in front of the Player is MB_DEOXYS_FORM_NORMAL, MB_DEOXYS_FORM_ATTACK, MB_DEOXYS_FORM_DEFENSE or MB_DEOXYS_FORM_SPEED.
 // If these conditions aren't met, gSpecialVar_Result is set to FALSE meaning Deoxys' form didn't change.
 bool16 TryChangeDeoxysForm(void)
 {
     u16 baseSpecies = GetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_SPECIES);
     u16 targetSpecies;
-    u8 metatileBehavior;
+    
 
     if (baseSpecies == SPECIES_DEOXYS
      || baseSpecies == SPECIES_DEOXYS_ATTACK
      || baseSpecies == SPECIES_DEOXYS_DEFENSE
      || baseSpecies == SPECIES_DEOXYS_SPEED)
     {
-        struct MapPosition position;
-        extern struct MapPosition gPlayerFacingPosition;
-        GetXYCoordsOneStepInFrontOfPlayer(&gPlayerFacingPosition.x, &gPlayerFacingPosition.y);
-        metatileBehavior = MapGridGetMetatileBehaviorAt(gPlayerFacingPosition.x, gPlayerFacingPosition.y);
-
-        switch (metatileBehavior)
-        {
-            case MB_DEOXYS_FORM_NORMAL:
-                targetSpecies = SPECIES_DEOXYS;
-                break;
-            case MB_DEOXYS_FORM_ATTACK:
-                targetSpecies = SPECIES_DEOXYS_ATTACK;
-                break;
-            case MB_DEOXYS_FORM_DEFENSE:
-                targetSpecies = SPECIES_DEOXYS_DEFENSE;
-                break;
-            case MB_DEOXYS_FORM_SPEED:
-                targetSpecies = SPECIES_DEOXYS_SPEED;
-                break;
-            default:
-                gSpecialVar_Result = FALSE;
-                return FALSE;
-        }
+        //NEW: Script controls the form
+        targetSpecies = gSpecialVar_0x8000;
 
         SetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_SPECIES, &targetSpecies);
         CalculateMonStats(&gPlayerParty[gSpecialVar_0x8004]);
+
         gSpecialVar_Result = TRUE;
-        return TRUE;
+        return TRUE;    
     }
 
     gSpecialVar_Result = FALSE;
@@ -4481,21 +4461,25 @@ void CheckPkm(void)
     u8 i;
     u16 species;
     struct Pokemon *pokemon;
+
+    gSpecialVar_Result = FALSE;
+
     for (i = 0; i < CalculatePlayerPartyCount(); i++)
     {
         pokemon = &gPlayerParty[i];
-        if (GetMonData(pokemon, MON_DATA_SANITY_HAS_SPECIES) && !GetMonData(pokemon, MON_DATA_IS_EGG))
+
+        if (GetMonData(pokemon, MON_DATA_SANITY_HAS_SPECIES)
+         && !GetMonData(pokemon, MON_DATA_IS_EGG))
         {
             species = GetMonData(pokemon, MON_DATA_SPECIES);
-            if ((species == gSpecialVar_0x8005) || (species == gSpecialVar_0x8000) || 
-            (species == gSpecialVar_0x8001) || (species == gSpecialVar_0x8002))
+
+            if (species == SPECIES_DEOXYS
+             || species == SPECIES_DEOXYS_ATTACK
+             || species == SPECIES_DEOXYS_DEFENSE
+             || species == SPECIES_DEOXYS_SPEED)
             {
                 gSpecialVar_Result = TRUE;
                 return;
-            }
-            else
-            {
-                gSpecialVar_Result = FALSE;
             }
         }
     }

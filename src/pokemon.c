@@ -77,6 +77,7 @@ static bool8 ShouldGetStatBadgeBoost(u16 flagId, u8 battlerId);
 static u16 GiveMoveToBoxMon(struct BoxPokemon *boxMon, u16 move);
 static bool8 ShouldSkipFriendshipChange(void);
 static u16 GetPreEvolution(u16 species);
+static bool8 CanEvolve(u16 species);
 
 EWRAM_DATA static u8 sLearningMoveTableID = 0;
 EWRAM_DATA u8 gPlayerPartyCount = 0;
@@ -5015,37 +5016,37 @@ void CreateBoxMon(struct BoxPokemon *boxMon, u16 species, u8 level, u8 fixedIV, 
                 value = Random32();
                 shinyValue = GET_SHINY_VALUE(value, personality);
             } while (shinyValue = 0);
-        else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 0) // 1/8192
+        else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 0) // 1/16
             do
             {
                 // Choose random OT IDs until one that results in a non-shiny Pokémon
                 value = Random32();
                 shinyValue = GET_SHINY_VALUE(value, personality);
             } while (shinyValue < SHINY_ODDS);
-        else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 1) // 1/4096
+        else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 1) // 1/32
             do
             {
                 value = Random32();
                 shinyValue = GET_SHINY_VALUE(value, personality);
-            } while (shinyValue < 16);
-        else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 2) // 1/2048
+            } while (shinyValue < 2048);
+        else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 2) // 1/64
             do
             {
                 value = Random32();
                 shinyValue = GET_SHINY_VALUE(value, personality);
-            } while (shinyValue < 32);
-        else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 3) // 1/1024
+            } while (shinyValue < 1024);
+        else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 3) // 1/128
             do
             {
                 value = Random32();
                 shinyValue = GET_SHINY_VALUE(value, personality);
-            } while (shinyValue < 64);
-        else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 4) // 1/512
+            } while (shinyValue < 512);
+        else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 4) // 1/256
             do
             {
                 value = Random32();
                 shinyValue = GET_SHINY_VALUE(value, personality);
-            } while (shinyValue < 128);
+            } while (shinyValue < 256);
     }
     else if (otIdType == OT_ID_PRESET)
     {
@@ -6415,10 +6416,11 @@ s32 CalculateBaseDamage(struct BattlePokemon *attacker, struct BattlePokemon *de
     if (ShouldGetStatBadgeBoost(FLAG_BADGE07_GET, battlerIdDef))
         spDefense = (110 * spDefense) / 100;
 
-    // Apply type-bonus hold item
+    // Apply type-bonus hold item 2026june17fixed
     for (i = 0; i < ARRAY_COUNT(sHoldEffectToType); i++)
     {
         if (gSaveBlock2Ptr->optionStyle == 1)
+        {
             if (attackerHoldEffect == sHoldEffectToType[i][0]
                 && type == sHoldEffectToType[i][1])
             {
@@ -6428,14 +6430,19 @@ s32 CalculateBaseDamage(struct BattlePokemon *attacker, struct BattlePokemon *de
                     spAttack = (spAttack * (attackerHoldEffectParam + 100)) / 100;
                 break;
             }
+        }  
         else if (gSaveBlock2Ptr->optionStyle == 0)
+        {  
             if (attackerHoldEffect == sHoldEffectToType[i][0]
                 && type == sHoldEffectToType[i][1])
             {
-                attack = (attack * (attackerHoldEffectParam + 100)) / 100;
-                spAttack = (spAttack * (attackerHoldEffectParam + 100)) / 100;
+            	if (IS_MOVE_SPECIAL(gCurrentMove))
+    		    spAttack = (spAttack * (attackerHoldEffectParam + 100)) / 100;
+		else
+                    attack = (attack * (attackerHoldEffectParam + 100)) / 100;
                 break;
             }
+        }    
     }
 
     // Apply boosts from hold items
@@ -6445,6 +6452,11 @@ s32 CalculateBaseDamage(struct BattlePokemon *attacker, struct BattlePokemon *de
         spAttack = (150 * spAttack) / 100;
     if (defenderHoldEffect == HOLD_EFFECT_SOUL_DEW && !(gBattleTypeFlags & (BATTLE_TYPE_FRONTIER)) && (defender->species == SPECIES_LATIAS || defender->species == SPECIES_LATIOS))
         spDefense = (150 * spDefense) / 100;
+    if (defenderHoldEffect == HOLD_EFFECT_PREVENT_EVOLVE && CanEvolve(defender->species))
+    {
+    defense = (150 * defense) / 100;
+    spDefense = (150 * spDefense) / 100;
+    }
     if (attackerHoldEffect == HOLD_EFFECT_DEEP_SEA_TOOTH && attacker->species == SPECIES_CLAMPERL)
         spAttack *= 2;
     if (defenderHoldEffect == HOLD_EFFECT_DEEP_SEA_SCALE && defender->species == SPECIES_CLAMPERL)
@@ -6606,12 +6618,35 @@ s32 CalculateBaseDamage(struct BattlePokemon *attacker, struct BattlePokemon *de
     }
     if (attacker->ability == ABILITY_HUSTLE)
         attack = (150 * attack) / 100;
+    if (attacker->ability == ABILITY_TOUGH_CLAWS)
+        attack = (120 * attack) / 100;   
+    if (attacker->ability == ABILITY_HYPER_CUTTER && (gCurrentMove == MOVE_VICE_GRIP))
+        attack = (120 * attack) / 100; 
     if (attacker->ability == ABILITY_CACOPHONY && (gCurrentMove == MOVE_SNORE || gCurrentMove == MOVE_UPROAR || gCurrentMove == MOVE_HYPER_VOICE || gCurrentMove == MOVE_BUG_BUZZ))
         spAttack = (150 * spAttack) / 100;
-    if (attacker->ability == ABILITY_PLUS && ABILITY_ON_FIELD2(ABILITY_MINUS))
+    if (attacker->ability == ABILITY_IRON_FIST && (gCurrentMove == MOVE_FIRE_PUNCH || gCurrentMove == MOVE_ICE_PUNCH || gCurrentMove == MOVE_THUNDER_PUNCH || gCurrentMove == MOVE_MACH_PUNCH || gCurrentMove == MOVE_SHADOW_PUNCH || gCurrentMove == MOVE_DIZZY_PUNCH || gCurrentMove == MOVE_DYNAMIC_PUNCH || gCurrentMove == MOVE_FOCUS_PUNCH || gCurrentMove == MOVE_COMET_PUNCH || gCurrentMove == MOVE_MEGA_PUNCH))
+    	attack = (120 * attack) / 100; 
+    if (attacker->ability == ABILITY_RECKLESS && (gCurrentMove == MOVE_JUMP_KICK || gCurrentMove == MOVE_TAKE_DOWN || gCurrentMove == MOVE_SUBMISSION || gCurrentMove == MOVE_HI_JUMP_KICK || gCurrentMove == MOVE_STRUGGLE || gCurrentMove == MOVE_DOUBLE_EDGE || gCurrentMove == MOVE_VOLT_TACKLE || gCurrentMove == MOVE_HEAD_SMASH))
+        attack = (120 * attack) / 100; 
+    if (attacker->ability == ABILITY_SHARPNESS && (gCurrentMove == MOVE_AERIAL_ACE || gCurrentMove == MOVE_AIR_CUTTER || gCurrentMove == MOVE_AIR_SLASH || gCurrentMove == MOVE_CUT || gCurrentMove == MOVE_FURY_CUTTER || gCurrentMove == MOVE_LEAF_BLADE || gCurrentMove == MOVE_PSYCHO_CUT || gCurrentMove == MOVE_SLASH || gCurrentMove == MOVE_STONE_AXE || gCurrentMove == MOVE_NIGHT_SLASH))
+    {
+       spAttack = (120 * spAttack) / 100;
+       attack = (120 * attack) / 100;
+    }        
+    if (attacker->ability == ABILITY_PLUS)
+    {
+    if (ABILITY_ON_FIELD2(ABILITY_MINUS))
         spAttack = (150 * spAttack) / 100;
-    if (attacker->ability == ABILITY_MINUS && ABILITY_ON_FIELD2(ABILITY_PLUS))
+    else
+        spAttack = (110 * spAttack) / 100;
+    }
+    if (attacker->ability == ABILITY_MINUS)
+    {
+    if (ABILITY_ON_FIELD2(ABILITY_PLUS))
         spAttack = (150 * spAttack) / 100;
+    else
+        spAttack = (110 * spAttack) / 100;
+    }
     if ((gSaveBlock2Ptr->optionsDifficulty == 2))
     {
         // Sceptile gets Thick Fat to reduce dmg from their weaknesses, and a 10% dmg increase.
@@ -6752,8 +6787,39 @@ s32 CalculateBaseDamage(struct BattlePokemon *attacker, struct BattlePokemon *de
         gBattleMovePower = (150 * gBattleMovePower) / 100;
     if (attacker->ability == ABILITY_DRAGONS_MAW && moveType == TYPE_DRAGON)
         gBattleMovePower = (150 * gBattleMovePower) / 100;
+    //if (attacker->ability == ABILITY_ADAPTABILITY && moveType == TYPE_NORMAL)
+        //gBattleMovePower = (150 * gBattleMovePower) / 100;
     if (attacker->ability == ABILITY_ILLUMINATE && moveType == TYPE_ELECTRIC)
         gBattleMovePower = (110 * gBattleMovePower) / 100;
+    //TESTING FOR LORD HELIX
+    if (attacker->ability == ABILITY_BERSERK && attacker->hp <= (attacker->maxHP / 2))
+    	spAttack = (150 * spAttack) / 100;
+    // rivary test code
+    if (attacker->ability == ABILITY_RIVALRY)
+    {
+    	u8 genderAtk = GetGenderFromSpeciesAndPersonality(
+            attacker->species,
+            attacker->personality);
+
+    	u8 genderDef = GetGenderFromSpeciesAndPersonality(
+            defender->species,
+            defender->personality);
+
+        if (genderAtk != MON_GENDERLESS && genderDef != MON_GENDERLESS)
+        {
+            if (genderAtk == genderDef)
+                gBattleMovePower = (125 * gBattleMovePower) / 100;
+            else
+                gBattleMovePower = (90 * gBattleMovePower) / 100;
+        }
+    }
+    //run away tiggers a 20% increase in DEF/spDEF at 50% HP meaning the tables have turned and maybe you want to run now. still should trigger 100% run from battle  
+    if (defender->ability == ABILITY_RUN_AWAY
+    	&& defender->hp <= (defender->maxHP / 2))
+    {
+    	defense = (120 * defense) / 100;
+    	spDefense = (120 * spDefense) / 100;
+    } 
     if (defender->ability == ABILITY_MARVEL_SCALE && defender->status1)
         defense = (150 * defense) / 100;
     if (type == TYPE_ELECTRIC && AbilityBattleEffects(ABILITYEFFECT_FIELD_SPORT, 0, 0, ABILITYEFFECT_MUD_SPORT, 0))
@@ -9471,6 +9537,20 @@ u16 GetEvolutionTargetSpecies(struct Pokemon *mon, u8 mode, u16 evolutionItem)
     return targetSpecies;
 }
 
+// everstone helper fxn to check if can evolve
+static bool8 CanEvolve(u16 species)
+{
+    int i;
+
+    for (i = 0; i < EVOS_PER_MON; i++)
+    {
+        if (gEvolutionTable[species][i].method != 0)
+            return TRUE;
+    }
+
+    return FALSE;
+}
+
 u16 HoennPokedexNumToSpecies(u16 hoennNum)
 {
     u16 species;
@@ -10860,7 +10940,7 @@ const u32 *GetMonSpritePalFromSpeciesAndPersonality(u16 species, u32 otId, u32 p
 
     shinyValue = GET_SHINY_VALUE(otId, personality);
 
-    if (gSaveBlock1Ptr->tx_Features_ShinyChance == 0) // 1/8192
+    if (gSaveBlock1Ptr->tx_Features_ShinyChance == 0) // 1/16
     {
         if (shinyValue < SHINY_ODDS)
         {
@@ -10898,9 +10978,9 @@ const u32 *GetMonSpritePalFromSpeciesAndPersonality(u16 species, u32 otId, u32 p
             return gMonPaletteTable[species].data;
         }
     }
-    else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 1) // 1/4096
+    else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 1) // 1/32
     {
-        if (shinyValue < 16 && personality !=0)
+        if (shinyValue < 2048 && personality !=0)
         {
             if ((species == SPECIES_PIKACHU
                 || species == SPECIES_RAICHU
@@ -10936,9 +11016,9 @@ const u32 *GetMonSpritePalFromSpeciesAndPersonality(u16 species, u32 otId, u32 p
             return gMonPaletteTable[species].data;
         }
     }
-    else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 2) // 1/2048
+    else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 2) // 1/64
     {
-        if (shinyValue < 32 && personality !=0)
+        if (shinyValue < 1024 && personality !=0)
         {
             if ((species == SPECIES_PIKACHU
                 || species == SPECIES_RAICHU
@@ -10974,9 +11054,9 @@ const u32 *GetMonSpritePalFromSpeciesAndPersonality(u16 species, u32 otId, u32 p
             return gMonPaletteTable[species].data;
         }
     }
-    else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 3) // 1/1024
+    else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 3) // 1/128
     {
-        if (shinyValue < 64 && personality !=0)
+        if (shinyValue < 512 && personality !=0)
         {
             if ((species == SPECIES_PIKACHU
                 || species == SPECIES_RAICHU
@@ -11012,9 +11092,9 @@ const u32 *GetMonSpritePalFromSpeciesAndPersonality(u16 species, u32 otId, u32 p
             return gMonPaletteTable[species].data;
         }
     }
-    else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 4) // 1/512
+    else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 4) // 1/256
     {
-        if (shinyValue < 128 && personality !=0)
+        if (shinyValue < 256 && personality !=0)
         {
             if ((species == SPECIES_PIKACHU
                 || species == SPECIES_RAICHU
@@ -11065,7 +11145,7 @@ const struct CompressedSpritePalette *GetMonSpritePalStructFromOtIdPersonality(u
 
     shinyValue = GET_SHINY_VALUE(otId, personality);
 
-    if (gSaveBlock1Ptr->tx_Features_ShinyChance == 0) // 1/8192
+    if (gSaveBlock1Ptr->tx_Features_ShinyChance == 0) // 1/16
     {
         if (shinyValue < SHINY_ODDS)
         {
@@ -11103,9 +11183,9 @@ const struct CompressedSpritePalette *GetMonSpritePalStructFromOtIdPersonality(u
             return &gMonPaletteTable[species];
         }
     }
-    else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 1) // 1/4096
+    else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 1) // 1/32
     {
-        if (shinyValue < 16)
+        if (shinyValue < 2048)
         {
             if ((species == SPECIES_PIKACHU
                 || species == SPECIES_RAICHU
@@ -11141,9 +11221,9 @@ const struct CompressedSpritePalette *GetMonSpritePalStructFromOtIdPersonality(u
             return &gMonPaletteTable[species];
         }
     }
-    else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 2) // 1/2048
+    else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 2) // 1/64
     {
-        if (shinyValue < 32)
+        if (shinyValue < 1024)
         {
             if ((species == SPECIES_PIKACHU
                 || species == SPECIES_RAICHU
@@ -11179,9 +11259,9 @@ const struct CompressedSpritePalette *GetMonSpritePalStructFromOtIdPersonality(u
             return &gMonPaletteTable[species];
         }
     }
-    else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 3) // 1/1024
+    else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 3) // 1/128
     {
-        if (shinyValue < 64)
+        if (shinyValue < 512)
         {
             if ((species == SPECIES_PIKACHU
                 || species == SPECIES_RAICHU
@@ -11217,9 +11297,9 @@ const struct CompressedSpritePalette *GetMonSpritePalStructFromOtIdPersonality(u
             return &gMonPaletteTable[species];
         }
     }
-    else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 4) // 1/512
+    else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 4) // 1/256
     {
-        if (shinyValue < 128)
+        if (shinyValue < 256)
         {
             if ((species == SPECIES_PIKACHU
                 || species == SPECIES_RAICHU
@@ -11428,33 +11508,33 @@ bool8 IsShinyOtIdPersonality(u32 otId, u32 personality)
     bool8 retVal = FALSE;
     u32 shinyValue = GET_SHINY_VALUE(otId, personality);
 
-    if (gSaveBlock1Ptr->tx_Features_ShinyChance == 0) // 1/8192
+    if (gSaveBlock1Ptr->tx_Features_ShinyChance == 0) // 1/16
     {
         if (shinyValue < SHINY_ODDS)
             retVal = TRUE;
         return retVal;
     }
-    else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 1) // 1/4096
+    else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 1) // 1/32
     {
-        if (shinyValue < 16)
+        if (shinyValue < 2048)
             retVal = TRUE;
         return retVal;
     }
-    else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 2) // 1/2048
+    else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 2) // 1/64
     {
-        if (shinyValue < 32)
+        if (shinyValue < 1024)
             retVal = TRUE;
         return retVal;
     }
-    else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 3) // 1/1024
+    else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 3) // 1/128
     {
-        if (shinyValue < 64)
+        if (shinyValue < 512)
             retVal = TRUE;
         return retVal;
     }
-    else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 4) // 1/512
+    else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 4) // 1/256
     {
-        if (shinyValue < 128)
+        if (shinyValue < 256)
             retVal = TRUE;
         return retVal;
     }

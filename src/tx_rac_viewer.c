@@ -365,12 +365,12 @@ struct ViewerBoolRow {
 extern const u8 sText_On[];
 extern const u8 sText_Off[];
 
-static const u8 sText_Challenges_ShinyChance_8192[]   = _("8192");
-static const u8 sText_Challenges_ShinyChance_4096[]   = _("4096");
-static const u8 sText_Challenges_ShinyChance_2048[]   = _("2048");
-static const u8 sText_Challenges_ShinyChance_1024[]   = _("1024");
-static const u8 sText_Challenges_ShinyChance_512[]    = _("512");
-static const u8 *const sText_Challenges_ShinyChance_Strings[] = {sText_Challenges_ShinyChance_8192,  sText_Challenges_ShinyChance_4096,  sText_Challenges_ShinyChance_2048,  sText_Challenges_ShinyChance_1024,  sText_Challenges_ShinyChance_512};
+static const u8 sText_Challenges_ShinyChance_16[]   = _("16");
+static const u8 sText_Challenges_ShinyChance_32[]   = _("32");
+static const u8 sText_Challenges_ShinyChance_64[]   = _("64");
+static const u8 sText_Challenges_ShinyChance_128[]   = _("128");
+static const u8 sText_Challenges_ShinyChance_256[]    = _("256");
+static const u8 *const sText_Challenges_ShinyChance_Strings[] = {sText_Challenges_ShinyChance_16,  sText_Challenges_ShinyChance_32,  sText_Challenges_ShinyChance_64,  sText_Challenges_ShinyChance_128,  sText_Challenges_ShinyChance_256};
 
 static const u8 sText_Difficulty_CatchRate_05x[]   = _("0.5x");
 static const u8 sText_Difficulty_CatchRate_1x[]   = _("Default");

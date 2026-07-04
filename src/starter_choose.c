@@ -675,35 +675,36 @@ static u8 CreatePokemonFrontSpriteTorchic(u16 species, u8 x, u8 y)
     u8 spriteId;
     static u32 isShinyTorchic = 0;
     
-    // Take a number between 0 and 8192 and compare it to the SHINY_ODDS selected. If it matches a number that could make a POKéMON shiny, forces a 
-    // shiny sprite, only on the selected starter. Uses a static u32 because if not, the random number would be generated every time each starter is selected.
+    // Take a number between 0 and 64 and compare it to the SHINY_ODDS selected. If it matches a number that could make a POKéMON shiny, forces a 
+    // shiny sprite, only on the selected starter. Uses a static u32 because if not, the random number would be generated every time each starter is selected. changed the 8192 to 64 oddsin constants pokemon.h in src or included are 1024 or 1/64 now as opposed to 8 or 1/8192 shiny sprite has been turned off for all except default odds (1/64)
+    
     if (isShinyTorchic == 0)
-        isShinyTorchic = (Random()% 8192);
+        isShinyTorchic = (Random()% 64);
 
-    if ((isShinyTorchic < SHINY_ODDS) && (gSaveBlock1Ptr->tx_Features_ShinyChance == 0)) // 1/8192
+    if ((isShinyTorchic < SHINY_ODDS) && (gSaveBlock1Ptr->tx_Features_ShinyChance == 0)) // 1/64 forced shiny? actual odds 1/16 in pokemon.h constant
     {
         FlagSet(FLAG_SHINY_STARTER_1);
         spriteId = CreateMonPicSprite_Affine(species, TRUE, 0, MON_PIC_AFFINE_FRONT, x, y, 14, TAG_NONE);
     }
-    else if ((isShinyTorchic < 16) && (gSaveBlock1Ptr->tx_Features_ShinyChance == 1)) // 1/4096
+    else if ((isShinyTorchic < 2048) && (gSaveBlock1Ptr->tx_Features_ShinyChance == 1)) // 1/32
     {
         FlagSet(FLAG_SHINY_STARTER_1);
-        spriteId = CreateMonPicSprite_Affine(species, TRUE, 1, MON_PIC_AFFINE_FRONT, x, y, 14, TAG_NONE); //the 1 before MON_PIC_AFFINE forces a shiny pic of the mon. 
-    }                                                                                                     //Setting to 0 only affects og SHINY ODDS. Non-og SHINY_ODDS need a 1.
-    else if ((isShinyTorchic < 32) && (gSaveBlock1Ptr->tx_Features_ShinyChance == 2)) // 1/2048
+        spriteId = CreateMonPicSprite_Affine(species, TRUE, 0, MON_PIC_AFFINE_FRONT, x, y, 14, TAG_NONE); //the 1 before MON_PIC_AFFINE forces a shiny pic of the mon. 
+    }                                                                                                     //Setting to 0 only affects og SHINY ODDS. Non-og SHINY_ODDS need a 1.edited to true 0 to remove fake shiny in bag
+    else if ((isShinyTorchic < 1024) && (gSaveBlock1Ptr->tx_Features_ShinyChance == 2)) // 1/64
     {
         FlagSet(FLAG_SHINY_STARTER_1);
-        spriteId = CreateMonPicSprite_Affine(species, TRUE, 1, MON_PIC_AFFINE_FRONT, x, y, 14, TAG_NONE);
+        spriteId = CreateMonPicSprite_Affine(species, TRUE, 0, MON_PIC_AFFINE_FRONT, x, y, 14, TAG_NONE);
     }
-    else if ((isShinyTorchic < 64) && (gSaveBlock1Ptr->tx_Features_ShinyChance == 3)) // 1/1024
+    else if ((isShinyTorchic < 512) && (gSaveBlock1Ptr->tx_Features_ShinyChance == 3)) // 1/128
     {
         FlagSet(FLAG_SHINY_STARTER_1);
-        spriteId = CreateMonPicSprite_Affine(species, TRUE, 1, MON_PIC_AFFINE_FRONT, x, y, 14, TAG_NONE);
+        spriteId = CreateMonPicSprite_Affine(species, TRUE, 0, MON_PIC_AFFINE_FRONT, x, y, 14, TAG_NONE);
     }
-    else if ((isShinyTorchic < 128) && (gSaveBlock1Ptr->tx_Features_ShinyChance == 4)) // 1/512
+    else if ((isShinyTorchic < 256) && (gSaveBlock1Ptr->tx_Features_ShinyChance == 4)) // 1/256
     {
         FlagSet(FLAG_SHINY_STARTER_1);
-        spriteId = CreateMonPicSprite_Affine(species, TRUE, 1, MON_PIC_AFFINE_FRONT, x, y, 14, TAG_NONE);
+        spriteId = CreateMonPicSprite_Affine(species, TRUE, 0, MON_PIC_AFFINE_FRONT, x, y, 14, TAG_NONE);
     }
     else
         spriteId = CreateMonPicSprite_Affine(species, 8, 0, MON_PIC_AFFINE_FRONT, x, y, 14, TAG_NONE);
@@ -717,32 +718,32 @@ static u8 CreatePokemonFrontSpriteTreecko(u16 species, u8 x, u8 y)
     static u32 isShinyTreecko = 0;
 
     if (isShinyTreecko == 0)
-        isShinyTreecko = (Random()% 8192);
+        isShinyTreecko = (Random()% 64);
 
-    if ((isShinyTreecko < SHINY_ODDS) && (gSaveBlock1Ptr->tx_Features_ShinyChance == 0)) // 1/8192
+    if ((isShinyTreecko < SHINY_ODDS) && (gSaveBlock1Ptr->tx_Features_ShinyChance == 0)) // 1/16
     {
         FlagSet(FLAG_SHINY_STARTER_2);
         spriteId = CreateMonPicSprite_Affine(species, TRUE, 0, MON_PIC_AFFINE_FRONT, x, y, 14, TAG_NONE);
     }
-    else if ((isShinyTreecko < 16) && (gSaveBlock1Ptr->tx_Features_ShinyChance == 1)) // 1/4096
+    else if ((isShinyTreecko < 2048) && (gSaveBlock1Ptr->tx_Features_ShinyChance == 1)) // 1/32
     {
         FlagSet(FLAG_SHINY_STARTER_2);
-        spriteId = CreateMonPicSprite_Affine(species, TRUE, 1, MON_PIC_AFFINE_FRONT, x, y, 14, TAG_NONE);
+        spriteId = CreateMonPicSprite_Affine(species, TRUE, 0, MON_PIC_AFFINE_FRONT, x, y, 14, TAG_NONE);
     }
-    else if ((isShinyTreecko < 32) && (gSaveBlock1Ptr->tx_Features_ShinyChance == 2)) // 1/2048
+    else if ((isShinyTreecko < 1024) && (gSaveBlock1Ptr->tx_Features_ShinyChance == 2)) // 1/64
     {
         FlagSet(FLAG_SHINY_STARTER_2);
-        spriteId = CreateMonPicSprite_Affine(species, TRUE, 1, MON_PIC_AFFINE_FRONT, x, y, 14, TAG_NONE);
+        spriteId = CreateMonPicSprite_Affine(species, TRUE, 0, MON_PIC_AFFINE_FRONT, x, y, 14, TAG_NONE);
     }
-    else if ((isShinyTreecko < 64) && (gSaveBlock1Ptr->tx_Features_ShinyChance == 3)) // 1/1024
+    else if ((isShinyTreecko < 512) && (gSaveBlock1Ptr->tx_Features_ShinyChance == 3)) // 1/128
     {
         FlagSet(FLAG_SHINY_STARTER_2);
-        spriteId = CreateMonPicSprite_Affine(species, TRUE, 1, MON_PIC_AFFINE_FRONT, x, y, 14, TAG_NONE);
+        spriteId = CreateMonPicSprite_Affine(species, TRUE, 0, MON_PIC_AFFINE_FRONT, x, y, 14, TAG_NONE);
     }
-    else if ((isShinyTreecko < 128) && (gSaveBlock1Ptr->tx_Features_ShinyChance == 4)) // 1/512
+    else if ((isShinyTreecko < 256) && (gSaveBlock1Ptr->tx_Features_ShinyChance == 4)) // 1/256
     {
         FlagSet(FLAG_SHINY_STARTER_2);
-        spriteId = CreateMonPicSprite_Affine(species, TRUE, 1, MON_PIC_AFFINE_FRONT, x, y, 14, TAG_NONE);
+        spriteId = CreateMonPicSprite_Affine(species, TRUE, 0, MON_PIC_AFFINE_FRONT, x, y, 14, TAG_NONE);
     }
     else
         spriteId = CreateMonPicSprite_Affine(species, 8, 0, MON_PIC_AFFINE_FRONT, x, y, 14, TAG_NONE);
@@ -756,32 +757,32 @@ static u8 CreatePokemonFrontSpriteMudkip(u16 species, u8 x, u8 y)
     static u32 isShinyMudkip = 0;
 
     if (isShinyMudkip == 0)
-        isShinyMudkip = (Random()% 8192);
+        isShinyMudkip = (Random()% 64);
 
-    if ((isShinyMudkip < SHINY_ODDS) && (gSaveBlock1Ptr->tx_Features_ShinyChance == 0)) // 1/8192
+    if ((isShinyMudkip < SHINY_ODDS) && (gSaveBlock1Ptr->tx_Features_ShinyChance == 0)) // 1/16
     {
         FlagSet(FLAG_SHINY_STARTER_3);
         spriteId = CreateMonPicSprite_Affine(species, TRUE, 0, MON_PIC_AFFINE_FRONT, x, y, 14, TAG_NONE);
     }
-    else if ((isShinyMudkip < 16) && (gSaveBlock1Ptr->tx_Features_ShinyChance == 1)) // 1/4096
+    else if ((isShinyMudkip < 2048) && (gSaveBlock1Ptr->tx_Features_ShinyChance == 1)) // 1/32
     {
         FlagSet(FLAG_SHINY_STARTER_3);
-        spriteId = CreateMonPicSprite_Affine(species, TRUE, 1, MON_PIC_AFFINE_FRONT, x, y, 14, TAG_NONE);
+        spriteId = CreateMonPicSprite_Affine(species, TRUE, 0, MON_PIC_AFFINE_FRONT, x, y, 14, TAG_NONE);
     }
-    else if ((isShinyMudkip < 32) && (gSaveBlock1Ptr->tx_Features_ShinyChance == 2)) // 1/2048
+    else if ((isShinyMudkip < 1024) && (gSaveBlock1Ptr->tx_Features_ShinyChance == 2)) // 1/64
     {
         FlagSet(FLAG_SHINY_STARTER_3);
-        spriteId = CreateMonPicSprite_Affine(species, TRUE, 1, MON_PIC_AFFINE_FRONT, x, y, 14, TAG_NONE);
+        spriteId = CreateMonPicSprite_Affine(species, TRUE, 0, MON_PIC_AFFINE_FRONT, x, y, 14, TAG_NONE);
     }
-    else if ((isShinyMudkip < 64) && (gSaveBlock1Ptr->tx_Features_ShinyChance == 3)) // 1/1024
+    else if ((isShinyMudkip < 512) && (gSaveBlock1Ptr->tx_Features_ShinyChance == 3)) // 1/128
     {
         FlagSet(FLAG_SHINY_STARTER_3);
-        spriteId = CreateMonPicSprite_Affine(species, TRUE, 1, MON_PIC_AFFINE_FRONT, x, y, 14, TAG_NONE);
+        spriteId = CreateMonPicSprite_Affine(species, TRUE, 0, MON_PIC_AFFINE_FRONT, x, y, 14, TAG_NONE);
     }
-    else if ((isShinyMudkip < 128) && (gSaveBlock1Ptr->tx_Features_ShinyChance == 4)) // 1/512
+    else if ((isShinyMudkip < 256) && (gSaveBlock1Ptr->tx_Features_ShinyChance == 4)) // 1/256
     {
         FlagSet(FLAG_SHINY_STARTER_3);
-        spriteId = CreateMonPicSprite_Affine(species, TRUE, 1, MON_PIC_AFFINE_FRONT, x, y, 14, TAG_NONE);
+        spriteId = CreateMonPicSprite_Affine(species, TRUE, 0, MON_PIC_AFFINE_FRONT, x, y, 14, TAG_NONE);
     }
     else
         spriteId = CreateMonPicSprite_Affine(species, 8, 0, MON_PIC_AFFINE_FRONT, x, y, 14, TAG_NONE);

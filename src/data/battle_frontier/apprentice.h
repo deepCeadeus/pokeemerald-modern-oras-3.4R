@@ -941,6 +941,25 @@ static const bool8 sValidApprenticeMoves[MOVES_COUNT] =
     [MOVE_MOONBLAST] = TRUE,
     [MOVE_POISON_JAB] = TRUE,
     [MOVE_HEAL_PULSE] = TRUE,
+    [MOVE_SABLEYE_RECOVER] = TRUE,
+    [MOVE_SABLEYE_WILL_O_WISP] = TRUE,
+    [MOVE_SABLEYE_TAUNT] = TRUE,
+    [MOVE_SABLEYE_TORMENT] = TRUE,
+    [MOVE_STONE_AXE] = TRUE,
+    [MOVE_HEAD_SMASH] = TRUE,
+    [MOVE_THUNDER_FANG] = TRUE,
+    [MOVE_ICE_FANG] = TRUE,
+    [MOVE_FIRE_FANG] = TRUE,
+    [MOVE_NIGHT_SLASH] = TRUE,
+    [MOVE_U_TURN] = TRUE,
+    [MOVE_VOLT_SWITCH] = TRUE,
+    [MOVE_SUCKER_PUNCH] = TRUE,
+    [MOVE_ROOST] = TRUE,
+    [MOVE_TWIN_BEAM] = TRUE,
+    [MOVE_BARRIER_RUSH] = TRUE,
+    [MOVE_RAGE_FIST] = TRUE,
+    [MOVE_HYPER_DRILL] = TRUE,
+    
 };
 
 // The possible questions to ask after the initial 3 WHICH MON questions. Retrieved from here and shuffled

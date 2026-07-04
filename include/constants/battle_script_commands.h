@@ -109,6 +109,7 @@
 #define VARIOUS_PLAY_TRAINER_DEFEATED_MUSIC     26
 #define VARIOUS_GIVE_DROPPED_ITEMS              27
 #define VARIOUS_SAVE_BATTLER_ITEM               28
+#define VARIOUS_SUCKER_PUNCH_CHECK              29
 
 // Cmd_manipulatedmg
 #define DMG_CHANGE_SIGN            0
