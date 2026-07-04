@@ -1763,7 +1763,10 @@ u8 TypeEffectiveness(u8 targetId)
 bool8 IsMoveSTAB(u16 move, u8 battlerId)
 {
 	u8 moveType = gBattleMoves[move].type;
-
+	u8 oldBattler = gBattlerAttacker;
+gBattlerAttacker = gActiveBattler;
+moveType = CheckAbilityChangeMoveType(move);
+gBattlerAttacker = oldBattler;
     if (IS_MOVE_STATUS(move))
         return FALSE;
 
@@ -1826,7 +1829,7 @@ static void MoveSelectionDisplayMoveTypeDoubles(u8 targetId)
     u16 move = moveInfo->moves[gMoveSelectionCursor[gActiveBattler]];
 
     moveCategory = gBattleMoves[move].category;
-    type = gBattleMoves[move].type;
+    type = CheckAbilityChangeMoveType(move); // for type changing moves
 
     if (move == MOVE_HIDDEN_POWER)
     {
@@ -1876,7 +1879,7 @@ static void MoveSelectionDisplayMoveType(void) //Made this display a Move Type I
     u16 move = moveInfo->moves[gMoveSelectionCursor[gActiveBattler]];
 
     moveCategory = gBattleMoves[move].category;
-    type = gBattleMoves[move].type;
+    type = CheckAbilityChangeMoveType(move); // for type changing
 
     if (move == MOVE_HIDDEN_POWER)
     {

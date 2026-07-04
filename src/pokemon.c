@@ -6467,6 +6467,31 @@ s32 CalculateBaseDamage(struct BattlePokemon *attacker, struct BattlePokemon *de
         defense *= 2;
     if (attackerHoldEffect == HOLD_EFFECT_THICK_CLUB && (attacker->species == SPECIES_CUBONE || attacker->species == SPECIES_MAROWAK))
         attack *= 2;
+    if ((attackerHoldEffect == HOLD_EFFECT_FAIRY_POWER && moveType == TYPE_NORMAL) && attacker->ability == ABILITY_PIXILATE)  
+     {
+        attack *= 1.2;
+        spAttack *= 1.2;
+    }
+    if ((attackerHoldEffect == HOLD_EFFECT_DRAGON_POWER && moveType == TYPE_NORMAL) && attacker->ability == ABILITY_DRAGONIZE)  
+     {
+        attack *= 1.2;
+        spAttack *= 1.2;
+    }
+    if ((attackerHoldEffect == HOLD_EFFECT_GHOST_POWER && moveType == TYPE_NORMAL) && attacker->ability == ABILITY_MINDS_EYE)  
+     {
+        attack *= 1.2;
+        spAttack *= 1.2;
+    }
+    if ((attackerHoldEffect == HOLD_EFFECT_FLYING_POWER && moveType == TYPE_NORMAL) && attacker->ability == ABILITY_AERILATE)  
+     {
+        attack *= 1.2;
+        spAttack *= 1.2;
+    }
+    if ((attackerHoldEffect == HOLD_EFFECT_STEEL_POWER && moveType == TYPE_NORMAL) && attacker->ability == ABILITY_METAL_COAT)  
+     {
+        attack *= 1.2;
+        spAttack *= 1.2;
+    } 
     if ((attackerHoldEffect == HOLD_EFFECT_FAIRY_POWER && moveType == TYPE_FAIRY) && attacker->ability == ABILITY_MULTITYPE)
     {
         attack *= 1.365;
