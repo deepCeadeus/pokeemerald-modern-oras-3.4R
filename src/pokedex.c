@@ -4426,9 +4426,8 @@ bool8 IsPersonalityShiny(u32 otId, u32 personality)
 
     switch (gSaveBlock1Ptr->tx_Features_ShinyChance)
     {
-    case 0: // 1/8192
+    case 0: // 1/16
         return shinyValue < SHINY_ODDS;
-    case 4: // 1/512
     case 1: // 1/32
         return shinyValue < 2048;
     case 2: // 1/64
