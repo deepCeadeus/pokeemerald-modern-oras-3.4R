@@ -1827,9 +1827,15 @@ static void MoveSelectionDisplayMoveTypeDoubles(u8 targetId)
     u32 moveCategory; //Physical Special Status
     struct ChooseMoveStruct *moveInfo = (struct ChooseMoveStruct *)(&gBattleBufferA[gActiveBattler][4]);
     u16 move = moveInfo->moves[gMoveSelectionCursor[gActiveBattler]];
+    
+    // Check for ability like Dragonize
+    u8 old = gBattlerAttacker;
+    gBattlerAttacker = gActiveBattler;
+    type = gBattleMoves[move].type;
+    type = CheckAbilityChangeMoveType(move);
+    gBattlerAttacker = old;
 
     moveCategory = gBattleMoves[move].category;
-    type = CheckAbilityChangeMoveType(move); // for type changing moves
 
     if (move == MOVE_HIDDEN_POWER)
     {
@@ -1877,9 +1883,15 @@ static void MoveSelectionDisplayMoveType(void) //Made this display a Move Type I
 	u8 targetId = GetBattlerAtPosition(BATTLE_OPPOSITE(GetBattlerPosition(gActiveBattler)));
     struct ChooseMoveStruct *moveInfo = (struct ChooseMoveStruct *)(&gBattleBufferA[gActiveBattler][4]);
     u16 move = moveInfo->moves[gMoveSelectionCursor[gActiveBattler]];
-
+    
+    // Check for ability like Dragonize
+    u8 old = gBattlerAttacker;
+    gBattlerAttacker = gActiveBattler;
+    type = gBattleMoves[move].type;
+    type = CheckAbilityChangeMoveType(move);
+    gBattlerAttacker = old;
+	
     moveCategory = gBattleMoves[move].category;
-    type = CheckAbilityChangeMoveType(move); // for type changing
 
     if (move == MOVE_HIDDEN_POWER)
     {
