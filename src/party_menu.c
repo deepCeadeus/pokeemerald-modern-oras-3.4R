@@ -97,6 +97,7 @@ enum {
     MENU_TRADE1,
     MENU_TRADE2,
     MENU_TOSS,
+    MENU_FOLLOW,
     MENU_FIELD_MOVES
 };
 
@@ -198,8 +199,9 @@ struct PartyMenuInternal
     u32 spriteIdCancelPokeball:7;
     u32 messageId:14;
     u8 windowId[3];
-    u8 actions[9];
+    u8 actions[12];
     u8 numActions;
+    u8 scrollOffset;
     // In vanilla Emerald, only the first 0xB0 hwords (0x160 bytes) are actually used.
     // However, a full 0x100 hwords (0x200 bytes) are allocated.
     // It is likely that the 0x160 value used below is a constant defined by
@@ -481,6 +483,7 @@ static void CursorCb_Register(u8);
 static void CursorCb_Trade1(u8);
 static void CursorCb_Trade2(u8);
 static void CursorCb_Toss(u8);
+static void CursorCb_Follow(u8);
 static void CursorCb_FieldMove(u8);
 static bool8 SetUpFieldMove_Surf(void);
 static bool8 SetUpFieldMove_Fly(void);
@@ -2576,11 +2579,13 @@ static u8 DisplaySelectionWindow(u8 windowType)
     u8 cursorDimension;
     u8 letterSpacing;
     u8 i;
+    u8 visibleItems;
 
     switch (windowType)
     {
     case SELECTWINDOW_ACTIONS:
-        SetWindowTemplateFields(&window, 2, 19, 19 - (sPartyMenuInternal->numActions * 2), 10, sPartyMenuInternal->numActions * 2, 14, 0x2E9);
+        visibleItems = (sPartyMenuInternal->numActions > 9) ? 9 : sPartyMenuInternal->numActions;
+        SetWindowTemplateFields(&window, 2, 19, 19 - (visibleItems * 2), 10, visibleItems * 2, 14, 0x2E9);
         break;
     case SELECTWINDOW_ITEM:
         window = sItemGiveTakeWindowTemplate;
@@ -2600,13 +2605,17 @@ static u8 DisplaySelectionWindow(u8 windowType)
     cursorDimension = GetMenuCursorDimensionByFont(FONT_NORMAL, 0);
     letterSpacing = GetFontAttribute(FONT_NORMAL, FONTATTR_LETTER_SPACING);
 
-    for (i = 0; i < sPartyMenuInternal->numActions; i++)
+    sPartyMenuInternal->scrollOffset = 0;
+    visibleItems = (sPartyMenuInternal->numActions > 9) ? 9 : sPartyMenuInternal->numActions;
+    for (i = 0; i < visibleItems; i++)
     {
-        u8 fontColorsId = (sPartyMenuInternal->actions[i] >= MENU_FIELD_MOVES) ? 4 : 3;
-        AddTextPrinterParameterized4(sPartyMenuInternal->windowId[0], FONT_NORMAL, cursorDimension, (i * 16) + 1, letterSpacing, 0, sFontColorTable[fontColorsId], 0, sCursorOptions[sPartyMenuInternal->actions[i]].text);
+        u8 actionIdx = i + sPartyMenuInternal->scrollOffset;
+        u8 fontColorsId = (sPartyMenuInternal->actions[actionIdx] >= MENU_FIELD_MOVES) ? 4
+                         : (sPartyMenuInternal->actions[actionIdx] == MENU_FOLLOW) ? 5 : 3;
+        AddTextPrinterParameterized4(sPartyMenuInternal->windowId[0], FONT_NORMAL, cursorDimension, (i * 16) + 1, letterSpacing, 0, sFontColorTable[fontColorsId], 0, sCursorOptions[sPartyMenuInternal->actions[actionIdx]].text);
     }
 
-    InitMenuInUpperLeftCorner(sPartyMenuInternal->windowId[0], sPartyMenuInternal->numActions, 0, TRUE);
+    InitMenuInUpperLeftCorner(sPartyMenuInternal->windowId[0], visibleItems, 0, TRUE);
     ScheduleBgCopyTilemapToVram(2);
 
     return sPartyMenuInternal->windowId[0];
@@ -2712,26 +2721,53 @@ static void SetPartyMonFieldSelectionActions(struct Pokemon *mons, u8 slotId)
     }
     else
     {
+        bool8 knowsFly = FALSE;
+        bool8 knowsFlash = FALSE;
+
+        // Add all known field moves in moveset order (including Fly/Flash)
         for (i = 0; i < MAX_MON_MOVES; i++)
         {
             for (j = 0; sFieldMoves[j] != FIELD_MOVES_COUNT; j++)
             {
                 if (GetMonData(&mons[slotId], i + MON_DATA_MOVE1) == sFieldMoves[j])
                 {
-                    if (sFieldMoves[j] != MOVE_FLY) // If Mon already knows FLY, prevent it from being added to action list
-                        if (sFieldMoves[j] != MOVE_FLASH) // If Mon already knows FLASH, prevent it from being added to action list
-                            AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, j + MENU_FIELD_MOVES);
-                            break;
+                    if (sFieldMoves[j] == MOVE_FLY)
+                        knowsFly = TRUE;
+                    if (sFieldMoves[j] == MOVE_FLASH)
+                        knowsFlash = TRUE;
+                    AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, j + MENU_FIELD_MOVES);
+                    break;
                 }
             }
         }
-        if (sPartyMenuInternal->numActions < 5 && CanMonLearnTMHM(&mons[slotId], ITEM_HM02 - ITEM_TM01)) // If Mon can learn HM02 and action list consists of < 4 moves, add FLY to action list
-            AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, 5 + MENU_FIELD_MOVES);
-        if (sPartyMenuInternal->numActions < 5 && CanMonLearnTMHM(&mons[slotId], ITEM_HM05 - ITEM_TM01)) // If Mon can learn HM05 and action list consists of < 4 moves, add FLASH to action list
+        // If there's room and mon can learn Fly/Flash but doesn't know them, add as extras
+        // Flash is prioritized over Fly since Flash has no alternative access (Fly can be triggered from the map)
+        if (!knowsFlash && CanMonLearnTMHM(&mons[slotId], ITEM_HM05 - ITEM_TM01))
             AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, 1 + MENU_FIELD_MOVES);
+        if (!knowsFly && CanMonLearnTMHM(&mons[slotId], ITEM_HM02 - ITEM_TM01))
+            AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, 5 + MENU_FIELD_MOVES);
     }
     if (!InBattlePike())
     {
+        // Add "Follow" option if followers are enabled, mon is alive, not an egg,
+        // not already the active follower, and not a large mon when big followers is off
+        if (gSaveBlock2Ptr->optionsfollowerEnable == 0
+            && !InBattlePyramid()
+            && GetMonData(&mons[slotId], MON_DATA_HP) > 0
+            && !GetMonData(&mons[slotId], MON_DATA_IS_EGG)
+            && gSaveBlock1Ptr->designatedFollower != slotId + 1
+            && !(gSaveBlock2Ptr->optionsfollowerLargeEnable == 1
+                 && IsFollowerSpeciesLarge(GetMonData(&mons[slotId], MON_DATA_SPECIES))))
+        {
+            // Don't show if this is already the effective follower (first live mon with no designation)
+            u8 df = gSaveBlock1Ptr->designatedFollower;
+            bool8 designatedValid = df != 0 && df <= PARTY_SIZE
+                && GetMonData(&mons[df - 1], MON_DATA_SPECIES) != SPECIES_NONE
+                && GetMonData(&mons[df - 1], MON_DATA_HP) > 0
+                && !GetMonData(&mons[df - 1], MON_DATA_IS_EGG);
+            if (designatedValid || &mons[slotId] != GetFirstLiveMon())
+                AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, MENU_FOLLOW);
+        }
         if (GetMonData(&mons[1], MON_DATA_SPECIES) != SPECIES_NONE)
             AppendToList(sPartyMenuInternal->actions, &sPartyMenuInternal->numActions, MENU_SWITCH);
         if (ItemIsMail(GetMonData(&mons[slotId], MON_DATA_HELD_ITEM)))
@@ -2843,6 +2879,108 @@ static void Task_TryCreateSelectionWindow(u8 taskId)
     }
 }
 
+static void RedrawSelectionMenuItems(void)
+{
+    u8 i;
+    u8 visibleItems = (sPartyMenuInternal->numActions > 9) ? 9 : sPartyMenuInternal->numActions;
+    u8 cursorDimension = GetMenuCursorDimensionByFont(FONT_NORMAL, 0);
+    u8 letterSpacing = GetFontAttribute(FONT_NORMAL, FONTATTR_LETTER_SPACING);
+
+    FillWindowPixelBuffer(sPartyMenuInternal->windowId[0], PIXEL_FILL(1));
+    for (i = 0; i < visibleItems; i++)
+    {
+        u8 actionIdx = i + sPartyMenuInternal->scrollOffset;
+        u8 fontColorsId = (sPartyMenuInternal->actions[actionIdx] >= MENU_FIELD_MOVES) ? 4
+                         : (sPartyMenuInternal->actions[actionIdx] == MENU_FOLLOW) ? 5 : 3;
+        AddTextPrinterParameterized4(sPartyMenuInternal->windowId[0], FONT_NORMAL, cursorDimension, (i * 16) + 1, letterSpacing, 0, sFontColorTable[fontColorsId], 0, sCursorOptions[sPartyMenuInternal->actions[actionIdx]].text);
+    }
+    CopyWindowToVram(sPartyMenuInternal->windowId[0], COPYWIN_GFX);
+}
+
+static s8 ProcessScrollableMenuInput(void)
+{
+    u8 visibleItems = (sPartyMenuInternal->numActions > 9) ? 9 : sPartyMenuInternal->numActions;
+    u8 cursorPos = Menu_GetCursorPos();
+
+    if (JOY_NEW(A_BUTTON))
+    {
+        PlaySE(SE_SELECT);
+        return cursorPos + sPartyMenuInternal->scrollOffset;
+    }
+    else if (JOY_NEW(B_BUTTON))
+    {
+        return MENU_B_PRESSED;
+    }
+    else if (JOY_REPEAT(DPAD_ANY) == DPAD_UP)
+    {
+        if (cursorPos == 0 && sPartyMenuInternal->scrollOffset == 0)
+        {
+            // At very top — wrap to bottom
+            PlaySE(SE_SELECT);
+            sPartyMenuInternal->scrollOffset = sPartyMenuInternal->numActions - visibleItems;
+            RedrawSelectionMenuItems();
+            InitMenuInUpperLeftCorner(sPartyMenuInternal->windowId[0], visibleItems, visibleItems - 1, TRUE);
+        }
+        else if (cursorPos == 0)
+        {
+            // Cursor at top edge, scroll viewport up
+            PlaySE(SE_SELECT);
+            sPartyMenuInternal->scrollOffset--;
+            RedrawSelectionMenuItems();
+            Menu_MoveCursorNoWrapAround(0); // redraw cursor in place
+        }
+        else
+        {
+            // Normal cursor move up
+            PlaySE(SE_SELECT);
+            Menu_MoveCursorNoWrapAround(-1);
+            // Lookahead: if now at position 1 and can still scroll up, scroll viewport too
+            if (Menu_GetCursorPos() <= 1 && sPartyMenuInternal->scrollOffset > 0)
+            {
+                sPartyMenuInternal->scrollOffset--;
+                RedrawSelectionMenuItems();
+                Menu_MoveCursorNoWrapAround(1); // bump cursor back down to compensate
+            }
+        }
+        return MENU_NOTHING_CHOSEN;
+    }
+    else if (JOY_REPEAT(DPAD_ANY) == DPAD_DOWN)
+    {
+        if (cursorPos == visibleItems - 1 && sPartyMenuInternal->scrollOffset + visibleItems >= sPartyMenuInternal->numActions)
+        {
+            // At very bottom — wrap to top
+            PlaySE(SE_SELECT);
+            sPartyMenuInternal->scrollOffset = 0;
+            RedrawSelectionMenuItems();
+            InitMenuInUpperLeftCorner(sPartyMenuInternal->windowId[0], visibleItems, 0, TRUE);
+        }
+        else if (cursorPos == visibleItems - 1)
+        {
+            // Cursor at bottom edge, scroll viewport down
+            PlaySE(SE_SELECT);
+            sPartyMenuInternal->scrollOffset++;
+            RedrawSelectionMenuItems();
+            Menu_MoveCursorNoWrapAround(0); // redraw cursor in place
+        }
+        else
+        {
+            // Normal cursor move down
+            PlaySE(SE_SELECT);
+            Menu_MoveCursorNoWrapAround(1);
+            // Lookahead: if now at second-to-last and can still scroll down, scroll viewport too
+            if (Menu_GetCursorPos() >= visibleItems - 2 && sPartyMenuInternal->scrollOffset + visibleItems < sPartyMenuInternal->numActions)
+            {
+                sPartyMenuInternal->scrollOffset++;
+                RedrawSelectionMenuItems();
+                Menu_MoveCursorNoWrapAround(-1); // bump cursor back up to compensate
+            }
+        }
+        return MENU_NOTHING_CHOSEN;
+    }
+
+    return MENU_NOTHING_CHOSEN;
+}
+
 static void Task_HandleSelectionMenuInput(u8 taskId)
 {
     if (!gPaletteFade.active && MenuHelpers_ShouldWaitForLinkRecv() != TRUE)
@@ -2850,7 +2988,9 @@ static void Task_HandleSelectionMenuInput(u8 taskId)
         s8 input;
         s16 *data = gTasks[taskId].data;
 
-        if (sPartyMenuInternal->numActions <= 3)
+        if (sPartyMenuInternal->numActions > 9)
+            input = ProcessScrollableMenuInput();
+        else if (sPartyMenuInternal->numActions <= 3)
             input = Menu_ProcessInputNoWrapAround_other();
         else
             input = ProcessMenuInput_other();
@@ -3138,6 +3278,12 @@ static void SwitchPartyMon(void)
     SwitchMenuBoxSprites(&menuBoxes[0]->itemSpriteId, &menuBoxes[1]->itemSpriteId);
     SwitchMenuBoxSprites(&menuBoxes[0]->monSpriteId, &menuBoxes[1]->monSpriteId);
     SwitchMenuBoxSprites(&menuBoxes[0]->statusSpriteId, &menuBoxes[1]->statusSpriteId);
+
+    // Track designated follower through party swaps (0=none, 1-6=slot+1)
+    if (gSaveBlock1Ptr->designatedFollower == gPartyMenu.slotId + 1)
+        gSaveBlock1Ptr->designatedFollower = gPartyMenu.slotId2 + 1;
+    else if (gSaveBlock1Ptr->designatedFollower == gPartyMenu.slotId2 + 1)
+        gSaveBlock1Ptr->designatedFollower = gPartyMenu.slotId + 1;
 }
 
 // Finish switching mons or using Softboiled
@@ -3805,6 +3951,24 @@ static void Task_HandleSpinTradeYesNoInput(u8 taskId)
     }
 }
 
+static void CursorCb_Follow(u8 taskId)
+{
+    struct Pokemon *mon = &gPlayerParty[gPartyMenu.slotId];
+
+    PlaySE(SE_SELECT);
+    PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[0]);
+    PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[1]);
+
+    // Set designated follower to the selected party slot (stored as slot+1, 0=none)
+    gSaveBlock1Ptr->designatedFollower = gPartyMenu.slotId + 1;
+
+    // Show confirmation message
+    GetMonNickname(mon, gStringVar1);
+    StringExpandPlaceholders(gStringVar4, gText_PkmnWillFollowYou);
+    DisplayPartyMenuMessage(gStringVar4, TRUE);
+    gTasks[taskId].func = Task_ReturnToChooseMonAfterText;
+}
+
 static void CursorCb_FieldMove(u8 taskId)
 {
     u8 fieldMove = sPartyMenuInternal->actions[Menu_GetCursorPos()] - MENU_FIELD_MOVES;
@@ -4347,6 +4511,7 @@ static void UpdatePartyMonAilmentGfx(u8 status, struct PartyMenuBox *menuBox)
 
 static void ChangePokemonStatsPartyScreen_CB(void)
 {
+    gLastViewedMonIndex = gSpecialVar_0x8004;
     CB2_ReturnToPartyMenuFromSummaryScreen();
 }
 
