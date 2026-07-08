@@ -74,6 +74,7 @@ static bool32 IsMonGettingExpSentOut(void);
 static void InitLevelUpBanner(void);
 static bool8 SlideInLevelUpBanner(void);
 static bool8 SlideOutLevelUpBanner(void);
+static bool8 sDefiantPending = FALSE; //DEFIANT TEST
 static void DrawLevelUpWindow1(void);
 static void DrawLevelUpWindow2(void);
 static void PutMonIconOnLvlUpBanner(void);
@@ -4993,6 +4994,20 @@ static void Cmd_moveend(void)
                 gBattlescriptCurrInstr = BattleScript_RageIsBuilding;
                 effect = TRUE;
             }
+            // GEN 3 style Plus 1 stage.
+            else if (sDefiantPending
+         && gBattleMons[gBattlerTarget].ability == ABILITY_DEFIANT
+         && gBattleMons[gBattlerTarget].hp != 0
+         && gBattleMons[gBattlerTarget].statStages[STAT_ATK] < MAX_STAT_STAGE)
+{
+    sDefiantPending = FALSE;
+
+    gBattleMons[gBattlerTarget].statStages[STAT_ATK]++;
+
+    BattleScriptPushCursor();
+    gBattlescriptCurrInstr = BattleScript_RageIsBuilding;
+    effect = TRUE;
+}
             gBattleScripting.moveendState++;
             break;
         case MOVEEND_DEFROST: // defrosting check
@@ -7935,7 +7950,14 @@ static u8 ChangeStatBuffs(s8 statValue, u8 statId, u8 flags, const u8 *BS_ptr)
             return STAT_CHANGE_DIDNT_WORK;
         }
         else // try to decrease
-        {
+        {	
+            if (statValue < 0 //defiant test
+    && gBattleMons[gActiveBattler].ability == ABILITY_DEFIANT
+    && gBattlerAttacker != gActiveBattler
+    && GetBattlerSide(gBattlerAttacker) != GetBattlerSide(gActiveBattler))
+{
+    sDefiantPending = TRUE;
+}
             statValue = -GET_STAT_BUFF_VALUE(statValue);
             gBattleTextBuff2[0] = B_BUFF_PLACEHOLDER_BEGIN;
             index = 1;

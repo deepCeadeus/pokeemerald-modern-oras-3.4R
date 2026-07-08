@@ -96,6 +96,7 @@ static const u8 sSkillLinkDescription[] = _("Moves hit max amount.");
 static const u8 sToughClawsDescription[] = _("Boosts physical moves.");
 static const u8 sMetalCoatDescription[] = _("Normal moves become Steel.");
 static const u8 sBerserkDescription[] = _("Boosts Sp.Atk at half HP.");
+static const u8 sDefiantDescription[] = _("Stats lowered, Rage builds.");
 
 
 const u8 gAbilityNames[ABILITIES_COUNT][ABILITY_NAME_LENGTH + 1] =
@@ -197,6 +198,7 @@ const u8 gAbilityNames[ABILITIES_COUNT][ABILITY_NAME_LENGTH + 1] =
     [ABILITY_TOUGH_CLAWS] = _("Tough Claws"),
     [ABILITY_METAL_COAT] = _("Metal Coat"),
     [ABILITY_BERSERK] = _("Berserk"),
+    [ABILITY_DEFIANT] = _("Defiant"),
 };
 
 const u8 *const gAbilityDescriptionPointers[ABILITIES_COUNT] =
@@ -298,4 +300,5 @@ const u8 *const gAbilityDescriptionPointers[ABILITIES_COUNT] =
     [ABILITY_TOUGH_CLAWS] = sToughClawsDescription,
     [ABILITY_METAL_COAT] = sMetalCoatDescription,
     [ABILITY_BERSERK] = sBerserkDescription,
+    [ABILITY_DEFIANT] = sDefiantDescription,
 };
