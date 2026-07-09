@@ -2867,9 +2867,16 @@ BattleScript_EffectHitEscape::
     goto BattleScript_HandleFaintedMon
     
     BattleScript_HitEscapeEnd2:
+    tryfaintmon BS_TARGET
+    tryfaintmon_spikes BS_TARGET, BattleScript_HitEscapeArenaFaintedMon
     switchinanim BS_ATTACKER, TRUE
     moveendall
     end
+    
+    BattleScript_HitEscapeArenaFaintedMon:
+    switchinanim BS_ATTACKER, TRUE
+    moveendall
+    goto BattleScript_HandleFaintedMon
     
     BattleScript_HitEscapeTrainer:
     jumpifbattletype BATTLE_TYPE_ARENA, BattleScript_HitEscapeEnd2
