@@ -388,8 +388,9 @@
 #define MOVE_BARRIER_RUSH 384
 #define MOVE_RAGE_FIST 385
 #define MOVE_HYPER_DRILL 386
+#define MOVE_JUDGMENT 387
 
-#define MOVES_COUNT 387
+#define MOVES_COUNT 388
 
 // Used for checks for moves affected by Disable, Mimic, etc.
 #define MOVE_UNAVAILABLE 0xFFFF

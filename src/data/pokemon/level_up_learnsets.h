@@ -7507,7 +7507,7 @@ static const u16 sAmbipomLevelUpLearnset[] = {
 };
 
 static const u16 sArceusLevelUpLearnset[] = {
-    LEVEL_UP_MOVE( 1, MOVE_HEADBUTT),
+    LEVEL_UP_MOVE( 1, MOVE_JUDGMENT),
     LEVEL_UP_MOVE(10, MOVE_COSMIC_POWER),
     LEVEL_UP_MOVE(15, MOVE_SHADOW_CLAW),
     LEVEL_UP_MOVE(20, MOVE_SUPERPOWER),

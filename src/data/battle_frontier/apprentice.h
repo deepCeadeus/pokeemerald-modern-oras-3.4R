@@ -959,6 +959,7 @@ static const bool8 sValidApprenticeMoves[MOVES_COUNT] =
     [MOVE_BARRIER_RUSH] = TRUE,
     [MOVE_RAGE_FIST] = TRUE,
     [MOVE_HYPER_DRILL] = TRUE,
+    [MOVE_JUDGMENT] = TRUE,
     
 };
 

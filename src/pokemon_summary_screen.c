@@ -4470,7 +4470,7 @@ static void SetMoveTypeIcons(void)
     for (i = 0; i < MAX_MON_MOVES; i++)
     {
         if (summary->moves[i] != MOVE_NONE) {
-            if (summary->moves[i] == MOVE_HIDDEN_POWER) {
+            if (summary->moves[i] == MOVE_HIDDEN_POWER || summary->moves[i] == MOVE_JUDGMENT) {
                 u8 typeBits  = ((GetMonData(mon, MON_DATA_HP_IV) & 1) << 0)
                      | ((GetMonData(mon, MON_DATA_ATK_IV) & 1) << 1)
                      | ((GetMonData(mon, MON_DATA_DEF_IV) & 1) << 2)
@@ -4517,7 +4517,7 @@ static void SetNewMoveTypeIcon(void)
     else
     {
         if (sMonSummaryScreen->currPageIndex == PSS_PAGE_BATTLE_MOVES)
-            if (sMonSummaryScreen->newMove == MOVE_HIDDEN_POWER) {
+            if (sMonSummaryScreen->newMove == MOVE_HIDDEN_POWER || sMonSummaryScreen->newMove == MOVE_JUDGMENT) {
                 u8 typeBits  = ((GetMonData(mon, MON_DATA_HP_IV) & 1) << 0)
                      | ((GetMonData(mon, MON_DATA_ATK_IV) & 1) << 1)
                      | ((GetMonData(mon, MON_DATA_DEF_IV) & 1) << 2)

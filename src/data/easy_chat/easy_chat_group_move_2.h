@@ -233,4 +233,5 @@ const u16 gEasyChatGroup_Move2[] = {
     MOVE_BARRIER_RUSH,
     MOVE_RAGE_FIST,
     MOVE_HYPER_DRILL,
+    MOVE_JUDGMENT,
 };

@@ -1912,7 +1912,7 @@ static void MoveSelectionDisplayMoveTypeDoubles(u8 targetId)
 
     moveCategory = gBattleMoves[move].category;
 
-    if (move == MOVE_HIDDEN_POWER)
+    if (move == MOVE_HIDDEN_POWER || move == MOVE_JUDGMENT)
     {
         u8 typeBits  = ((GetMonData(&gPlayerParty[gBattlerPartyIndexes[gActiveBattler]], MON_DATA_HP_IV) & 1) << 0)
                      | ((GetMonData(&gPlayerParty[gBattlerPartyIndexes[gActiveBattler]], MON_DATA_ATK_IV) & 1) << 1)
@@ -1968,7 +1968,7 @@ static void MoveSelectionDisplayMoveType(void) //Made this display a Move Type I
 	
     moveCategory = gBattleMoves[move].category;
 
-    if (move == MOVE_HIDDEN_POWER)
+    if (move == MOVE_HIDDEN_POWER || move == MOVE_JUDGMENT)
     {
         u8 typeBits  = ((GetMonData(&gPlayerParty[gBattlerPartyIndexes[gActiveBattler]], MON_DATA_HP_IV) & 1) << 0)
                      | ((GetMonData(&gPlayerParty[gBattlerPartyIndexes[gActiveBattler]], MON_DATA_ATK_IV) & 1) << 1)

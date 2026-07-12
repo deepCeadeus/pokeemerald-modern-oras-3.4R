@@ -1543,7 +1543,11 @@ static const u8 sRageFistDescription[] = _(
 
 static const u8 sHyperDrillDescription[] = _(
     "Powerful against paralyzed\n"
-    "foes, but also cures them.");         
+    "foes, but also cures them."); 
+
+static const u8 sJudgmentDescription[] = _(
+    "The effectiveness varies\n"
+    "with the user.");             
 
 // MOVE_NONE is ignored in this table. Make sure to always subtract 1 before getting the right pointer.
 const u8 *const gMoveDescriptionPointers[MOVES_COUNT - 1] =
@@ -1934,4 +1938,5 @@ const u8 *const gMoveDescriptionPointers[MOVES_COUNT - 1] =
     [MOVE_BARRIER_RUSH - 1] = sBarrierRushDescription,
     [MOVE_RAGE_FIST - 1] = sRageFistDescription,
     [MOVE_HYPER_DRILL - 1] = sHyperDrillDescription,
+    [MOVE_JUDGMENT - 1] = sJudgmentDescription,
 };

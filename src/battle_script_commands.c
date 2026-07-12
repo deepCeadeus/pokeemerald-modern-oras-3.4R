@@ -1643,7 +1643,7 @@ static void Cmd_typecalc(void)
     }
 
     GET_MOVE_TYPE(gCurrentMove, moveType);
-    if (gCurrentMove == MOVE_HIDDEN_POWER)
+    if (gCurrentMove == MOVE_HIDDEN_POWER || gCurrentMove == MOVE_JUDGMENT)
         moveType = getHiddenPowerType();
     else
         moveType = CheckAbilityChangeMoveType(gCurrentMove);
@@ -1998,7 +1998,7 @@ u8 AI_TypeCalc(u16 move, u16 targetSpecies, u8 targetAbility)
     if (move == MOVE_STRUGGLE)
         return 0;
 
-    if (move == MOVE_HIDDEN_POWER)
+    if (move == MOVE_HIDDEN_POWER || move == MOVE_JUDGMENT)
         moveType = getHiddenPowerType();
     else
         moveType = CheckAbilityChangeMoveType(move);
@@ -2071,7 +2071,7 @@ u8 AI_TypeDisplay(u16 move, u16 targetSpecies, u8 targetAbility)
     if (move == MOVE_STRUGGLE)
         return 0;
 
-    if (move == MOVE_HIDDEN_POWER)
+    if (move == MOVE_HIDDEN_POWER || move == MOVE_JUDGMENT)
         moveType = getHiddenPowerType2();
     else
         moveType = DisplayMoveTypeChange(move);

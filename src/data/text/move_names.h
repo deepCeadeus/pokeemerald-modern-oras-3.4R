@@ -387,4 +387,5 @@ const u8 gMoveNames[MOVES_COUNT][MOVE_NAME_LENGTH + 1] =
     [MOVE_BARRIER_RUSH] = _("Barrier Rush"),
     [MOVE_RAGE_FIST] = _("Rage Fist"),
     [MOVE_HYPER_DRILL] = _("Hyper Drill"),
+    [MOVE_JUDGMENT] = _("Judgment"),
 };
