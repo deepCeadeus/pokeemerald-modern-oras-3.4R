@@ -6485,10 +6485,11 @@ s32 CalculateBaseDamage(struct BattlePokemon *attacker, struct BattlePokemon *de
         spAttack *= 1.2;
     }
     if ((attackerHoldEffect == HOLD_EFFECT_STEEL_POWER && moveType == TYPE_NORMAL) && attacker->ability == ABILITY_METAL_COAT)  
-     {
+    {
         attack *= 1.2;
         spAttack *= 1.2;
     } 
+    /*
     if ((attackerHoldEffect == HOLD_EFFECT_FAIRY_POWER && moveType == TYPE_FAIRY) && attacker->ability == ABILITY_MULTITYPE)
     {
         attack *= 1.25;
@@ -6579,6 +6580,8 @@ s32 CalculateBaseDamage(struct BattlePokemon *attacker, struct BattlePokemon *de
         defense *= 1.25;
         spDefense *= 1.25;
     }
+    */
+    
     //Test event
     if ((attacker->ability == ABILITY_LEVITATE) && (type == TYPE_MYSTERY))
     {
@@ -6645,7 +6648,7 @@ s32 CalculateBaseDamage(struct BattlePokemon *attacker, struct BattlePokemon *de
     if (attacker->ability == ABILITY_HYPER_CUTTER && (gCurrentMove == MOVE_VICE_GRIP))
         attack = (120 * attack) / 100;
     if (attacker->ability == ABILITY_LEGEND_PLATE && (gCurrentMove == MOVE_JUDGMENT))
-        spAttack = (150 * spAttack) / 100;      
+        spAttack = (200 * spAttack) / 100;      
     if (attacker->ability == ABILITY_CACOPHONY && (gCurrentMove == MOVE_SNORE || gCurrentMove == MOVE_UPROAR || gCurrentMove == MOVE_HYPER_VOICE || gCurrentMove == MOVE_BUG_BUZZ))
         spAttack = (150 * spAttack) / 100;
     if (attacker->ability == ABILITY_IRON_FIST && (gCurrentMove == MOVE_FIRE_PUNCH || gCurrentMove == MOVE_ICE_PUNCH || gCurrentMove == MOVE_THUNDER_PUNCH || gCurrentMove == MOVE_MACH_PUNCH || gCurrentMove == MOVE_SHADOW_PUNCH || gCurrentMove == MOVE_DIZZY_PUNCH || gCurrentMove == MOVE_DYNAMIC_PUNCH || gCurrentMove == MOVE_FOCUS_PUNCH || gCurrentMove == MOVE_COMET_PUNCH || gCurrentMove == MOVE_MEGA_PUNCH))

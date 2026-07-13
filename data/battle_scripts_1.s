@@ -4363,6 +4363,11 @@ BattleScript_ColorChangeActivates::
 	waitmessage B_WAIT_TIME_LONG
 	return
 
+BattleScript_MultitypeActivates::
+    	printstring STRINGID_PKMNCHANGEDTYPEWITH
+    	waitmessage B_WAIT_TIME_LONG
+    	end3
+
 BattleScript_RoughSkinActivates::
 	orword gHitMarker, HITMARKER_IGNORE_SUBSTITUTE | HITMARKER_PASSIVE_DAMAGE
 	healthbarupdate BS_ATTACKER

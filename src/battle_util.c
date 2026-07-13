@@ -2432,6 +2432,53 @@ u8 CastformDataTypeChange(u8 battler)
     return formChange;
 }
 
+static u8 GetMultitypeType(u8 battler)
+{
+    u8 holdEffect = ItemId_GetHoldEffect(gBattleMons[battler].item);
+
+    switch (holdEffect)
+    {
+    case HOLD_EFFECT_FAIRY_POWER:
+        return TYPE_FAIRY;
+    case HOLD_EFFECT_BUG_POWER:
+        return TYPE_BUG;
+    case HOLD_EFFECT_STEEL_POWER:
+        return TYPE_STEEL;
+    case HOLD_EFFECT_GROUND_POWER:
+        return TYPE_GROUND;
+    case HOLD_EFFECT_ROCK_POWER:
+        return TYPE_ROCK;
+    case HOLD_EFFECT_GRASS_POWER:
+        return TYPE_GRASS;
+    case HOLD_EFFECT_DARK_POWER:
+        return TYPE_DARK;
+    case HOLD_EFFECT_FIGHTING_POWER:
+        return TYPE_FIGHTING;
+    case HOLD_EFFECT_ELECTRIC_POWER:
+        return TYPE_ELECTRIC;
+    case HOLD_EFFECT_WATER_POWER:
+        return TYPE_WATER;
+    case HOLD_EFFECT_FLYING_POWER:
+        return TYPE_FLYING;
+    case HOLD_EFFECT_POISON_POWER:
+        return TYPE_POISON;
+    case HOLD_EFFECT_ICE_POWER:
+        return TYPE_ICE;
+    case HOLD_EFFECT_GHOST_POWER:
+        return TYPE_GHOST;
+    case HOLD_EFFECT_PSYCHIC_POWER:
+        return TYPE_PSYCHIC;
+    case HOLD_EFFECT_FIRE_POWER:
+        return TYPE_FIRE;
+    case HOLD_EFFECT_DRAGON_POWER:
+        return TYPE_DRAGON;
+    case HOLD_EFFECT_NORMAL_POWER:
+        return TYPE_NORMAL;
+    default:
+        return TYPE_NORMAL;
+    }
+}
+
 u8 AbilityBattleEffects(u8 caseID, u8 battler, u8 ability, u8 special, u16 moveArg)
 {
     u8 effect = 0;
@@ -2585,6 +2632,25 @@ u8 AbilityBattleEffects(u8 caseID, u8 battler, u8 ability, u8 special, u16 moveA
                     gSpecialStatuses[battler].intimidatedMon = 1;
                 }
                 break;
+            
+            case ABILITY_MULTITYPE:
+	    {
+    		
+    		{
+        	    u8 newType = GetMultitypeType(battler);
+
+        	    if (!IS_BATTLER_OF_TYPE(battler, newType))
+        	    {
+            		gBattleScripting.battler = battler;
+			SET_BATTLER_TYPE(battler, newType);
+			PREPARE_TYPE_BUFFER(gBattleTextBuff1, newType);
+			BattleScriptPushCursorAndCallback(BattleScript_MultitypeActivates);
+			effect++;
+        	    }
+    		}
+    		break;
+	    }
+                
             case ABILITY_FORECAST:
                 effect = CastformDataTypeChange(battler);
                 if (effect != 0)
@@ -2799,6 +2865,29 @@ u8 AbilityBattleEffects(u8 caseID, u8 battler, u8 ability, u8 special, u16 moveA
                     effect++;
                 }
                 break;
+             // CHANGE ON HIT TESTING This allows it to be traced, knock off removes it, arceus can switch from trick then get hit and change again. Might remove later if i block trace, knock off, skill swap, etc 
+            case ABILITY_MULTITYPE:
+	    {
+    		if (!(gMoveResultFlags & MOVE_RESULT_NO_EFFECT)
+ 		&& move != MOVE_STRUGGLE
+ 		&& gBattleMoves[move].power != 0
+ 		&& TARGET_TURN_DAMAGED
+ 		&& gBattleMons[battler].hp != 0)
+    		{
+        	    u8 newType = GetMultitypeType(battler);
+
+        	    if (!IS_BATTLER_OF_TYPE(battler, newType))
+        	    {
+            		SET_BATTLER_TYPE(battler, newType);
+            		PREPARE_TYPE_BUFFER(gBattleTextBuff1, newType);
+            		BattleScriptPushCursor();
+            		gBattlescriptCurrInstr = BattleScript_ColorChangeActivates;
+            		effect++;
+        	    }
+    		}
+    		break;
+	    }
+	    
             case ABILITY_ROUGH_SKIN:
                 if (!(gMoveResultFlags & MOVE_RESULT_NO_EFFECT)
                  && gBattleMons[gBattlerAttacker].hp != 0
