@@ -1844,7 +1844,21 @@ moveType = CheckAbilityChangeMoveType(move);
 gBattlerAttacker = oldBattler;
     if (IS_MOVE_STATUS(move))
         return FALSE;
+    
+    if (move == MOVE_HIDDEN_POWER || move == MOVE_JUDGMENT)
+    {
+        u8 typeBits  = ((GetMonData(&gPlayerParty[gBattlerPartyIndexes[gActiveBattler]], MON_DATA_HP_IV) & 1) << 0)
+                     | ((GetMonData(&gPlayerParty[gBattlerPartyIndexes[gActiveBattler]], MON_DATA_ATK_IV) & 1) << 1)
+                     | ((GetMonData(&gPlayerParty[gBattlerPartyIndexes[gActiveBattler]], MON_DATA_DEF_IV) & 1) << 2)
+                     | ((GetMonData(&gPlayerParty[gBattlerPartyIndexes[gActiveBattler]], MON_DATA_SPEED_IV) & 1) << 3)
+                     | ((GetMonData(&gPlayerParty[gBattlerPartyIndexes[gActiveBattler]], MON_DATA_SPATK_IV) & 1) << 4)
+                     | ((GetMonData(&gPlayerParty[gBattlerPartyIndexes[gActiveBattler]], MON_DATA_SPDEF_IV) & 1) << 5);
 
+        moveType = ((NUMBER_OF_MON_TYPES - 3) * typeBits) / 63 + 1;
+        if (moveType == TYPE_MYSTERY)
+            moveType = TYPE_FAIRY;
+    }
+    
     return (moveType == gBattleMons[battlerId].type1 || moveType == gBattleMons[battlerId].type2);
 }
 

@@ -9815,7 +9815,10 @@ static void Cmd_hiddenpowercalc(void)
                  | ((gBattleMons[gBattlerAttacker].spAttackIV & 1) << 4)
                  | ((gBattleMons[gBattlerAttacker].spDefenseIV & 1) << 5);
 
-    gDynamicBasePower = 60;
+    if (gCurrentMove == MOVE_JUDGMENT)
+    	gDynamicBasePower = 100;
+    else
+    	gDynamicBasePower = 60;
 
     // Subtract 2 instead of 1 below because 3 types are excluded (TYPE_NORMAL and TYPE_MYSTERY)
     // The number goes from 0 to 16 (19 - 2), from TYPE_NORMAL to TYPE_DRAGON.
