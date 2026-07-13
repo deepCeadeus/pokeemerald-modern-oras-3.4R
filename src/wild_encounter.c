@@ -847,19 +847,21 @@ bool8 SweetScentWildEncounter(void)
         u32 shinyThreshold = SHINY_ODDS;
         u8 pokemon_nature = GetNatureFromPersonality(personality);
 
-        if (gSaveBlock1Ptr->tx_Features_ShinyChance == 1)
-            shinyThreshold = 16;
-        else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 2)
-            shinyThreshold = 32;
-        else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 3)
-            shinyThreshold = 64;
-        else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 4)
-            shinyThreshold = 128;
+        if (gSaveBlock1Ptr->tx_Features_ShinyChance == 0) // 1/16
+        shinyThreshold = 4096;
+        else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 1) // 1/32
+        shinyThreshold = 2048;
+        else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 2) // 1/64
+        shinyThreshold = 1024;
+        else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 3) // 1/128
+        shinyThreshold = 512;
+        else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 4) // 1/256
+        shinyThreshold = 256;
 
         if (shinyValue >= shinyThreshold) // not already shiny
         {
             u32 rolls = 0;
-            u32 shinyRolls = 1 + 2 * gSweetScentChainStreak;
+            u32 shinyRolls = 1 + gSweetScentChainStreak / 3;
             do {
                 personality = Random32();
                 shinyValue = GET_SHINY_VALUE(otId, personality);
@@ -930,19 +932,21 @@ void FishingWildEncounter(u8 rod)
         u32 shinyThreshold = SHINY_ODDS;
         u8 pokemon_nature = GetNatureFromPersonality(personality);
 
-        if (gSaveBlock1Ptr->tx_Features_ShinyChance == 1)
-            shinyThreshold = 16;
-        else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 2)
-            shinyThreshold = 32;
-        else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 3)
-            shinyThreshold = 64;
-        else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 4)
-            shinyThreshold = 128;
+        if (gSaveBlock1Ptr->tx_Features_ShinyChance == 0) // 1/16
+        shinyThreshold = 4096;
+        else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 1) // 1/32
+        shinyThreshold = 2048;
+        else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 2) // 1/64
+        shinyThreshold = 1024;
+        else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 3) // 1/128
+        shinyThreshold = 512;
+        else if (gSaveBlock1Ptr->tx_Features_ShinyChance == 4) // 1/256
+        shinyThreshold = 256;
 
         if (shinyValue >= shinyThreshold) // not already shiny
         {
             u32 rolls = 0;
-            u32 shinyRolls = 1 + 2 * gChainFishingStreak;
+            u32 shinyRolls = 1 + gChainFishingStreak / 3;
             do {
                 personality = Random32();
                 shinyValue = GET_SHINY_VALUE(otId, personality);

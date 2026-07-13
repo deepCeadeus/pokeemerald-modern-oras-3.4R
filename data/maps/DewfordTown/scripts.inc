@@ -724,6 +724,14 @@ DewfordTown_Text_ThrowInFishingAdvice:
 	.string "immediately, but with bigger catches,\l"
 	.string "you need to time the pulls on your Rod\l"
 	.string "to haul them in.\p"
+	.string "Also, if you chain your fishing strikes\n"
+	.string "you may encounter different colored\l"
+	.string "Pokémon.\p"
+	.string "Fishing strikes means defeating the\n"
+	.string "wild Pokémon and starting a new\l"
+	.string "fishing encounter.\p"
+	.string "If you run away or whiteout, you\n"
+	.string "will lose your fishing strike!$"
 
 DewfordTown_Text_ThatsTooBadThen:
 	.string "Oh, is that so?\n"
@@ -748,6 +756,14 @@ DewfordTown_Text_FishingAdvice:
 	.string "immediately, but with bigger catches,\l"
 	.string "you need to time the pulls on your Rod\l"
 	.string "to haul them in.\p"
+	.string "Also, if you chain your fishing strikes\n"
+	.string "you may encounter different colored\l"
+	.string "Pokémon.\p"
+	.string "Fishing strikes means defeating the\n"
+	.string "wild Pokémon and starting a new\l"
+	.string "fishing encounter.\p"
+	.string "If you run away or whiteout, you\n"
+	.string "will lose your fishing strike!$"
 
 DewfordTown_Text_XIsTheBiggestHappeningThingRight:
 	.string "I like what's hip, happening, and trendy.\n"
