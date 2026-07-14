@@ -1,5 +1,605 @@
-# Pokémon Modern Emerald
+# Pokémon Modern Emerald ORAS 3.4R
+Modern Emerald Documents
+You can get more information about Modern Emerald at [Pokecommunity](https://www.pokecommunity.com/showthread.php?t=494005)
+You can get the hackrom documentation following [this link](https://docs.google.com/spreadsheets/d/1QEFJmFhfaZqgxSUnM7MFpufrnrRk_NMzNoNWl2m3y_0/edit#gid=414283818)
 
+# ✨CHANGES FROM BASE MODERN EMERALD 
+
+### Project Goals
+This fork aims to make Modern Emerald feel more like a “Generation 3.5” experience while preserving the spirit of Pokémon Emerald.
+
+**TL;DR:** Use Heart Scales and go to the Ability Trainer (Lilycove). Weather is back (including hail + Ice Body). Some abilities were added or tuned. Several moves were reworked. Elemental Fangs were added back, including **Night Slash**, **U-Turn/Vault Switch**, and **Roost**. **Sucker Punch** was added. **Prankster-style moves** now exist as move effects (granting +1 priority) instead of adding the Prankster ability. Signature moves were restored for **Wyrdeer, Farigiraf, Dundunsparce, Kleavor,** and **Annihilape**. There is a table for Judgment/Hidden Power IV's towards bottom of this README.
+
+Key goals include:
+- Strengthening underperforming types, especially Bug and Steel.
+- Giving Pokémon clearer identities through ability and movepool changes.
+- Preserving compatibility with the original games whenever practical.
+- Adding selected Generation IV mechanics and Pokémon while maintaining a cohesive Gen III feel.
+- Keeping changes organized and easy to port to other Modern Emerald–based projects.
+
+---
+
+## Quality of Life & Compatibility
+
+### Selectable Shiny Rates
+Players can choose one of the following shiny odds:
+- 1/16
+- 1/32
+- 1/64
+- 1/128
+- 1/256
+
+Additional features:
+- The **1/16** setting guarantees a shiny starter.
+- Compatible with **Random Starter** mode.
+- Debug-generated shinies continue to use the original **1/8192** legality check (to my knowledge).
+
+**Compatibility Note:** Pokémon obtained using increased shiny rates may not remain shiny when transferred to an unmodified game.
+
+---
+
+## ORAS Tileset Update
+Updated to **ORAS Tileset Fork v3.4**.
+
+---
+
+## Record Mixing & Secret Bases
+
+### Record Mixing
+Mixing records with original games remains largely compatible.
+
+Known issue:
+- Species not present in the original games display as “?”.
+
+This most notably affects alternate **Deoxys** forms. Base-form Deoxys functions normally.
+
+### Secret Base Fixes
+- Fixed Secret Base trainer encounters.
+- Restored intended **Level 50** battle scaling.
+- Pokémon levels now correctly revert after battle.
+
+Previously, Secret Base battles could permanently leave Pokémon at **Level 100**.
+
+---
+
+## Event & Map Fixes
+
+### Deoxys Meteor Fix
+- Missing meteor metatile data prevented proper Deoxys form interactions.
+- Reworked into scripted **Rock Smash** interactions.
+
+### Celebi Event Fix
+- Fixed an incorrectly placed interaction tile that prevented the Celebi encounter from triggering.
+
+---
+
+## Compatibility Philosophy
+
+### Ability Compatibility
+Almost every Pokémon retains at least one original ability.
+
+### Transfer Compatibility
+Pokémon using original moves and original abilities should generally transfer and function as expected. (TESTING)
+
+Many Pokémon received new secondary abilities, but original functionality was preserved wherever possible.
+
+---
+
+## Move Changes
+
+### Reworked Moves
+
+#### Beat Up
+- Now functions similarly to Rock Blast.
+- Hits **2–5 times**.
+
+#### ViceGrip
+- Now a **Bug-type** move.
+- **75 BP**.
+- **50%** chance to lower **Defense**.
+- Distributed primarily to Pokémon with crab-like appendages.
+
+#### Night Shade
+- Now a **40 BP Special** priority move.
+
+#### Water Gun
+- **55 BP**.
+- Increased critical-hit chance.
+
+#### Stone Axe
+- Added as a **Rock-type** move.
+- **50 BP**, **90 accuracy**, hits twice.
+- Available on:
+  - **Kleavor**
+  - **Kabutops**
+
+#### Head Smash
+- Added as a **110 BP recoil** move.
+- **85 accuracy**.
+- Recoil behaves like Double-Edge (style-wise).
+- Replaces Stone Edge on many Pokémon.
+
+---
+
+### Buffed Moves
+- **False Swipe:** 70 BP
+- **Metal Claw:** 65 BP, **20%** chance to flinch
+- **Poison Tail:** 55 BP, high crit ratio, **20%** poison chance
+- **Poison Sting:** 25 BP, high crit ratio, **30%** poison chance
+- **Bubble:** 30 BP, **20%** chance to lower Speed
+- **ThunderShock:** 45 BP, **10%** paralysis chance
+- **Ember:** 45 BP, **20%** burn chance
+- **Powder Snow:** 45 BP, **10%** freeze chance
+- **Vine Whip:** 45 BP, **10%** chance to flinch
+- **Fury Cutter:** 30 BP; doubles each turn, capped after 3 turns
+- **Leech Life:** 65 BP
+- **Absorb:** 25 BP
+- **Mega Drain:** 50 BP
+- **Razor Wind:** restored increased critical-hit ratio
+
+---
+
+## Physical Coverage Additions
+
+Added:
+- **Fire Fang**
+- **Thunder Fang**
+- **Ice Fang**
+- **Night Slash**
+
+### Fang Adjustments
+Because Gen IV flinch mechanics aren’t present:
+- Fire Fang: **20%** burn
+- Thunder Fang: **20%** paralysis
+- Ice Fang: **20%** freeze
+
+---
+
+## Physical Fire Progression
+
+**Flame Wheel**
+- 70 BP
+- 100 accuracy
+- 10% burn chance
+
+**Fire Fang**
+- Lower damage
+- Higher status chance
+
+**Sacred Fire**
+- Remains the premier physical Fire-type attack.
+
+---
+
+## Generation IV Move Additions
+
+### U-Turn
+- 70 BP
+- 100 accuracy
+
+### Volt Switch
+- 70 BP
+- 100 accuracy
+
+### Custom Switch Logic
+U-Turn and Volt Switch use custom battle scripts and animations.
+
+Behavior:
+- No switch occurs after defeating a wild Pokémon.
+- No switch occurs after defeating a trainer’s final Pokémon.
+- If a switch is impossible, the user is visually sent back out from Poké Ball to the field after experience is resolved.
+
+This prevents cases where a Pokémon vanishes and later reappears without explanation.
+
+**Wild-battle note (animation detail):**
+If a wild Pokémon uses U-Turn, it animates as if it leapt/flew away. The Poké Ball throw animation still finishes because the game cannot switch in this case. This is intended for now. Later, a custom animation may be added that removes the ball for wild encounters (a brief flash, then the Pokémon expanding—same animation timing, without the ball).
+
+**Encounter table note:**
+You technically should not run into this scenario during normal encounters. If you use a randomizer and a wild Pokémon returns from a ball, you may see this behavior.
+
+If you want to remove it for alternate animations, you can remove:
+- `sendtofield attacker, true`
+- and the `end1` / `end2` lines at the end of the script
+
+I set this up because it looks clean in battles where you can’t send anything out.
+
+Tested in:
+- Single Battles
+- Double Battles
+- Battle Frontier formats
+- Battle Arena
+
+### Sucker Punch
+- 70 BP
+- 100 accuracy
+Partially adapted from Exalted Emerald.
+Includes a custom animation compatible with Modern Emerald assets.
+
+### Roost
+- Added.
+- Works like Recover.
+- Does not remove the Flying type.
+
+### Judgment
+- 100 BP
+- Works like Hidden Power.
+- Refer to Hidden Power table at bottom
+
+---
+
+## Other Move Additions (Custom Animations)
+Built from Modern Emerald assets.
+
+### Barrier Rush (Psyshield Bash – name too long)
+- 70 BP
+- 50% chance to raise Defense
+
+### Twin Beam
+- 50 BP
+- Hits twice
+
+### Hyper Drill
+- 70 BP
+- New functionality: works like Smelling Salts.
+- Doubles damage against PAR targets and removes paralysis.
+- (Especially useful with Serene Grace Body Slam.)
+
+### Rage Fist
+- 60 BP (Ghost)
+- Functions like normal Rage in Gen 3. 
+
+---
+
+## Encounter Changes
+
+### Safari Zone
+**Scyther**
+- Encounter rate increased to roughly match Pinsir and Heracross (about 4–5%).
+
+**Rare Johto Starter Evolutions**
+Added rare Safari Zone encounters:
+- Bayleef
+- Quilava
+- Croconaw
+
+These appear alongside the existing Kanto starter evolutions at about 1% encounter rates.
+Several existing encounters were reduced from 5% to 4% to make room.
+
+### Route 101
+**Eevee**
+- 1% encounter rate (existing Modern Emerald encounter)
+
+**Pikachu**
+- Added at 1% encounter rate
+
+---
+
+## Hidden Priority Moves (Prankster-Style)
+Several Pokémon gain hidden “Prankster-style” priority moves.
+
+These moves:
+- Have increased priority.
+- Must be relearned using a Heart Scale.
+
+Available on:
+- Murkrow / Honchkrow
+- Shuppet
+- Banette
+- Sableye
+
+---
+
+## Ability Changes
+
+Most Pokémon now have access to a secondary ability. Many received alternatives based on Gen 4–5 results or similar themes (e.g., Blastoise → Rain Dish, Venusaur → Chlorophyll, Charizard → Drought).
+
+Abilities can be changed using the **Ability Changer in Lilycove City**.
+
+### Ability Reworks
+
+**Keen Eye**
+- Modernized to ignore evasion stages.
+
+**Hyper Cutter**
+- Same as before.
+- Also buffs **ViceGrip** (now 75 BP bug-type) “like Crush Claw.”
+- This is a **1.2×** buff (90 BP).
+- Distributed to: Pokémon with pincers and Trapinch.
+
+**Rough Skin**
+- Buffed to take **1/8** damage on contact.
+- Distributed to: Gyarados (No moxie for you!)
+
+**Plus & Minus**
+- 1.1× damage boost outside Double Battles.
+- Given to:
+  - Pikachu
+  - Mareep line
+
+**Illuminate**
+- 1.1× boost to Electric-type attacks. (Standard in base Modern Emerald)
+
+**Run Away**
+- 1.2× Defense and Special Defense below 50% HP.
+
+**Multitype**
+- REMOVED: damage boost from matching correct hold items to attack types. Arceus retained Normal type.
+- NEW: Type changes based on hold item effect.
+    - Works on switch in and displays message of type change.     
+    - Applies correct type STAB.
+    - Added capacity for ability to change type on hit if hold effect changed
+        - Allows for more gen 3 friendly behavior.
+        - Trace can change type on hit with correct hold effects.
+        - Knock off can remove type by removing item (reverts to normal)
+        - Trick can switch items and change type on hit
+  
+---
+
+## New Ability Distributions
+
+**Adaptability**
+- STAB increased to 2×.
+- Given to:
+  - Delcatty
+  - Eevee
+  - Corphish
+  - Crawdaunt
+  - Porygon-Z
+  - Hitmontop
+
+**Iron Fist**
+- 1.2× boost to punching moves.
+- Given to:
+  - Hitmonchan
+  - Breloom
+
+**Reckless**
+- 1.2× boost to recoil moves.
+- Given to:
+  - Hitmonlee
+  - Rhyperior
+  - Tauros
+  - Bagon
+  - Machamp line
+
+**Berserk**
+- 1.5× Special Attack below 50% HP.
+- Given to:
+  - Omastar
+  - Farigiraf
+
+**Sharpness**
+- 1.2× boost to slicing moves.
+- Given to:
+  - Gallade
+  - Kleavor
+  - Scyther
+
+**Tough Claws**
+- 1.2× boost to contact moves.
+- Given to:
+  - Persian
+  - Mightyena
+  - Swellow
+
+**Skill Link**
+- Given to:
+  - Ambipom
+  - Cloyster
+  - Heracross (lost Swarm)
+
+**Super Luck**
+- Replaces Sniper on most affected Pokémon.
+- Given to:
+  - Fearow
+  - Honchkrow
+  - Beedrill
+  - Kingdra line
+  - Octillery line
+
+**Defiant**
+- Gives 1 Attack stat stage instead of 2 (made it immune to intimidate for this reason)
+- Given to:
+  - Mankey
+  - Primeape
+  - Annihilape
+  - Farfetch'd
+
+**Rivalry**
+- 1.25× damage vs same-gender opponents.
+- 0.9× damage vs opposite-gender opponents.
+- Given to:
+  - Nidoking line
+  - Nidoqueen line
+
+**Legend Plate**
+- Arceus gets second ability
+- Retains Normal Type
+- Judgment gets 2x multiplier.
+ 
+
+---
+
+## Type-Changing Abilities
+These abilities change move typing only and do not add extra damage boosts.
+
+**Dragonize**
+- Feraligatr
+
+**Aerilize**
+- Salamence
+- Pinsir
+- Pidgey line
+
+**Pixilate**
+- Sylveon
+- Granbull
+
+**Metal Coat** (new)
+- Makes Normal-type moves Steel.
+- Scizor
+
+I wanted a simple way to modernize Scizor without adding many extra moves. Quick Attack, U-Turn, Swords Dance, Body Slam (para chance), and ViceGrip (50% def down).
+
+Additional Scizor changes:
+- Lost Double-Edge
+- Gained Body Slam
+- Gained Mega Kick via tutor
+
+**Mind’s Eye**
+- Normal-type moves become Ghost-type
+- Bloodmoon Ursaluna
+- Typhlosion
+
+Corrected type display in new UBOUND style battle menu for these abilities.
+They should now permanantly show the normal moves as the changed type in battle and show correct STAB and Type Effectiveness.
+Fixed a bug that occured when switching moves in new battle menu.
+
+NOTE: Silk Scarf still gives a 1.2× hold boost to type changed moves.
+A workaround was applied so correct hold items give the 1.2× boost to type changed normal moves.
+
+---
+
+## Weather Abilities
+
+**Drizzle**
+- Wingull
+- Pelipper
+- Politoed
+- Luvdisc
+- Zapdos
+- Kyogre
+
+**Drought**
+- Charmander line
+- Vulpix
+- Ninetales
+- Moltres
+- Chikorita line
+- Sunflora
+- Torkoal
+- Groudon
+
+**Sand Stream**
+- Sandshrew line
+- Shuckle
+- Phanpy line
+- Tyranitar
+
+**Snow Warning**
+- Smoochum
+- Jynx
+- Articuno
+- Froslass
+- Glaceon
+
+**Ice Body**
+- Seel
+- Dewgong
+- Articuno
+- Spheal line
+- Snoorunt line
+- Regice
+- Glaceon
+
+**Air Lock**
+- Zubat line
+- Lugia
+- Rayquaza
+
+**Cloud Nine**
+- Psyduck line
+- Dragonite
+- Stantler
+- Wyrdeer
+- Swablu
+- Altaria
+
+---
+
+## Pokémon Changes
+
+**Typhlosion**
+- Now Fire/Ghost (Hisuian-themed).
+
+**Bloodmoon Ursaluna**
+- Added as Ground/Ghost.
+
+---
+
+## Item Changes
+
+### Hold Items
+In physical/special split mode:
+- Hold item boosts now function correctly.
+- All type-boosting hold items increased to 1.2× power.
+- (Maybe you won’t use Leftovers now?!)
+
+**NEW:** Everstone now also works as Eviolite!
+- 1.5× Defense / Special Defense boost.
+- Rare drop/catch from:
+  - Geodude
+  - Graveler
+  - Golem
+  - Eevee
+  - Scyther (Safari Zone)
+
+## Modified Shiny Chain System from Base Modern Emerald
+
+## Sweet Scent Chaining and Chain Fishing
+
+The shiny chain system adds additional shiny rolls as the chain increases. The selected shiny rate remains the base chance, while maintaining a longer chain increases the number of independent shiny checks per encounter.
+
+Current formula:
+
+```c
+shinyRolls = 1 + chain / 3;
+```
+
+A longer chain gradually increases shiny encounter frequency without replacing the selected shiny rate.
+
+### Shiny Rolls by Chain Length
+
+| Chain | Shiny Rolls |  1/16 |  1/32 |  1/64 | 1/128 | 1/256 |
+| ----: | ----------: | ----: | ----: | ----: | ----: | ----: |
+|     0 |           1 |  6.2% |  3.1% |  1.6% |  0.8% |  0.4% |
+|    20 |           7 | 36.3% | 19.9% | 10.4% |  5.3% |  2.7% |
+|    50 |          17 | 66.6% | 41.7% | 23.5% | 12.5% |  6.4% |
+|    80 |          27 | 82.5% | 57.6% | 34.6% | 19.1% | 10.0% |
+|   100 |          34 | 88.9% | 66.0% | 41.5% | 23.4% | 12.5% |
+
+### Design Intent
+
+* **1/16 and 1/32:** Designed for players who want to actively target hunt specific Pokémon. The chain helps reduce the frustration of finding rare encounters.
+* **1/64:** A middle-ground shiny experience that rewards hunting while keeping shinies special.
+* **1/128 and 1/256:** Intended as more relaxed, lower-grind alternatives to traditional shiny rates.
+* The chain system rewards dedication by increasing shiny opportunities over time rather than directly changing the base shiny odds.
+
+The goal is for longer chains to feel increasingly rewarding while keeping the selected shiny rate meaningful.
+
+
+**HIDDEN POWER/JUDGMENT TABLE**
+| Stat            | Fighting |  Flying |  Poison |  Ground |   Rock  |   Bug   |  Ghost  |  Steel  |  Fairy  |
+| --------------- | :------: | :-----: | :-----: | :-----: | :-----: | :-----: | :-----: | :-----: | :-----: |
+| **HP**          |    30    |    30   |    30   |    30   |    30   |    30   |    30   |    30   |    30   |
+| **Attack**      |    30    |    30   |    30   |    30   |    30   |    30   |    30   |    30   |    30   |
+| **Defense**     |    30    |    31   |    30   |    31   |    30   |    31   |    30   |    31   |    30   |
+| **Sp. Attack**  |    30    |    30   |    30   |    30   |    31   |    31   |    31   |    31   |    30   |
+| **Sp. Defense** |    30    |    30   |    30   |    30   |    30   |    30   |    30   |    30   |    31   |
+| **Speed**       |    30    |    30   |    31   |    31   |    30   |    30   |    31   |    31   |    30   |
+| **Total IVs**   |  **180** | **182** | **182** | **184** | **182** | **184** | **184** | **186** | **182** |
+
+| Stat            |   Fire  |  Water  |  Grass  | Electric | Psychic |   Ice   |  Dragon |   Dark  |
+| --------------- | :-----: | :-----: | :-----: | :------: | :-----: | :-----: | :-----: | :-----: |
+| **HP**          |    30   |    30   |    30   |    30    |    30   |    30   |    30   |    31   |
+| **Attack**      |    30   |    30   |    30   |    30    |    30   |    30   |    30   |    31   |
+| **Defense**     |    31   |    30   |    31   |    30    |    31   |    30   |    31   |    31   |
+| **Sp. Attack**  |    30   |    30   |    30   |    31    |    31   |    31   |    31   |    31   |
+| **Sp. Defense** |    31   |    31   |    31   |    31    |    31   |    31   |    31   |    31   |
+| **Speed**       |    30   |    31   |    31   |    30    |    30   |    31   |    31   |    31   |
+| **Total IVs**   | **184** | **184** | **186** |  **184** | **186** | **186** | **188** | **186** |
+
+# BASE MODERN EMERALD DOCUMENTS AND INFO
 This is a decompilation of Pokémon Emerald, edited to be "Pokémon Modern Emerald".
 You can get more information about Modern Emerald at [Pokecommunity](https://www.pokecommunity.com/showthread.php?t=494005)
 You can get the hackrom documentation following [this link](https://docs.google.com/spreadsheets/d/1QEFJmFhfaZqgxSUnM7MFpufrnrRk_NMzNoNWl2m3y_0/edit#gid=414283818)
