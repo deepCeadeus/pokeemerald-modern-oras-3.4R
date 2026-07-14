@@ -578,7 +578,8 @@ A longer chain gradually increases shiny encounter frequency without replacing t
 The goal is for longer chains to feel increasingly rewarding while keeping the selected shiny rate meaningful.
 
 
-**HIDDEN POWER/JUDGMENT TABLE**
+## HIDDEN POWER/JUDGMENT TABLE
+
 | Stat            | Fighting |  Flying |  Poison |  Ground |   Rock  |   Bug   |  Ghost  |  Steel  |  Fairy  |
 | --------------- | :------: | :-----: | :-----: | :-----: | :-----: | :-----: | :-----: | :-----: | :-----: |
 | **HP**          |    30    |    30   |    30   |    30   |    30   |    30   |    30   |    30   |    30   |
