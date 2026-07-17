@@ -390,8 +390,10 @@
 #define STRINGID_BAGISFULL                  389
 #define STRINGID_FOURITEMSUSED              390
 #define STRINGID_PKMNSXWHIPPEDUPHAILSTORM   391
+#define STRINGID_PLAYERWHITEOUT_NOMONEY     392
 
-#define BATTLESTRINGS_COUNT                 392
+
+#define BATTLESTRINGS_COUNT                 393
 
 // This is the string id that gBattleStringsTable starts with.
 // String ids before this (e.g. STRINGID_INTROMSG) are not in the table,
