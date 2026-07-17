@@ -98,6 +98,7 @@ static const u8 sMetalCoatDescription[] = _("Normal moves become Steel.");
 static const u8 sBerserkDescription[] = _("Boosts Sp.Atk at half HP.");
 static const u8 sDefiantDescription[] = _("Stats lowered, Rage builds.");
 static const u8 sLegendPlateDescription[] = _("Boosts Judgment.");
+static const u8 sStrongJawDescription[] = _("Boosts biting moves.");
 
 const u8 gAbilityNames[ABILITIES_COUNT][ABILITY_NAME_LENGTH + 1] =
 {
@@ -200,6 +201,7 @@ const u8 gAbilityNames[ABILITIES_COUNT][ABILITY_NAME_LENGTH + 1] =
     [ABILITY_BERSERK] = _("Berserk"),
     [ABILITY_DEFIANT] = _("Defiant"),
     [ABILITY_LEGEND_PLATE] = _("Legend Plate"),
+    [ABILITY_STRONG_JAW] = _("Strong Jaw"),
 };
 
 const u8 *const gAbilityDescriptionPointers[ABILITIES_COUNT] =
@@ -303,4 +305,5 @@ const u8 *const gAbilityDescriptionPointers[ABILITIES_COUNT] =
     [ABILITY_BERSERK] = sBerserkDescription,
     [ABILITY_DEFIANT] = sDefiantDescription,
     [ABILITY_LEGEND_PLATE] = sLegendPlateDescription,
+    [ABILITY_STRONG_JAW] = sStrongJawDescription,
 };
