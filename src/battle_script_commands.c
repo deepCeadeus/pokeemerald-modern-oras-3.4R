@@ -1184,6 +1184,8 @@ static void Cmd_accuracycheck(void)
             calc = (calc * 80) / 100; // 1.2 sand veil loss
         if (gBattleMons[gBattlerTarget].ability == ABILITY_ILLUMINATE)
             calc = (calc * 90) / 100; // 1.1 illuminate loss
+        if (gBattleMons[gBattlerTarget].ability == ABILITY_STENCH)
+            calc = (calc * 90) / 100; // 1.1 Stench loss    
         if (gSaveBlock2Ptr->optionStyle == 1)
             if (gBattleMons[gBattlerAttacker].ability == ABILITY_HUSTLE && IS_TYPE_PHYSICAL(type))
                 calc = (calc * 80) / 100; // 1.2 hustle loss
