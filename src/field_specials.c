@@ -70,6 +70,7 @@
 #include "item.h"
 #include "item_menu.h"
 #include "constants/abilities.h"
+#include "pokedex.h"
 
 #define TAG_ITEM_ICON 5500
 
@@ -4352,6 +4353,10 @@ bool16 TryChangeDeoxysForm(void)
         SetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_SPECIES, &targetSpecies);
         CalculateMonStats(&gPlayerParty[gSpecialVar_0x8004]);
 
+	u16 nationalDexNum = SpeciesToNationalPokedexNum(targetSpecies);
+	GetSetPokedexFlag(nationalDexNum, FLAG_SET_SEEN);
+	GetSetPokedexFlag(nationalDexNum, FLAG_SET_CAUGHT);
+	
         gSpecialVar_Result = TRUE;
         return TRUE;    
     }
