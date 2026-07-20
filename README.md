@@ -8,7 +8,7 @@ You can get the hackrom documentation following [this link](https://docs.google.
 ### Project Goals
 This fork aims to make Modern Emerald feel more like a “Generation 3.5” experience while preserving the spirit of Pokémon Emerald.
 
-**TL;DR:** Use Heart Scales and go to the Ability Trainer (Lilycove). Weather is back (including hail + Ice Body). Some abilities were added or tuned. Several moves were reworked. Elemental Fangs were added back, including **Night Slash**, **U-Turn/Vault Switch**, and **Roost**. **Sucker Punch** was added. **Prankster-style moves** now exist as move effects (granting +1 priority) instead of adding the Prankster ability. Signature moves were restored for **Wyrdeer, Farigiraf, Dundunsparce, Kleavor,** and **Annihilape**. There is a table for Judgment/Hidden Power IV's towards bottom of this README.
+**TL;DR:** Use Heart Scales (Fallarbor) and go to the Ability Trainer (Lilycove). Weather is back (including hail + Ice Body). Some abilities were added or tuned. Several moves were reworked/added. Elemental Fangs were added back, including **Night Slash**, **U-Turn/Vault Switch**, and **Roost**. **Sucker Punch** was added. **Prankster-style moves** now exist as move effects (granting +1 priority) instead of adding the Prankster ability. Signature moves were restored for **Wyrdeer, Farigiraf, Dundunsparce, Kleavor,** and **Annihilape**. There is a table for Judgment/Hidden Power IV's towards bottom of this README.
 
 Key goals include:
 - Strengthening underperforming types, especially Bug and Steel.
@@ -82,6 +82,30 @@ Almost every Pokémon retains at least one original ability.
 Pokémon using original moves and original abilities should generally transfer and function as expected. (TESTING)
 
 Many Pokémon received new secondary abilities, but original functionality was preserved wherever possible.
+
+---
+
+## Encounter Changes
+
+### Safari Zone
+**Scyther**
+- Encounter rate increased to roughly match Pinsir and Heracross (about 4–5%).
+
+**Rare Johto Starter Evolutions**
+Added rare Safari Zone encounters:
+- Bayleef
+- Quilava
+- Croconaw
+
+These appear alongside the existing Kanto starter evolutions at about 1% encounter rates.
+Several existing encounters were reduced from 5% to 4% to make room.
+
+### Route 101
+**Eevee**
+- 1% encounter rate (existing Modern Emerald encounter)
+
+**Pikachu**
+- Added at 1% encounter rate
 
 ---
 
@@ -192,16 +216,16 @@ Behavior:
 This prevents cases where a Pokémon vanishes and later reappears without explanation.
 
 **Wild-battle note (animation detail):**
-If a wild Pokémon uses U-Turn, it animates as if it leapt/flew away. The Poké Ball throw animation still finishes because the game cannot switch in this case. This is intended for now. Later, a custom animation may be added that removes the ball for wild encounters (a brief flash, then the Pokémon expanding—same animation timing, without the ball).
+If a wild Pokémon uses U-Turn, it animates as if it leapt/flew away. You will see the wild pokemon return out of a thrown pokeball. This is intended for now. Later, a custom animation may be added that removes the ball for wild encounters (a brief flash, then the Pokémon expanding—same animation timing, without the ball).
 
 **Encounter table note:**
 You technically should not run into this scenario during normal encounters. If you use a randomizer and a wild Pokémon returns from a ball, you may see this behavior.
 
 If you want to remove it for alternate animations, you can remove:
 - `sendtofield attacker, true`
-- and the `end1` / `end2` lines at the end of the script
+- This is found where the script follows the end path for example: `end1` / `end2` path where EXP is resolved and fainted pokemon are handled. 
 
-I set this up because it looks clean in battles where you can’t send anything out.
+I set this up because it looks clean in battles where you can’t send anything out. Alternativly if this move was added as a TM this will be a non issue. (Might migrate things to TM's instead at a later time) 
 
 Tested in:
 - Single Battles
@@ -231,7 +255,7 @@ Includes a custom animation compatible with Modern Emerald assets.
 Built from Modern Emerald assets.
 
 ### Barrier Rush (Psyshield Bash – name too long)
-- 70 BP
+- 70 BP Physical move
 - 50% chance to raise Defense
 
 ### Twin Beam
@@ -246,31 +270,8 @@ Built from Modern Emerald assets.
 
 ### Rage Fist
 - 60 BP (Ghost)
-- Functions like normal Rage in Gen 3. 
-
----
-
-## Encounter Changes
-
-### Safari Zone
-**Scyther**
-- Encounter rate increased to roughly match Pinsir and Heracross (about 4–5%).
-
-**Rare Johto Starter Evolutions**
-Added rare Safari Zone encounters:
-- Bayleef
-- Quilava
-- Croconaw
-
-These appear alongside the existing Kanto starter evolutions at about 1% encounter rates.
-Several existing encounters were reduced from 5% to 4% to make room.
-
-### Route 101
-**Eevee**
-- 1% encounter rate (existing Modern Emerald encounter)
-
-**Pikachu**
-- Added at 1% encounter rate
+- Functions like normal Rage in Gen 3.
+- Stacks with Defiant until stat stages cap.
 
 ---
 
@@ -299,6 +300,14 @@ Abilities can be changed using the **Ability Changer in Lilycove City**.
 
 **Keen Eye**
 - Modernized to ignore evasion stages.
+
+**Damp**
+- Added a 50% reduction to fire damage like thick fat
+  
+**Stench**
+- Added a 10% accuracy penalty to opponents targeting defender with stench ability
+- Slightly different flavor than flinch chance in modern games.
+- Should stack with bright powder.
 
 **Hyper Cutter**
 - Same as before.
@@ -346,6 +355,7 @@ Abilities can be changed using the **Ability Changer in Lilycove City**.
   - Crawdaunt
   - Porygon-Z
   - Hitmontop
+  - Deoxys-A
 
 **Iron Fist**
 - 1.2× boost to punching moves.
@@ -360,13 +370,16 @@ Abilities can be changed using the **Ability Changer in Lilycove City**.
   - Rhyperior
   - Tauros
   - Bagon
-  - Machamp line
+  - Machamp
+  - Machoke
+  - Machop
 
 **Berserk**
 - 1.5× Special Attack below 50% HP.
 - Given to:
   - Omastar
   - Farigiraf
+  - Deoxys-D
 
 **Sharpness**
 - 1.2× boost to slicing moves.
@@ -379,23 +392,36 @@ Abilities can be changed using the **Ability Changer in Lilycove City**.
 - 1.2× boost to contact moves.
 - Given to:
   - Persian
-  - Mightyena
+  - Meowth 
   - Swellow
+  - Tailow
+  - Metagross
+  - Metang
+  - Beldum
 
 **Skill Link**
 - Given to:
-  - Ambipom
+  - Ambipom (Check Egg Moves)
   - Cloyster
   - Heracross (lost Swarm)
+
+**Strong Jaw**
+- Granbull (Got lots of biting moves)
+- Retains 1.5x boost because on granbull none of the moves get STAB
 
 **Super Luck**
 - Replaces Sniper on most affected Pokémon.
 - Given to:
   - Fearow
+  - Spearow
   - Honchkrow
+  - Murkrow
   - Beedrill
-  - Kingdra line
-  - Octillery line
+  - Kingdra
+  - Seadra
+  - Horsea
+  - Octillery
+  - Remoraid
 
 **Defiant**
 - Gives 1 Attack stat stage instead of 2 (made it immune to intimidate for this reason)
@@ -404,18 +430,26 @@ Abilities can be changed using the **Ability Changer in Lilycove City**.
   - Primeape
   - Annihilape
   - Farfetch'd
+  - Mightyena
+  - Poochyena
+  - Regigigas (also got Guts)
 
 **Rivalry**
 - 1.25× damage vs same-gender opponents.
 - 0.9× damage vs opposite-gender opponents.
 - Given to:
-  - Nidoking line
-  - Nidoqueen line
+  - Nidoking Evo. line
+  - Nidoqueen Evo. line
 
 **Legend Plate**
 - Arceus gets second ability
 - Retains Normal Type
 - Judgment gets 2x multiplier.
+
+**Multitype**
+- Arceus
+- Unown (also has levitate)
+  - Unown has new movepool  
  
 
 ---
@@ -429,24 +463,27 @@ These abilities change move typing only and do not add extra damage boosts.
 **Aerilize**
 - Salamence
 - Pinsir
-- Pidgey line
+- Pidgeot (Movepool leans towards special attacker)
+- Pidgeotto
+- Pidgy
 
 **Pixilate**
 - Sylveon
-- Granbull
+
 
 **Metal Coat** (new)
 - Makes Normal-type moves Steel.
 - Scizor
+- Registeel
 
-I wanted a simple way to modernize Scizor without adding many extra moves. Quick Attack, U-Turn, Swords Dance, Body Slam (para chance), and ViceGrip (50% def down).
+I wanted a simple way to modernize Scizor in a Gen 3 ecosystem. Example moveset options: (STEEL) Quick Attack, U-Turn, Swords Dance, (STEEL) Body Slam (para chance), and (BUG) ViceGrip (50% def down chance).
 
 Additional Scizor changes:
 - Lost Double-Edge
 - Gained Body Slam
 - Gained Mega Kick via tutor
 
-**Mind’s Eye**
+**Mind’s Eye** (Reworked to be similar to Dragonize)
 - Normal-type moves become Ghost-type
 - Bloodmoon Ursaluna
 - Typhlosion
@@ -481,9 +518,9 @@ A workaround was applied so correct hold items give the 1.2× boost to type chan
 - Groudon
 
 **Sand Stream**
-- Sandshrew line
+- Sandshrew Evo. line
 - Shuckle
-- Phanpy line
+- Phanpy Evo. line
 - Tyranitar
 
 **Snow Warning**
@@ -497,18 +534,18 @@ A workaround was applied so correct hold items give the 1.2× boost to type chan
 - Seel
 - Dewgong
 - Articuno
-- Spheal line
-- Snoorunt line
+- Spheal Evo. line
+- Snoorunt Evo. line
 - Regice
 - Glaceon
 
 **Air Lock**
-- Zubat line
+- Zubat Evo. line
 - Lugia
 - Rayquaza
 
 **Cloud Nine**
-- Psyduck line
+- Psyduck Evo. line
 - Dragonite
 - Stantler
 - Wyrdeer
