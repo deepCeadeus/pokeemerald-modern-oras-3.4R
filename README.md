@@ -573,6 +573,9 @@ A workaround was applied so correct hold items give the 1.2× boost to type chan
 **Bloodmoon Ursaluna**
 - Added as Ground/Ghost.
 
+**Pinsir**
+- Now Bug/Flying (Mega themed) 
+
 ---
 
 ## Item Changes
