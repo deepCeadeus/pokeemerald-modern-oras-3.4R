@@ -6861,6 +6861,14 @@ s32 CalculateBaseDamage(struct BattlePokemon *attacker, struct BattlePokemon *de
     } 
     if (defender->ability == ABILITY_MARVEL_SCALE && defender->status1)
         defense = (150 * defense) / 100;
+    //MODERN SANDSTORM
+    if (WEATHER_HAS_EFFECT2
+    && (gBattleWeather & B_WEATHER_SANDSTORM)
+    && (defender->type1 == TYPE_ROCK || defender->type2 == TYPE_ROCK))
+    {
+    spDefense = (150 * spDefense) / 100;
+    }
+    
     if (type == TYPE_ELECTRIC && AbilityBattleEffects(ABILITYEFFECT_FIELD_SPORT, 0, 0, ABILITYEFFECT_MUD_SPORT, 0))
         gBattleMovePower /= 2;
     if (type == TYPE_FIRE && AbilityBattleEffects(ABILITYEFFECT_FIELD_SPORT, 0, 0, ABILITYEFFECT_WATER_SPORT, 0))
