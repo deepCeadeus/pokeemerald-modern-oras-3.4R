@@ -179,19 +179,25 @@ Because Gen IV flinch mechanics aren’t present:
 
 ---
 
-## Physical Fire Progression
+## Physical Fire Moves Compared
 
 **Flame Wheel**
 - 70 BP
 - 100 accuracy
 - 10% burn chance
+- EFFECT_THAW_HIT
 
 **Fire Fang**
-- Lower damage
-- Higher status chance
+- 65 BP
+- 95 accuracy
+- 20% burn chance
+- EFFECT_BURN_HIT
 
 **Sacred Fire**
-- Remains the premier physical Fire-type attack.
+- 100 bp
+- 95 accuracy
+- 50% burn chance
+- EFFECT_THAW_HIT
 
 ---
 
@@ -216,14 +222,14 @@ Behavior:
 This prevents cases where a Pokémon vanishes and later reappears without explanation.
 
 **Wild-battle note (animation detail):**
-If a wild Pokémon uses U-Turn, it animates as if it leapt/flew away. You will see the wild pokemon return out of a thrown pokeball. This is intended for now. Later, a custom animation may be added that removes the ball for wild encounters (a brief flash, then the Pokémon expanding—same animation timing, without the ball).
+If a wild Pokémon uses U-Turn, it animates as if it leapt/flew away. You will see the wild pokemon return out of a thrown pokeball. This is intended for now. Later, a custom animation may be added that removes the ball for wild encounters.
 
 **Encounter table note:**
 You technically should not run into this scenario during normal encounters. If you use a randomizer and a wild Pokémon returns from a ball, you may see this behavior.
 
 If you want to remove it for alternate animations, you can remove:
-- `sendtofield attacker, true`
-- This is found where the script follows the end path for example: `end1` / `end2` path where EXP is resolved and fainted pokemon are handled. 
+- `switchinanim BS_ATTACKER, TRUE`
+- This is found where the script follows the end path for example: `BattleScript_HitEscapeEnd:` , `BattleScript_HitEscapeEnd2` , and  `BattleScript_HitEscapeArenaFaintedMon` path where EXP is resolved and fainted pokemon are handled. 
 
 I set this up because it looks clean in battles where you can’t send anything out. Alternativly if this move was added as a TM this will be a non issue. (Might migrate things to TM's instead at a later time) 
 
@@ -280,13 +286,16 @@ Several Pokémon gain hidden “Prankster-style” priority moves.
 
 These moves:
 - Have increased priority.
-- Must be relearned using a Heart Scale.
-
+- Must be relearned using a Heart Scale at MOVE RELEARNER in Fallarbor.
+- The moves are recover, will o wisp, taunt, and torment with +1 priority
+- 
 Available on:
 - Murkrow / Honchkrow
-- Shuppet
-- Banette
+  -Taunt/Torment 
+- Shuppet / Banette
+  -Taunt/Torment/Will O Wisp 
 - Sableye
+  - Taunt/Torment/Will O Wisp/Recover
 
 ---
 
@@ -317,7 +326,9 @@ Abilities can be changed using the **Ability Changer in Lilycove City**.
 
 **Rough Skin**
 - Buffed to take **1/8** damage on contact.
-- Distributed to: Gyarados (No moxie for you!)
+- Distributed to: Gyarados (No moxie for you!), still has Intimidate.
+  -Gyarados already has a strong moveset Dragon Dance, Ice Fang, Waterfall, Headsmash, Earthquake, Crunch 
+- Sharpedo still has Rough Skin but has Speed Boost for second ability.
 
 **Plus & Minus**
 - 1.1× damage boost outside Double Battles.
@@ -389,7 +400,7 @@ Abilities can be changed using the **Ability Changer in Lilycove City**.
   - Scyther
 
 **Tough Claws**
-- 1.2× boost to contact moves.
+- 1.2× boost to contact (PHYSICAL) moves.
 - Given to:
   - Persian
   - Meowth 
@@ -479,8 +490,8 @@ These abilities change move typing only and do not add extra damage boosts.
 I wanted a simple way to modernize Scizor in a Gen 3 ecosystem. Example moveset options: (STEEL) Quick Attack, U-Turn, Swords Dance, (STEEL) Body Slam (para chance), and (BUG) ViceGrip (50% def down chance).
 
 Additional Scizor changes:
-- Lost Double-Edge
-- Gained Body Slam
+- Lost Double-Edge via tutor 
+- Gained Body Slam via tutor
 - Gained Mega Kick via tutor
 
 **Mind’s Eye** (Reworked to be similar to Dragonize)
