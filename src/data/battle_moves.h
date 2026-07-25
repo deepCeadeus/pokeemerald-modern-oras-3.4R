@@ -4329,7 +4329,7 @@ const struct BattleMove gBattleMoves[MOVES_COUNT] =
     [MOVE_METEOR_MASH] =
     {
         .effect = EFFECT_ATTACK_UP_HIT,
-        .power = 100,
+        .power = 90,
         .type = TYPE_STEEL,
         .accuracy = 90,
         .pp = 10,

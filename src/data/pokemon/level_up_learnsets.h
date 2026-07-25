@@ -2611,6 +2611,9 @@ static const u16 sKabutopsLevelUpLearnset[] = {
 };
 
 static const u16 sAerodactylLevelUpLearnset[] = {
+    LEVEL_UP_MOVE( 1, MOVE_FIRE_FANG),
+    LEVEL_UP_MOVE( 1, MOVE_ICE_FANG),
+    LEVEL_UP_MOVE( 1, MOVE_THUNDER_FANG),
     LEVEL_UP_MOVE( 1, MOVE_WING_ATTACK),
     LEVEL_UP_MOVE( 1, MOVE_ROOST),
     LEVEL_UP_MOVE( 8, MOVE_AGILITY),
@@ -3883,7 +3886,9 @@ static const u16 sGligarLevelUpLearnset[] = {
 };
 
 static const u16 sSteelixLevelUpLearnset[] = {
-    LEVEL_UP_MOVE( 1, MOVE_TACKLE),
+    LEVEL_UP_MOVE( 1, MOVE_FIRE_FANG),
+    LEVEL_UP_MOVE( 1, MOVE_ICE_FANG),
+    LEVEL_UP_MOVE( 1, MOVE_THUNDER_FANG),
     LEVEL_UP_MOVE( 1, MOVE_SCREECH),
     LEVEL_UP_MOVE( 9, MOVE_BIND),
     LEVEL_UP_MOVE(13, MOVE_ROCK_THROW),
