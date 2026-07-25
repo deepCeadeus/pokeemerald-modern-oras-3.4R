@@ -509,6 +509,8 @@ A workaround was applied so correct hold items give the 1.2× boost to type chan
 ---
 
 ## Weather Abilities
+NOTE: Hail update-> Blizzard does not check accuracy in hailstorm like gen iv
+NOTE: Sandstorm update -> Rock-type Pokemon get 1.5x Special Defense boost in sandstorm like gen iv.
 
 **Drizzle**
 - Wingull
