@@ -2751,6 +2751,18 @@ u8 AbilityBattleEffects(u8 caseID, u8 battler, u8 ability, u8 special, u16 moveA
                         effect++;
                     }
                     break;
+                    //Run away works like speed boost but only gives +1 stage over default  or 1.5x speed. it will ramp up from negative stat stage to +1 in theory. Swift Swim and Chlorophyll give an immediate 2x boost in the correct weather while speed boost adds a stage up to +6 stages.
+                case ABILITY_RUN_AWAY:
+                    if ((gBattleMons[battler].hp <= (gBattleMons[battler].maxHP / 2)) && (gBattleMons[battler].statStages[STAT_SPEED] <= DEFAULT_STAT_STAGE))
+                    {
+                        gBattleMons[battler].statStages[STAT_SPEED]++;
+                        gBattleScripting.animArg1 = STAT_ANIM_PLUS1 + STAT_SPEED;
+                        gBattleScripting.animArg2 = 0;
+                        BattleScriptPushCursorAndCallback(BattleScript_SpeedBoostActivates);
+                        gBattleScripting.battler = battler;
+                        effect++;
+                    }
+                    break;
                 case ABILITY_TRUANT:
                     gDisableStructs[gBattlerAttacker].truantCounter ^= 1;
                     break;

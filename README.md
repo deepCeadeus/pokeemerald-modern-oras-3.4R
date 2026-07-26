@@ -341,6 +341,20 @@ Abilities can be changed using the **Ability Changer in Lilycove City**.
 
 **Run Away**
 - 1.2× Defense and Special Defense below 50% HP.
+- Ability adds +1 Speed Stage below 50% HP.
+- Max +1 Stage above Default gained from Run Away.
+	- Works like Speed boost 
+	- Only triggers if speed is less than or equal to default stage	
+	- Only triggers on end turn
+	- Because it is a stat stage -> Agility and X Speed work with it
+		- +1 stage is a 1.5x speed boost.
+		- Abillity will add +1 every turn until the net result is +1 stage over default.
+		- For refrence Speed Boost will go until it hits the cap +6 stages over default.
+		- For reference Swift Swim and Chlorophyll are a 2x buff on entry with weather.
+		- Example: A +2 Speed Stage from agility will cause this ability not to trigger the speed change.
+		- Example: A +1 from Run Away and +2 from agility means +3 total.
+		- Example A -2 speed stage will go up +1 every turn if run away is triggered -> -2,-1,0,+1, Ability stops.
+		- the 1.2x defenses boost is mainly for triggering the ability consistantly it allows for the rare cases where you have a sliver of HP and can counter. 
 
 **Multitype**
 - REMOVED: damage boost from matching correct hold items to attack types. Arceus retained Normal type.
