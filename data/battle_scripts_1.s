@@ -4601,6 +4601,14 @@ BattleScript_BerryConfuseHealEnd2::
 	removeitem BS_ATTACKER
 	end2
 
+BattleScript_BerryStatPickupEnd2::
+	printstring STRINGID_PKMNPICKEDUPITEMWITH
+	playanimation BS_EFFECT_BATTLER, B_ANIM_HELD_ITEM_EFFECT
+	statbuffchange STAT_CHANGE_ALLOW_PTR, BattleScript_BerryStatPickupDoStatUp
+BattleScript_BerryStatPickupDoStatUp::
+	call BattleScript_StatUp
+	return
+
 BattleScript_BerryStatRaiseEnd2::
 	playanimation BS_ATTACKER, B_ANIM_HELD_ITEM_EFFECT
 	statbuffchange MOVE_EFFECT_AFFECTS_USER | STAT_CHANGE_ALLOW_PTR, BattleScript_BerryStatRaiseDoStatUp

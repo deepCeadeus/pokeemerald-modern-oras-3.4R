@@ -2751,6 +2751,7 @@ u8 AbilityBattleEffects(u8 caseID, u8 battler, u8 ability, u8 special, u16 moveA
                         effect++;
                     }
                     break;
+                    
                     //Run away works like speed boost but only gives +1 stage over default  or 1.5x speed. it will ramp up from negative stat stage to +1 in theory. Swift Swim and Chlorophyll give an immediate 2x boost in the correct weather while speed boost adds a stage up to +6 stages.
                 case ABILITY_RUN_AWAY:
                     if ((gBattleMons[battler].hp <= (gBattleMons[battler].maxHP / 2)) && (gBattleMons[battler].statStages[STAT_SPEED] <= DEFAULT_STAT_STAGE))
@@ -2915,6 +2916,51 @@ u8 AbilityBattleEffects(u8 caseID, u8 battler, u8 ability, u8 special, u16 moveA
                     effect++;
                 }
                 break;
+             case ABILITY_PICKUP:
+                if (!(gMoveResultFlags & MOVE_RESULT_NO_EFFECT)
+ 		&& move != MOVE_STRUGGLE
+ 		&& !gProtectStructs[gBattlerAttacker].confusionSelfDmg
+ 		&& gBattleMoves[move].power != 0
+ 		&& TARGET_TURN_DAMAGED
+ 		&& gBattleMons[battler].hp != 0
+                && (Random() % 5) == 0)
+                    {
+                    for (i = 0; i < NUM_STATS - 1; i++)
+                    {
+                        if (gBattleMons[battler].statStages[STAT_ATK + i] < MAX_STAT_STAGE)
+                            break;
+                    }
+                    if (i != NUM_STATS - 1)
+                    {
+                        do
+                        {
+                            i = Random() % (NUM_STATS - 1);
+                        } while (gBattleMons[battler].statStages[STAT_ATK + i] == MAX_STAT_STAGE);
+
+                        PREPARE_STAT_BUFFER(gBattleTextBuff1, i + 1);
+
+                        gBattleTextBuff2[0] = B_BUFF_PLACEHOLDER_BEGIN;
+                        gBattleTextBuff2[1] = B_BUFF_STRING;
+                        gBattleTextBuff2[2] = STRINGID_STATSHARPLY;
+                        gBattleTextBuff2[3] = STRINGID_STATSHARPLY >> 8;
+                        gBattleTextBuff2[4] = B_BUFF_STRING;
+                        gBattleTextBuff2[5] = STRINGID_STATROSE;
+                        gBattleTextBuff2[6] = STRINGID_STATROSE >> 8;
+                        gBattleTextBuff2[7] = EOS;
+
+                        gEffectBattler = battler;
+                        gBattleScripting.battler = battler;
+                        SET_STATCHANGER(i + 1, 2, FALSE);
+                        gBattleScripting.animArg1 = STAT_ANIM_PLUS2 + (i + 1);
+                        gBattleScripting.animArg2 = 0;
+                        gBattleCommunication[MOVE_EFFECT_BYTE] += MOVE_EFFECT_AFFECTS_USER;
+                        BattleScriptPushCursor();
+                        gBattlescriptCurrInstr = (BattleScript_BerryStatPickupEnd2);
+                        effect++;
+                    }
+                    } 
+                    break;   
+                
             case ABILITY_EFFECT_SPORE:
                 if (!(gMoveResultFlags & MOVE_RESULT_NO_EFFECT)
                  && gBattleMons[gBattlerAttacker].hp != 0

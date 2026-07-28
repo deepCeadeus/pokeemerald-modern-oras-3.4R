@@ -227,6 +227,7 @@ extern const u8 BattleScript_ActionThrowPokeblock[];
 extern const u8 BattleScript_SnowWarningActivates[];
 extern const u8 BattleScript_IceBodyActivates[];
 extern const u8 BattleScript_MultitypeActivates[];
+extern const u8 BattleScript_BerryStatPickupEnd2[];
 //tx_randomizer_and_challenges
 extern const u8 BattleScript_Safari_OneTypeChallengeCaptureBlocked[];
 extern const u8 BattleScript_Safari_NuzlockeCaptureBlocked[];
