@@ -2918,12 +2918,11 @@ u8 AbilityBattleEffects(u8 caseID, u8 battler, u8 ability, u8 special, u16 moveA
                 break;
              case ABILITY_PICKUP:
                 if (!(gMoveResultFlags & MOVE_RESULT_NO_EFFECT)
- 		&& move != MOVE_STRUGGLE
- 		&& !gProtectStructs[gBattlerAttacker].confusionSelfDmg
- 		&& gBattleMoves[move].power != 0
- 		&& TARGET_TURN_DAMAGED
- 		&& gBattleMons[battler].hp != 0
-                && (Random() % 5) == 0)
+                && gBattlerAttacker != battler
+                && gBattleMons[gBattlerAttacker].hp != 0
+		&& gBattleMons[battler].hp != 0
+		&& !gProtectStructs[gBattlerAttacker].confusionSelfDmg
+		&& (Random() % 5) == 0)
                     {
                     for (i = 0; i < NUM_STATS - 1; i++)
                     {
