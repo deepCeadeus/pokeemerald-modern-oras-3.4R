@@ -2761,7 +2761,7 @@
               {
                 "min_level": 20,
                 "max_level": 25,
-                "species": "SPECIES_MARSHSTOMP"
+                "species": "SPECIES_MARSHTOMP"
               },
               {
                 "min_level": 10,
@@ -9545,7 +9545,7 @@
               {
                 "min_level": 27,
                 "max_level": 27,
-                "species": "SPECIES_MISDREAVOUS"
+                "species": "SPECIES_MISDREAVUS"
               },
               {
                 "min_level": 28,
