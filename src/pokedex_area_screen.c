@@ -1223,7 +1223,8 @@ static void Task_ShowPokedexAreaScreen(u8 taskId)
 }
 
 static void Task_HandlePokedexAreaScreenInput(u8 taskId)
-{
+{   u16 i;
+
     DoAreaGlow();
     switch (gTasks[taskId].tState)
     {
@@ -1245,14 +1246,49 @@ static void Task_HandlePokedexAreaScreenInput(u8 taskId)
         //REMOVE "/*" & "*/" IF YOU WANT DAY/NIGHT BUTTON FUNCTINALITY. DISABLED BY DEFAULT SINCE MODERN EMERALD
         //DOESN'T CURRENTLY HAVE DAY/NIGHT ENCOUNTERS ANYMORE.
         
-        /*if (JOY_NEW(START_BUTTON))
-        {
+        if (JOY_NEW(START_BUTTON))
+        {	
             // Toggle day/night encounter view.
             sPokedexAreaScreen->areaViewTimeMode ^= 1; // 0 (day) <-> 1 (night)
             PlaySE(SE_DEX_PAGE);
-            gTasks[taskId].data[2] = 1; // kick off multi-frame refresh
+            // Rebuild encounter locations for new time mode
+    	    FindMapsWithMon(sPokedexAreaScreen->species);
+	    // Remove old area markers
+	    for (i = 0; i < sPokedexAreaScreen->numAreaMarkerSprites; i++)
+            {
+            DestroySprite(sPokedexAreaScreen->areaMarkerSprites[i]);
+            }
+            sPokedexAreaScreen->numAreaMarkerSprites = 0;
+            
+            // Remove old Area Unknown sprites
+	    for (i = 0; i < ARRAY_COUNT(sPokedexAreaScreen->areaUnknownSprites); i++)
+	    {	
+            if (sPokedexAreaScreen->areaUnknownSprites[i] != NULL)
+            {
+            DestroySprite(sPokedexAreaScreen->areaUnknownSprites[i]);
+            sPokedexAreaScreen->areaUnknownSprites[i] = NULL;
+            }
+            }
+	    // Recreate Area Unknown sprites
+            CreateAreaUnknownSprites();
+            // Rebuild markers from new encounter data
+            CreateAreaMarkerSprites();
+            //Rebuild map highlights
+            ResetDrawAreaGlowState();
+            while (DrawAreaGlow())
+            	;
+            StartAreaGlow();
+            ApplyTimeModeToAreaMapPalette();
+            // Update indicator D/N
+            bool8 dayInvis = (sPokedexAreaScreen->areaViewTimeMode != 0);
+	    bool8 nightInvis = (sPokedexAreaScreen->areaViewTimeMode == 0);
+
+	    gSprites[sPokedexAreaScreen->indDaySpriteId].invisible = dayInvis;
+            gSprites[sPokedexAreaScreen->indDaySpriteId + 1].invisible = dayInvis;
+            gSprites[sPokedexAreaScreen->indNightSpriteId].invisible = nightInvis;
+            gSprites[sPokedexAreaScreen->indNightSpriteId + 1].invisible = nightInvis;
             return;
-        }*/
+        }
         if (JOY_NEW(B_BUTTON))
         {
             // This was originally intended to go back to the info screen (Original Emerald Behavior),
@@ -1430,7 +1466,7 @@ static void CreateAreaIndicatorSprites(void)
     
     // Day indicator — 32x32 PNG stores two stacked 32x16 halves (left on top, right below).
     // Palette shared with TAG_AREA_UNKNOWN (loaded before the fade)
-    /*sheet = (struct SpriteSheet){ sDayIndicatorTiles, 0x200, TAG_AREA_DAY_IND };
+    sheet = (struct SpriteSheet){ sDayIndicatorTiles, 0x200, TAG_AREA_DAY_IND };
     LoadSpriteSheet(&sheet);
     sPokedexAreaScreen->indDaySpriteId = CreateSprite(&sDayIndicatorTemplate, 20, 148, 0);
     spriteId = CreateSprite(&sDayIndicatorTemplate, 52, 148, 0); // right half
@@ -1454,7 +1490,7 @@ static void CreateAreaIndicatorSprites(void)
         gSprites[sPokedexAreaScreen->indDaySpriteId + 1].invisible   = dayInvis;
         gSprites[sPokedexAreaScreen->indNightSpriteId].invisible     = nightInvis;
         gSprites[sPokedexAreaScreen->indNightSpriteId + 1].invisible = nightInvis;
-    }*/
+    }
 }
 
 // Applies the correct day/night tint to the region-map BG palettes (slots 7–9).
