@@ -12109,7 +12109,7 @@ const struct SpeciesInfo gSpeciesInfo[] =
         .friendship = 70,
         .growthRate = GROWTH_MEDIUM_FAST,
         .eggGroups = { EGG_GROUP_HUMAN_LIKE, EGG_GROUP_HUMAN_LIKE},
-        .abilities = {ABILITY_STATIC, ABILITY_VITAL_SPIRIT},
+        .abilities = {ABILITY_RUN_AWAY, ABILITY_VITAL_SPIRIT},
         .bodyColor = BODY_COLOR_YELLOW,
         .noFlip = FALSE,
     },
