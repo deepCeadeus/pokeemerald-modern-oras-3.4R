@@ -307,6 +307,14 @@ Abilities can be changed using the **Ability Changer in Lilycove City**.
 
 ### Ability Reworks
 
+**Pickup**
+- Retains original function outside of battle.
+- New in battle function.
+- Every move used against a pokemon with pickup gives it a 20% chance to find a berry that gives a random +2 stat stage.
+- Status down moves and attack moves work.
+- I set it up so multi-hit moves get a roll each hit.
+
+
 **Keen Eye**
 - Modernized to ignore evasion stages.
 
