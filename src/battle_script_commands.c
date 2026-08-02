@@ -5515,7 +5515,13 @@ static void Cmd_switchinanim(void)
                                  | BATTLE_TYPE_RECORDED_LINK
                                  | BATTLE_TYPE_TRAINER_HILL
                                  | BATTLE_TYPE_FRONTIER)))
-
+	{	
+	HandleSetPokedexFlag(
+	SpeciesToNationalPokedexNum(gBattleMons[gActiveBattler].species),
+	FLAG_SET_SEEN,
+	gBattleMons[gActiveBattler].personality,
+	gBattleMons[gActiveBattler].otId);
+	}
     gAbsentBattlerFlags &= ~(gBitTable[gActiveBattler]);
 
     BtlController_EmitSwitchInAnim(BUFFER_A, gBattlerPartyIndexes[gActiveBattler], gBattlescriptCurrInstr[2]);
