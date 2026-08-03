@@ -2719,7 +2719,7 @@ u8 AbilityBattleEffects(u8 caseID, u8 battler, u8 ability, u8 special, u16 moveA
                     }
                     break;
                 case ABILITY_FORECAST:
-                    if (WEATHER_HAS_EFFECT
+                     if (WEATHER_HAS_EFFECT
                      && (gBattleWeather & (B_WEATHER_RAIN
                      			 | B_WEATHER_SUN
                      			 | B_WEATHER_HAIL))
@@ -2733,7 +2733,21 @@ u8 AbilityBattleEffects(u8 caseID, u8 battler, u8 ability, u8 special, u16 moveA
                         gBattleMoveDamage *= -1;
                         effect++;
                     }
-                    break;    
+                    break;
+               case ABILITY_EARLY_BIRD:
+               	    if ((gBattleMons[battler].status1 & STATUS1_SLEEP)
+        		 && gBattleMons[battler].maxHP > gBattleMons[battler].hp)
+                    {
+                        gLastUsedAbility = ABILITY_EARLY_BIRD; // why
+                        BattleScriptPushCursorAndCallback(BattleScript_RainDishActivates);
+                        gBattleMoveDamage = gBattleMons[battler].maxHP / 8; //SPECIAL CASE FOR EARLY BIRD POKEMON
+                        if (gBattleMoveDamage == 0)
+                            gBattleMoveDamage = 1;
+                        gBattleMoveDamage *= -1;
+                        effect++;
+                    }
+                    break;     
+                        
                 case ABILITY_SHED_SKIN:
                     if ((gBattleMons[battler].status1 & STATUS1_ANY) && (Random() % 3) == 0)
                     {
