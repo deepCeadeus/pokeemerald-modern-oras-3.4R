@@ -8,7 +8,7 @@ You can get the hackrom documentation following [this link](https://docs.google.
 ### Project Goals
 This fork aims to make Modern Emerald feel more like a “Generation 3.5” experience while preserving the spirit of Pokémon Emerald.
 
-**TL;DR:** Use Heart Scales (Fallarbor) and go to the Ability Trainer (Lilycove). Weather is back (including hail + Ice Body). Some abilities were added or tuned. Several moves were reworked/added. Elemental Fangs were added back, including **Night Slash**, **U-Turn/Vault Switch**, and **Roost**. **Sucker Punch** was added. **Prankster-style moves** now exist as move effects (granting +1 priority) instead of adding the Prankster ability. Signature moves were restored for **Wyrdeer, Farigiraf, Dundunsparce, Kleavor,** and **Annihilape**. There is a table for Judgment/Hidden Power IV's towards bottom of this README.
+**TL;DR:** Use Heart Scales (Fallarbor) and go to the Ability Trainer (Lilycove). Weather is back (including hail + Ice Body). Some abilities were added or tuned. Several moves were reworked/added. Elemental Fangs were added back, including **Night Slash**, **U-Turn/Volt Switch**, and **Roost**. **Sucker Punch** was added. **Prankster-style moves** now exist as move effects (granting +1 priority) instead of adding the Prankster ability. Signature moves were restored for **Wyrdeer, Farigiraf, Dundunsparce, Kleavor,** and **Annihilape**. There is a table for Judgment/Hidden Power IV's towards bottom of this README.
 
 Key goals include:
 - Strengthening underperforming types, especially Bug and Steel.
@@ -107,6 +107,31 @@ Several existing encounters were reduced from 5% to 4% to make room.
 **Pikachu**
 - Added at 1% encounter rate
 
+### Route 119
+
+- Added some new encounters (less oddish) 
+
+### Ocean Routes 
+
+- Slight changes to make Surf encounters more interesting. 
+
+### Meteor Falls
+
+- Surf and Fishing encounters updated
+
+### Mt Pyre 
+
+Slight changes to top floor and outside peak encounters.  
+
+### Night Encounters 
+
+- All major land routes have updated night encounters fishing, rocksmash, and surf included. 
+- Check out the **Desert** 
+- Rare 1-2% encounters 
+- **Safari Zone**: wild, fishing, surf, and rocksmash updated.
+
+- **Jagged Pass** and **Fiery Path** have night encounters 
+ 
 ---
 
 ## Move Changes
@@ -307,13 +332,23 @@ Abilities can be changed using the **Ability Changer in Lilycove City**.
 
 ### Ability Reworks
 
+**Forecast**
+- Recovers 1/8 HP in Weather (sandstorm is not considered weather).
+
+**Early Bird**
+- Recovers 1/8 HP while sleeping.
+- Balanced by the reduced sleep counter (Original ability effect unchanged).
+
+**Truant**
+- Recovers 1/8 HP while sleeping.
+- Still skips every other turn while awake. 
+
 **Pickup**
 - Retains original function outside of battle.
 - New in battle function.
 - Every move used against a pokemon with pickup gives it a 20% chance to find a berry that gives a random +2 stat stage.
 - Status down moves and attack moves work.
 - I set it up so multi-hit moves get a roll each hit.
-
 
 **Keen Eye**
 - Modernized to ignore evasion stages.
@@ -465,6 +500,7 @@ Abilities can be changed using the **Ability Changer in Lilycove City**.
   - Farfetch'd
   - Mightyena
   - Poochyena
+  - Vigoroth
   - Regigigas (also got Guts)
 
 **Rivalry**
@@ -473,6 +509,9 @@ Abilities can be changed using the **Ability Changer in Lilycove City**.
 - Given to:
   - Nidoking Evo. line
   - Nidoqueen Evo. line
+
+**Run Away** 
+- Electivire gets reworked Run Away as it is closer to Motor Drive/Rattled. 
 
 **Legend Plate**
 - Arceus gets second ability
