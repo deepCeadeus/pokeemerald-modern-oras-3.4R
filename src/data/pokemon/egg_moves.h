@@ -39,6 +39,7 @@ const u16 gEggMoves[] = {
               MOVE_DRAGON_PULSE,
               MOVE_DARK_PULSE,
               MOVE_FAKE_OUT,
+              MOVE_METAL_CLAW,
               MOVE_MUDDY_WATER,
               MOVE_HAZE,
               MOVE_MIST,
@@ -46,6 +47,8 @@ const u16 gEggMoves[] = {
               MOVE_FLAIL,
               MOVE_REFRESH,
               MOVE_MUD_SPORT,
+              MOVE_OCTAZOOKA,
+              MOVE_WATER_SPOUT,
               MOVE_FALSE_SWIPE,
               MOVE_YAWN),
 
