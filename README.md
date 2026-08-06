@@ -121,7 +121,7 @@ Several existing encounters were reduced from 5% to 4% to make room.
 
 ### Mt Pyre 
 
-Slight changes to top floor and outside peak encounters.  
+Slight changes to top floor and outside peak encounters.
 
 ### Night Encounters 
 
@@ -171,6 +171,7 @@ Slight changes to top floor and outside peak encounters.
 ---
 
 ### Buffed Moves
+- **Rapid Spin:** 50 BP, Raises SPEED +1 stage (Modernized) 
 - **False Swipe:** 70 BP
 - **Metal Claw:** 65 BP, **20%** chance to flinch
 - **Poison Tail:** 55 BP, high crit ratio, **20%** poison chance
@@ -185,6 +186,8 @@ Slight changes to top floor and outside peak encounters.
 - **Absorb:** 25 BP
 - **Mega Drain:** 50 BP
 - **Razor Wind:** restored increased critical-hit ratio
+- **Needle Arm:** 70 BP
+- **Bullet Seed:** 25 BP (Modernized)
 
 ---
 
@@ -632,6 +635,12 @@ NOTE: Sandstorm update -> Rock-type Pokemon get 1.5x Special Defense boost in sa
 
 **Typhlosion**
 - Now Fire/Ghost (Hisuian-themed).
+
+**Feraligatr**
+- Now Water/Dragon.
+
+**Blastoise**
+- Now Water/Steel.
 
 **Bloodmoon Ursaluna**
 - Added as Ground/Ghost.
