@@ -18,6 +18,7 @@ const u16 gEggMoves[] = {
               MOVE_EARTH_POWER,
               MOVE_WEATHER_BALL,
               MOVE_CURSE),
+              MOVE_AMNESIA,
 
     egg_moves(CHARMANDER,
               MOVE_BELLY_DRUM,
@@ -39,7 +40,6 @@ const u16 gEggMoves[] = {
               MOVE_DRAGON_PULSE,
               MOVE_DARK_PULSE,
               MOVE_FAKE_OUT,
-              MOVE_METAL_CLAW,
               MOVE_MUDDY_WATER,
               MOVE_HAZE,
               MOVE_MIST,
@@ -593,6 +593,11 @@ const u16 gEggMoves[] = {
               MOVE_CURSE,
               MOVE_TICKLE,
               MOVE_FALSE_SWIPE,
+              MOVE_WATER_GUN,
+              MOVE_SUCKER_PUNCH,
+              MOVE_MORNING_SUN,
+              MOVE_RAZOR_LEAF,
+              MOVE_MOONLIGHT,
               MOVE_WISH),
 
     egg_moves(OMANYTE,
@@ -600,6 +605,7 @@ const u16 gEggMoves[] = {
               MOVE_MUDDY_WATER,
               MOVE_AURORA_BEAM,
               MOVE_SLAM,
+              MOVE_RAPID_SPIN,
               MOVE_SUPERSONIC,
               MOVE_HAZE,
               MOVE_ROCK_SLIDE,
@@ -1199,6 +1205,7 @@ const u16 gEggMoves[] = {
               MOVE_DRAGON_BREATH,
               MOVE_OUTRAGE,
               MOVE_DARK_PULSE,
+              MOVE_PETAL_DANCE,
               MOVE_CRUSH_CLAW),
 
     egg_moves(TORCHIC,
