@@ -1170,8 +1170,8 @@ static const u8 sArmThrustDescription[] = _(
     "strike the foe 2 to 5 times.");
 
 static const u8 sCamouflageDescription[] = _(
-    "Alters the Pokémon's type\n"
-    "depending on the location.");
+    "Sharply raises Evasion by\n"
+    "blending into the terrain.");
 
 static const u8 sTailGlowDescription[] = _(
     "Flashes a light that sharply\n"
