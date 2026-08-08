@@ -1378,6 +1378,11 @@ u8 CheckAbilityChangeMoveType(u16 move) // handles move type change
             moveType = TYPE_STEEL;
         break;
         }
+        case ABILITY_COLOR_CHANGE:
+        {
+          moveType = gBattleMons[gBattlerAttacker].type1;
+        break;
+        }
         case ABILITY_FORECAST:
         {
             if (WEATHER_HAS_EFFECT && gBattleWeather & B_WEATHER_RAIN)
@@ -1429,6 +1434,11 @@ u8 DisplayMoveTypeChange(u16 move)
         case ABILITY_METAL_COAT:
         {
             moveType = TYPE_STEEL;
+        break;
+        }
+        case ABILITY_COLOR_CHANGE:
+        {
+          moveType = gBattleMons[gActiveBattler].type1;
         break;
         }
         case ABILITY_FORECAST:

@@ -4377,6 +4377,7 @@ static const u8 sKingdraTutorLearnset[] =
 static const u8 sPhanpyTutorLearnset[] =
 {
     TUTOR(MOVE_BODY_SLAM),
+    TUTOR(MOVE_DOUBLE_EDGE),
     TUTOR(MOVE_COUNTER),
     TUTOR(MOVE_DEFENSE_CURL),
     TUTOR(MOVE_DOUBLE_EDGE),
@@ -4395,6 +4396,7 @@ static const u8 sPhanpyTutorLearnset[] =
 static const u8 sDonphanTutorLearnset[] =
 {
     TUTOR(MOVE_BODY_SLAM),
+    TUTOR(MOVE_DOUBLE_EDGE),
     TUTOR(MOVE_COUNTER),
     TUTOR(MOVE_DEFENSE_CURL),
     TUTOR(MOVE_DOUBLE_EDGE),
