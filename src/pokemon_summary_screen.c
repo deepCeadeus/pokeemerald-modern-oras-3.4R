@@ -440,6 +440,7 @@ static void BufferIvOrEvStats(u8 mode);
 static void ToggleStatsOverlay(void);
 static void ShowStatsOverlay(void);
 static void HideStatsOverlay(void);
+static void PrintPokedexOrCancel(void);
 
 // const rom data
 #include "data/text/move_descriptions.h"
@@ -1915,8 +1916,10 @@ static void Task_OpenPokedexFromSummary(u8 taskId)
 
 static void CB2_ShowPokedexEntryFromSummary(void)
 {
-    // Only open Pokedex if not an egg and player has Pokedex
-    if (!sMonSummaryScreen->summary.isEgg && FlagGet(FLAG_SYS_POKEDEX_GET) == TRUE)
+    // Only open Pokedex if not an egg and player has Pokedex and player is not in Battle
+    if (!sMonSummaryScreen->summary.isEgg
+    && FlagGet(FLAG_SYS_POKEDEX_GET) == TRUE
+    && !gMain.inBattle)
     {
         // Begin fade out and set task to open Pokedex after cleanup
         BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB_BLACK);
@@ -1975,7 +1978,9 @@ static void Task_HandleInput(u8 taskId)
             {
                 if (sMonSummaryScreen->currPageIndex == PSS_PAGE_INFO)
                 {
-                    if (!sMonSummaryScreen->summary.isEgg && FlagGet(FLAG_SYS_POKEDEX_GET) == TRUE)
+                    if (!sMonSummaryScreen->summary.isEgg
+    			&& FlagGet(FLAG_SYS_POKEDEX_GET) == TRUE
+    			&& !gMain.inBattle) // Battle shows CANCEL instead of POKEDEX from summary screen.
                     {
                         StopPokemonAnimations();
                         PlaySE(SE_SELECT);
@@ -1986,7 +1991,7 @@ static void Task_HandleInput(u8 taskId)
                         StopPokemonAnimations();
                         PlaySE(SE_SELECT);
                         BeginCloseSummaryScreen(taskId);
-                    }
+                    }                    
                 }
                 else // Contest or Battle Moves
                 {
@@ -2138,6 +2143,7 @@ static void Task_ChangeSummaryMon(u8 taskId)
         break;
     case 11:
         PrintPageSpecificText(sMonSummaryScreen->currPageIndex);
+        PrintPokedexOrCancel();
         LimitEggSummaryPageDisplay();
         break;
     case 12:
@@ -3335,8 +3341,10 @@ static void PrintPageNamesAndStats(void)
     PrintTextOnWindow(PSS_LABEL_WINDOW_BATTLE_MOVES_TITLE, gText_BattleMoves, 2, 1, 0, 1);
     PrintTextOnWindow(PSS_LABEL_WINDOW_CONTEST_MOVES_TITLE, gText_ContestMoves, 2, 1, 0, 1);
 
-    // Show POKéDEX if not an egg and player has Pokedex, otherwise show CANCEL
-    if (!sMonSummaryScreen->summary.isEgg && FlagGet(FLAG_SYS_POKEDEX_GET) == TRUE)
+    // Show POKéDEX for non-Eggs when the player has the Pokédex and is not in battle; otherwise show CANCEL.
+    if (!sMonSummaryScreen->summary.isEgg
+    && FlagGet(FLAG_SYS_POKEDEX_GET) == TRUE
+    && !gMain.inBattle)
     {
         stringXPos = GetStringRightAlignXOffset(FONT_NORMAL, gText_MenuPokedex, 62);
         iconXPos = stringXPos - 16;
@@ -3402,6 +3410,37 @@ static void PrintPageNamesAndStats(void)
     PrintTextOnWindow(PSS_LABEL_WINDOW_MOVES_APPEAL_JAM, gText_Appeal, 0, 1, 0, 1);
     PrintTextOnWindow(PSS_LABEL_WINDOW_MOVES_APPEAL_JAM, gText_Jam, 0, 17, 0, 1);
 }
+// Redraws the CANCEL (A) or POKEDEX (A) prompt when scrolling
+// between Eggs and Pokémon. Called from Task_ChangeSummaryMon case 11.
+static void PrintPokedexOrCancel(void)
+{
+    int stringXPos;
+    int iconXPos;
+    
+    // Show POKéDEX for non-Eggs when the player has the Pokédex and is not in battle; otherwise show CANCEL.
+    FillWindowPixelBuffer(PSS_LABEL_WINDOW_PROMPT_CANCEL, PIXEL_FILL(0));
+    if (!sMonSummaryScreen->summary.isEgg
+    && FlagGet(FLAG_SYS_POKEDEX_GET) == TRUE
+    && !gMain.inBattle)
+    {
+        stringXPos = GetStringRightAlignXOffset(FONT_NORMAL, gText_MenuPokedex, 62);
+        iconXPos = stringXPos - 16;
+        if (iconXPos < 0)
+            iconXPos = 0;
+        PrintAOrBButtonIcon(PSS_LABEL_WINDOW_PROMPT_CANCEL, FALSE, iconXPos);
+        PrintTextOnWindow(PSS_LABEL_WINDOW_PROMPT_CANCEL, gText_MenuPokedex, stringXPos, 1, 0, 0);
+    }
+    else
+    {
+        stringXPos = GetStringRightAlignXOffset(FONT_NORMAL, gText_Cancel2, 62);
+        iconXPos = stringXPos - 16;
+        if (iconXPos < 0)
+            iconXPos = 0;
+        PrintAOrBButtonIcon(PSS_LABEL_WINDOW_PROMPT_CANCEL, FALSE, iconXPos);
+        PrintTextOnWindow(PSS_LABEL_WINDOW_PROMPT_CANCEL, gText_Cancel2, stringXPos, 1, 0, 0);
+    }
+}
+
 
 static void PutPageWindowTilemaps(u8 page)
 {
