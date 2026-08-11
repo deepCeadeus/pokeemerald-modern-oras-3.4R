@@ -6885,6 +6885,11 @@ s32 CalculateBaseDamage(struct BattlePokemon *attacker, struct BattlePokemon *de
         gBattleMovePower = (200 * gBattleMovePower) / 100;
     if ((attacker->species == SPECIES_GROUDON) && (moveType == TYPE_FIRE))
         gBattleMovePower = (150 * gBattleMovePower) / 100;
+        // Scyther and Kabutops get STAB for SLASH
+    if ((attacker->species == SPECIES_SCYTHER) && (gCurrentMove == MOVE_SLASH))
+        gBattleMovePower = (150 * gBattleMovePower) / 100; 
+    if ((attacker->species == SPECIES_KABUTOPS) && (gCurrentMove == MOVE_SLASH))
+        gBattleMovePower = (150 * gBattleMovePower) / 100;       
 
     // Self-destruct / Explosion cut defense in half
     if (gBattleMoves[gCurrentMove].effect == EFFECT_EXPLOSION)
