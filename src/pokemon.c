@@ -6428,18 +6428,18 @@ s32 CalculateBaseDamage(struct BattlePokemon *attacker, struct BattlePokemon *de
                 break;
             }
         }  
-        else if (gSaveBlock2Ptr->optionStyle == 0)
-        {  
-            if (attackerHoldEffect == sHoldEffectToType[i][0]
-                && type == sHoldEffectToType[i][1])
-            {
-            	if (IS_MOVE_SPECIAL(gCurrentMove))
-    		    spAttack = (spAttack * (attackerHoldEffectParam + 100)) / 100;
-		else
-                    attack = (attack * (attackerHoldEffectParam + 100)) / 100;
-                break;
-            }
-        }    
+        else if (gSaveBlock2Ptr->optionStyle == 0) // Hold items were previously broken on modern PHYS/SPECIAL split
+        { // 
+            if (attackerHoldEffect == sHoldEffectToType[i][0] // match format
+                && type == sHoldEffectToType[i][1]) // match format
+            {//
+            	if (IS_MOVE_SPECIAL(gCurrentMove)) // gCurrentMove is for Modern PHYS/SPECIAL SPLIT
+    		    spAttack = (spAttack * (attackerHoldEffectParam + 100)) / 100; //
+		else //
+                    attack = (attack * (attackerHoldEffectParam + 100)) / 100; //
+                break; //
+            }//
+        } //   
     }
 
     // Apply boosts from hold items
