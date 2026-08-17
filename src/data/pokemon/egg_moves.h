@@ -674,7 +674,7 @@ const u16 gEggMoves[] = {
               MOVE_FLAIL,
               MOVE_NATURE_POWER,
               MOVE_INGRAIN,
-              MOVE_GRASS_WHISTLE
+              MOVE_GRASS_WHISTLE,
               MOVE_EARTH_POWER,
               MOVE_WEATHER_BALL,
               MOVE_FIRE_SPIN),
@@ -1614,6 +1614,7 @@ const u16 gEggMoves[] = {
               MOVE_MUDDY_WATER,
               MOVE_MUD_SPORT,
               MOVE_BODY_SLAM,
+              MOVE_RAPID_SPIN,
               MOVE_SUPERSONIC,
               MOVE_BARRIER,
               MOVE_CONFUSE_RAY),
