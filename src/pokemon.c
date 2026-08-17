@@ -5749,6 +5749,10 @@ void CreateEnemyEventMon(void)
     s32 level = gSpecialVar_0x8005;
     s32 itemId = gSpecialVar_0x8006;
 
+    //tx_randomizer_and_challenges
+    if (gSaveBlock1Ptr->tx_Random_Static)
+        species = GetSpeciesRandomSeeded(species, TX_RANDOM_T_STATIC, 0);
+
     ZeroEnemyPartyMons();
     CreateEventMon(&gEnemyParty[0], species, level, USE_RANDOM_IVS, FALSE, 0, OT_ID_PLAYER_ID, 0);
     if (itemId)
@@ -8391,7 +8395,11 @@ u8 GetAbilityBySpecies(u16 species, u8 abilityNum)
             && (gSaveBlock1Ptr->tx_Mode_Legendary_Abilities == 0))
         gLastUsedAbility = gSpeciesInfo[species].abilities_old[0];
     else if ((abilityNum == 1)
-            && (species == SPECIES_NOCTOWL || species == SPECIES_YANMEGA)
+            && (species == SPECIES_NOCTOWL 
+             || species == SPECIES_YANMEGA
+             || species == SPECIES_CLAMPERL
+             || species == SPECIES_HUNTAIL
+             || species == SPECIES_GOREBYSS)
             && (gSaveBlock1Ptr->tx_Mode_Modern_Types == 0))
         gLastUsedAbility = gSpeciesInfo[species].abilities_old[1];
     else if (abilityNum)
@@ -11553,7 +11561,7 @@ void SetWildMonHeldItem(void)
         u16 rnd = Random() % 100;
         u16 species = GetMonData(&gEnemyParty[0], MON_DATA_SPECIES, 0);
         u16 chanceNoItem = 45;
-        u16 chanceNotRare = 90;
+        u16 chanceNotRare = 95;
         if (!GetMonData(&gPlayerParty[0], MON_DATA_SANITY_IS_EGG, 0)
             && GetMonAbility(&gPlayerParty[0]) == ABILITY_COMPOUND_EYES)
         {
@@ -12276,7 +12284,9 @@ u8 GetTypeBySpecies(u16 species, u8 typeNum)
     || species == SPECIES_SWALOT                //-Normal
     || species == SPECIES_LUVDISC               //-Fairy
     || species == SPECIES_ELECTIVIRE            //-Fighting
-    || species == SPECIES_YANMEGA))             //+Flying, -Dragon
+    || species == SPECIES_YANMEGA               //+Flying, -Dragon
+    || species == SPECIES_HUNTAIL               //-Psychic
+    || species == SPECIES_GOREBYSS))            //-Dark
     {
         if (typeNum == 1)
             type = gSpeciesInfo[species].types_old[0];

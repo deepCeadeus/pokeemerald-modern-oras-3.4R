@@ -18,12 +18,11 @@
 #include "international_string_util.h" // for GetStringRightAlignXOffset
 #include "strings.h"
 #include "gba/m4a_internal.h"
-
-extern struct MusicPlayerInfo *gMPlay_PokemonCry;
 #include "constants/rgb.h"
 #include "event_data.h"
 #include "tx_randomizer_and_challenges.h"
 
+extern struct MusicPlayerInfo *gMPlay_PokemonCry;
 // ---- Paging ----
 enum
 {
@@ -1171,6 +1170,13 @@ static void Viewer_RedrawList(void)
 
 
 // ---- Entry point from field ----------------------------------------------------
+
+// Called as a special (no taskId) — mirrors the PlayerPC pattern with waitstate.
+void Special_OpenChallengeViewer(void)
+{
+    gMain.savedCallback = CB2_ReturnToFieldContinueScript;
+    SetMainCallback2(CB2_InitChallengeViewer);
+}
 
 void Task_ChallengeViewer(u8 taskId)
 {
