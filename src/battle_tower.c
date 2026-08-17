@@ -2154,23 +2154,23 @@ static void HandleSpecialTrainerBattleEnd(void)
             gSaveBlock2Ptr->frontier.battlesCount = 0xFFFFFF;
         }
         break;
-    case SPECIAL_BATTLE_SECRET_BASE:
-        for (i = 0; i < PARTY_SIZE; i++)
-        {
-        // Restore held items (existing behavior)
-        u16 itemBefore = GetMonData(&gSaveBlock1Ptr->playerParty[i], MON_DATA_HELD_ITEM);
-        SetMonData(&gPlayerParty[i], MON_DATA_HELD_ITEM, &itemBefore);
-  	}
-	//ADD THIS (critical fix)
-    	if (FlagGet(FLAG_LIMIT_TO_50))
-    	{
-            FlagClear(FLAG_LIMIT_TO_50);
+    case SPECIAL_BATTLE_SECRET_BASE: //
+        for (i = 0; i < PARTY_SIZE; i++) //
+        {//
+        // Restore held items (existing behavior) //
+        u16 itemBefore = GetMonData(&gSaveBlock1Ptr->playerParty[i], MON_DATA_HELD_ITEM); //
+        SetMonData(&gPlayerParty[i], MON_DATA_HELD_ITEM, &itemBefore); //
+  	}//
+	//ADD THIS (critical fix) //
+    	if (FlagGet(FLAG_LIMIT_TO_50)) //
+    	{//
+            FlagClear(FLAG_LIMIT_TO_50); //
 
-            for (i = 0; i < PARTY_SIZE; i++)
-                CalculateMonStats(&gPlayerParty[i]);
-    	}
+            for (i = 0; i < PARTY_SIZE; i++) //
+                CalculateMonStats(&gPlayerParty[i]); //
+    	}//
 
-    	break;
+    	break; //
     case SPECIAL_BATTLE_EREADER:
         CopyEReaderTrainerFarewellMessage();
         break;

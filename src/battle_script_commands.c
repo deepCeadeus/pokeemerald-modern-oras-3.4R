@@ -3855,7 +3855,7 @@ static void Cmd_getexp(void)
               | BATTLE_TYPE_SAFARI
               | BATTLE_TYPE_BATTLE_TOWER
               | BATTLE_TYPE_EREADER_TRAINER
-              | BATTLE_TYPE_SECRET_BASE)))
+              | BATTLE_TYPE_SECRET_BASE))) //
         {
             gBattleScripting.getexpState = 6; // goto last case
         }
