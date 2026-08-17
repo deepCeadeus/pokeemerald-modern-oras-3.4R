@@ -17,8 +17,8 @@ const u16 gEggMoves[] = {
               MOVE_GRASS_WHISTLE,
               MOVE_EARTH_POWER,
               MOVE_WEATHER_BALL,
-              MOVE_CURSE),
-              MOVE_AMNESIA,
+              MOVE_CURSE,
+              MOVE_AMNESIA),
 
     egg_moves(CHARMANDER,
               MOVE_BELLY_DRUM,
@@ -674,7 +674,10 @@ const u16 gEggMoves[] = {
               MOVE_FLAIL,
               MOVE_NATURE_POWER,
               MOVE_INGRAIN,
-              MOVE_GRASS_WHISTLE),
+              MOVE_GRASS_WHISTLE
+              MOVE_EARTH_POWER,
+              MOVE_WEATHER_BALL,
+              MOVE_FIRE_SPIN),
 
     egg_moves(CYNDAQUIL,
               MOVE_FURY_SWIPES,
