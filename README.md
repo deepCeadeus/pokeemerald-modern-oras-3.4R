@@ -172,6 +172,8 @@ Slight changes to top floor and outside peak encounters.
 
 ### Buffed Moves
 - **Rapid Spin:** 50 BP, Raises SPEED +1 stage (Modernized) 
+- **Binding Moves:** Moves like bind, clamp, whirlpool remove 1/8 hp per turn for 2-5 turns
+- **Camouflage:** Raises Evasion +2 stages 
 - **False Swipe:** 70 BP
 - **Metal Claw:** 65 BP, **20%** chance to flinch
 - **Poison Tail:** 55 BP, high crit ratio, **20%** poison chance
@@ -346,6 +348,12 @@ Abilities can be changed using the **Ability Changer in Lilycove City**.
 - Recovers 1/8 HP while sleeping.
 - Still skips every other turn while awake. 
 
+**Color Change**
+- Still changes on hit
+- New effect: Kecleon's normal moves change with the type change
+- Move type change also works with reworked camouflage
+- Kecleon can now build evasion stages using camouflage after color change type change 
+
 **Pickup**
 - Retains original function outside of battle.
 - New in battle function.
@@ -515,6 +523,7 @@ Abilities can be changed using the **Ability Changer in Lilycove City**.
 
 **Run Away** 
 - Electivire gets reworked Run Away as it is closer to Motor Drive/Rattled. 
+- Clamperl (also got reworked modern rapid spin as egg move -> +1 speed )
 
 **Legend Plate**
 - Arceus gets second ability
@@ -573,8 +582,8 @@ A workaround was applied so correct hold items give the 1.2× boost to type chan
 ---
 
 ## Weather Abilities
-NOTE: Hail update-> Blizzard does not check accuracy in hailstorm like gen iv
-NOTE: Sandstorm update -> Rock-type Pokemon get 1.5x Special Defense boost in sandstorm like gen iv.
+NOTE: **Hail update** -> Blizzard does not check accuracy in hailstorm like gen iv
+NOTE: **Sandstorm update** -> Rock-type Pokemon get 1.5x Special Defense boost in sandstorm like gen iv.
 
 **Drizzle**
 - Wingull
@@ -647,6 +656,9 @@ NOTE: Sandstorm update -> Rock-type Pokemon get 1.5x Special Defense boost in sa
 
 **Pinsir**
 - Now Bug/Flying (Mega themed) 
+
+**Scyther and Kabutops**
+- Both get 1.5x damage bonus (STAB) to Normal Type Slash 70bp 
 
 ---
 
