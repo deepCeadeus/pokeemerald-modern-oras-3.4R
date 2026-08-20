@@ -2084,16 +2084,23 @@ BattleScript_UproarHit::
 	goto BattleScript_HitFromCritCalc
 
 BattleScript_EffectStockpile::
-	attackcanceler
-	attackstring
-	ppreduce
-	stockpile
-	attackanimation
-	waitanimation
-	printfromtable gStockpileUsedStringIds
-	waitmessage B_WAIT_TIME_LONG
-	goto BattleScript_MoveEnd
-
+    	attackcanceler
+    	attackstring
+    	ppreduce
+    	stockpile
+    	attackanimation
+    	waitanimation
+    	printfromtable gStockpileUsedStringIds
+    	waitmessage B_WAIT_TIME_LONG
+    	jumpifmovehadnoeffect BattleScript_MoveEnd
+	setstatchanger STAT_SPDEF, 1, FALSE
+	statbuffchange MOVE_EFFECT_AFFECTS_USER | STAT_CHANGE_ALLOW_PTR, 		  BattleScript_StockpileDoStatUpAnim
+	jumpifbyte CMP_EQUAL, cMULTISTRING_CHOOSER, B_MSG_STAT_WONT_INCREASE, BattleScript_StatUpPrintString
+	
+BattleScript_StockpileDoStatUpAnim::
+	goto BattleScript_StatUpDoAnim
+    
+    
 BattleScript_EffectSpitUp::
 	attackcanceler
 	jumpifbyte CMP_EQUAL, cMISS_TYPE, B_MSG_PROTECTED, BattleScript_SpitUpFailProtect
@@ -2103,7 +2110,9 @@ BattleScript_EffectSpitUp::
 	stockpiletobasedamage BattleScript_SpitUpFail
 	typecalc
 	adjustsetdamage
+	setmoveeffect MOVE_EFFECT_ACC_MINUS_1
 	goto BattleScript_HitFromAtkAnimation
+	
 BattleScript_SpitUpFail::
 	pause B_WAIT_TIME_SHORT
 	printstring STRINGID_FAILEDTOSPITUP
@@ -2124,13 +2133,31 @@ BattleScript_EffectSwallow::
 	attackstring
 	ppreduce
 	stockpiletohpheal BattleScript_SwallowFail
-	goto BattleScript_PresentHealTarget
+	goto BattleScript_PresentHealTargetSwallow
 
+BattleScript_PresentHealTargetSwallow::	
+	attackanimation
+	waitanimation
+	orword gHitMarker, HITMARKER_IGNORE_SUBSTITUTE
+	healthbarupdate BS_TARGET
+	datahpupdate BS_TARGET
+	printstring STRINGID_PKMNREGAINEDHEALTH
+	waitmessage B_WAIT_TIME_LONG
+	goto BattleScript_SwallowAfterHeal
+	
+BattleScript_SwallowAfterHeal::
+    	cureifburnedparalysedorpoisoned BattleScript_MoveEnd
+    	printstring STRINGID_PKMNSTATUSNORMAL
+    	waitmessage B_WAIT_TIME_LONG
+    	updatestatusicon BS_ATTACKER
+    	goto BattleScript_MoveEnd
+	
 BattleScript_SwallowFail::
 	pause B_WAIT_TIME_SHORT
 	printfromtable gSwallowFailStringIds
 	waitmessage B_WAIT_TIME_LONG
 	goto BattleScript_MoveEnd
+
 
 BattleScript_EffectHail::
 	attackcanceler

@@ -174,6 +174,9 @@ Slight changes to top floor and outside peak encounters.
 - **Rapid Spin:** 50 BP, Raises SPEED +1 stage (Modernized) 
 - **Binding Moves:** Moves like bind, clamp, whirlpool remove 1/8 hp per turn for 2-5 turns
 - **Camouflage:** Raises Evasion +2 stages 
+- **Stockpile:** Raises SpDef +1 Stage each use and not reduced by Spit Up or Swallow
+- **Spit up:** 30% chance to reduce Accuracy
+- **Swallow:** In addition to healing it now cures status problems
 - **False Swipe:** 70 BP
 - **Metal Claw:** 65 BP, **20%** chance to flinch
 - **Poison Tail:** 55 BP, high crit ratio, **20%** poison chance
