@@ -7,6 +7,7 @@
 #include "battle_dome.h"
 #include "battle_interface.h"
 #include "battle_message.h"
+#include "battle_script_commands.h"
 #include "battle_setup.h"
 #include "battle_tv.h"
 #include "bg.h"
@@ -1837,11 +1838,9 @@ u8 TypeEffectiveness(u8 targetId)
 
 bool8 IsMoveSTAB(u16 move, u8 battlerId)
 {
-	u8 moveType = gBattleMoves[move].type;
-	u8 oldBattler = gBattlerAttacker;
-gBattlerAttacker = gActiveBattler;
-moveType = CheckAbilityChangeMoveType(move);
-gBattlerAttacker = oldBattler;
+	u8 moveType = DisplayMoveTypeChange(move);
+
+
     if (IS_MOVE_STATUS(move))
         return FALSE;
     
@@ -1918,13 +1917,9 @@ static void MoveSelectionDisplayMoveTypeDoubles(u8 targetId)
     u16 move = moveInfo->moves[gMoveSelectionCursor[gActiveBattler]];
     
     // Check for ability like Dragonize
-    u8 old = gBattlerAttacker;
-    gBattlerAttacker = gActiveBattler;
-    type = gBattleMoves[move].type;
-    type = CheckAbilityChangeMoveType(move);
-    gBattlerAttacker = old;
-
     moveCategory = gBattleMoves[move].category;
+    type = DisplayMoveTypeChange(move);
+
 
     if (move == MOVE_HIDDEN_POWER || move == MOVE_JUDGMENT)
     {
@@ -1972,15 +1967,10 @@ static void MoveSelectionDisplayMoveType(void) //Made this display a Move Type I
 	u8 targetId = GetBattlerAtPosition(BATTLE_OPPOSITE(GetBattlerPosition(gActiveBattler)));
     struct ChooseMoveStruct *moveInfo = (struct ChooseMoveStruct *)(&gBattleBufferA[gActiveBattler][4]);
     u16 move = moveInfo->moves[gMoveSelectionCursor[gActiveBattler]];
-    
-    // Check for ability like Dragonize
-    u8 old = gBattlerAttacker;
-    gBattlerAttacker = gActiveBattler;
-    type = gBattleMoves[move].type;
-    type = CheckAbilityChangeMoveType(move);
-    gBattlerAttacker = old;
-	
+
     moveCategory = gBattleMoves[move].category;
+    type = DisplayMoveTypeChange(move);
+
 
     if (move == MOVE_HIDDEN_POWER || move == MOVE_JUDGMENT)
     {

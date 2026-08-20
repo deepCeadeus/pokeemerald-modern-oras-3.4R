@@ -44,6 +44,7 @@
 #include "berry_powder.h"
 #include "mystery_gift.h"
 #include "union_room_chat.h"
+#include "save_migration.h"
 #include "constants/items.h"
 #include "tx_randomizer_and_challenges.h"
 
@@ -182,6 +183,7 @@ void NewGameInitData(void)
 {
     bool8 HardPrev = FlagGet(FLAG_DIFFICULTY_HARD);
     bool8 TMPrev = FlagGet(FLAG_FINITE_TMS);
+    bool8 WonderTrade = FlagGet(FLAG_WT_ENABLED);
     bool8 UnlimitedWT = FlagGet(FLAG_UNLIMITIED_WONDERTRADE);
     bool8 EnableMints = FlagGet(FLAG_MINTS_ENABLED);
     bool8 EnableExtraLegendaries = FlagGet(FLAG_EXTRA_LEGENDARIES);
@@ -251,6 +253,7 @@ void NewGameInitData(void)
 
     HardPrev ? FlagSet(FLAG_DIFFICULTY_HARD) : FlagClear(FLAG_DIFFICULTY_HARD);
     TMPrev ? FlagSet(FLAG_FINITE_TMS) : FlagClear(FLAG_FINITE_TMS);
+    WonderTrade ? FlagSet(FLAG_WT_ENABLED) : FlagClear(FLAG_WT_ENABLED);
     UnlimitedWT ? FlagSet(FLAG_UNLIMITIED_WONDERTRADE) : FlagClear(FLAG_UNLIMITIED_WONDERTRADE);
     EnableMints ? FlagSet(FLAG_MINTS_ENABLED) : FlagClear(FLAG_MINTS_ENABLED);
     EnableExtraLegendaries ? FlagSet(FLAG_EXTRA_LEGENDARIES) : FlagClear(FLAG_EXTRA_LEGENDARIES);
@@ -264,7 +267,8 @@ void NewGameInitData(void)
         VarSet(VAR_DIFFICULTY, DIFFICULTY_NORMAL);
     else if (difficultyPrev == DIFFICULTY_HARD)
         VarSet(VAR_DIFFICULTY, DIFFICULTY_HARD);*/
-    
+
+    StampCurrentSaveVersion();
 }
 void CheckIfChallengesAreActive(void)
 {

@@ -750,6 +750,22 @@ When compiling, **use the modern compiler** with the "make modern" command.
 _Compiling using the old compiler won't work._
 The game was compiled using `(devkitARM release 62) 13.2.0`, but it _should_ work up to `release 65` without any issues. Higher versions may not work, so manual fixes might be required.
 
+# 🦀MODERN EMERALD EXPANDS!
+
+Official releases:
+* [Pokémon Modern Heart and Soul](https://github.com/resetes12/HNS_modern) by myself
+    * Experience Johto and Kanto, but now with enhancements, bug fixes, and other stuff.
+* Pokémon Modern FireRed & LeafGreen by myself
+    * _Soon_ ™️. Experience FRLG, but Modernized.
+
+Modern Emerald has been used as a base to create other hacks:
+* [Pokémon Heart and Soul](https://github.com/PokemonHnS-Development/pokemonHnS) by @lildill31
+    * Experience Johto and Kanto, but for the GBA!
+* [Pokémon Emerald Worped](https://github.com/worpbane/pokeemerald-worped/) by @worpbane
+
+Modern Emerald also has some small mods:
+* [Modern Emerald with ORAS Tilset](https://github.com/lbsbezerra/pokeemerald-modern-oras) by @lbsbezerra
+
 # 📃 DOCUMENTATION:
 [Documentation can be found online](https://docs.google.com/spreadsheets/d/1QEFJmFhfaZqgxSUnM7MFpufrnrRk_NMzNoNWl2m3y_0/edit?gid=1310408794#gid=1310408794)
 Includes:
@@ -959,7 +975,7 @@ Challenges page:
 * Chain fishing AND Sweet Scent chaining!
 * All tickets are available to buy in the Battle Frontier.
 * Faster nurse Joy healing, and now with an even faster version in the options menu (with a confirmation sound).
-* A new item, the Big Nugget! It can be sold for a very high price. Available from Clamperl or Rich trainers (rematch only).
+* A new item, the Big Nugget! It can be sold for a very high price. Available from Rich trainers (rematch only).
 * You can check the Soot Sack to know how much ash you have.
 * Interacting with berry trees is faster.
 * Berry trees that are in rainy routes don't need to be watered, and berry trees don't decay.
@@ -1001,7 +1017,7 @@ These programs rely on knowing where to find the data on the savefile, and Moder
 
 # 🪪CREDITS
 
-* [https://github.com/pret/pokeemerald] for its base
+* [Pret's Pokeemerald](https://github.com/pret/pokeemerald) for its base
 * Pret's Wiki Tutorials:
     - TONS of their tutorials were used!
 * Repos:
@@ -1014,3 +1030,6 @@ These programs rely on knowing where to find the data on the savefile, and Moder
         - https://github.com/worpbane/pokeemerald-worped/commits/battle-ui-rework/
     - Many stuff was ported from HnS:
         - https://github.com/PokemonHnS-Development/pokemonHnS
+* Contributors:
+   - Decap by @fanyx
+   - Tweaks and commits by [@aloven](https://github.com/aloven), [@pinkshellos](https://github.com/PinkShellos), [@insertCreativeName5](https://github.com/InsertCreativeName5). [@davidgfnet](https://github.com/davidgfnet), [@unique-github-username](https://github.com/unique-github-username), [@TixoRebel](https://github.com/TixoRebel), [@bfedie5](https://github.com/bfedie518) and [@deepCeadeus](https://github.com/deepCeadeus)
