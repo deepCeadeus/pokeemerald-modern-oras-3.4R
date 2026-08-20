@@ -2084,16 +2084,48 @@ BattleScript_UproarHit::
 	goto BattleScript_HitFromCritCalc
 
 BattleScript_EffectStockpile::
-	attackcanceler
-	attackstring
-	ppreduce
-	stockpile
-	attackanimation
-	waitanimation
-	printfromtable gStockpileUsedStringIds
-	waitmessage B_WAIT_TIME_LONG
-	goto BattleScript_MoveEnd
+    attackcanceler
+    attackstring
+    ppreduce
 
+    stockpile
+
+    attackanimation
+    waitanimation
+
+    printfromtable gStockpileUsedStringIds
+    waitmessage B_WAIT_TIME_LONG
+
+    jumpifmovehadnoeffect BattleScript_MoveEnd
+
+    jumpifstat BS_ATTACKER, CMP_LESS_THAN, STAT_DEF, MAX_STAT_STAGE, BattleScript_RaiseDef
+    jumpifstat BS_ATTACKER, CMP_EQUAL, STAT_SPDEF, MAX_STAT_STAGE, BattleScript_StockpileFinish
+
+BattleScript_RaiseDef::
+    setbyte sSTAT_ANIM_PLAYED, FALSE
+    playstatchangeanimation BS_ATTACKER, BIT_DEF | BIT_SPDEF, 0
+
+    setstatchanger STAT_DEF, 1, FALSE
+    statbuffchange MOVE_EFFECT_AFFECTS_USER | STAT_CHANGE_ALLOW_PTR, BattleScript_RaiseSpDef
+
+    jumpifbyte CMP_EQUAL, cMULTISTRING_CHOOSER, B_MSG_STAT_WONT_INCREASE, BattleScript_RaiseSpDef
+
+    printfromtable gStatUpStringIds
+    waitmessage B_WAIT_TIME_LONG
+
+BattleScript_RaiseSpDef::
+    setstatchanger STAT_SPDEF, 1, FALSE
+    statbuffchange MOVE_EFFECT_AFFECTS_USER | STAT_CHANGE_ALLOW_PTR, BattleScript_StockpileFinish
+
+    jumpifbyte CMP_EQUAL, cMULTISTRING_CHOOSER, B_MSG_STAT_WONT_INCREASE, BattleScript_StockpileFinish
+
+    printfromtable gStatUpStringIds
+    waitmessage B_WAIT_TIME_LONG
+
+BattleScript_StockpileFinish::
+    stockpilerecord
+    goto BattleScript_MoveEnd
+    
 BattleScript_EffectSpitUp::
 	attackcanceler
 	jumpifbyte CMP_EQUAL, cMISS_TYPE, B_MSG_PROTECTED, BattleScript_SpitUpFailProtect
@@ -2103,7 +2135,9 @@ BattleScript_EffectSpitUp::
 	stockpiletobasedamage BattleScript_SpitUpFail
 	typecalc
 	adjustsetdamage
+	printstring STRINGID_STATCHANGESGONE
 	goto BattleScript_HitFromAtkAnimation
+	
 BattleScript_SpitUpFail::
 	pause B_WAIT_TIME_SHORT
 	printstring STRINGID_FAILEDTOSPITUP
@@ -2124,8 +2158,26 @@ BattleScript_EffectSwallow::
 	attackstring
 	ppreduce
 	stockpiletohpheal BattleScript_SwallowFail
-	goto BattleScript_PresentHealTarget
+	printstring STRINGID_STATCHANGESGONE
+	goto BattleScript_PresentHealTargetSwallow
 
+BattleScript_PresentHealTargetSwallow::	
+	attackanimation
+	waitanimation
+	orword gHitMarker, HITMARKER_IGNORE_SUBSTITUTE
+	healthbarupdate BS_TARGET
+	datahpupdate BS_TARGET
+	printstring STRINGID_PKMNREGAINEDHEALTH
+	waitmessage B_WAIT_TIME_LONG
+	goto BattleScript_SwallowAfterHeal
+	
+BattleScript_SwallowAfterHeal::
+    	cureifburnedparalysedorpoisoned BattleScript_MoveEnd
+    	printstring STRINGID_PKMNSTATUSNORMAL
+    	waitmessage B_WAIT_TIME_LONG
+    	updatestatusicon BS_ATTACKER
+    	goto BattleScript_MoveEnd
+	
 BattleScript_SwallowFail::
 	pause B_WAIT_TIME_SHORT
 	printfromtable gSwallowFailStringIds

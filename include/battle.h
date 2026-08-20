@@ -72,6 +72,10 @@ struct DisableStruct
     u16 encoredMove;
     u8 protectUses;
     u8 stockpileCounter;
+    u8 stockpileDef;
+    u8 stockpileSpDef;
+    u8 stockpileBeforeDef;
+    u8 stockpileBeforeSpDef;
     u8 substituteHP;
     u8 disableTimer:4;
     u8 disableTimerStartValue:4;

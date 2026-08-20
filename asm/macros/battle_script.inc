@@ -1252,6 +1252,10 @@
 	.byte 0xf8
 	.byte \position
 	.endm
+	
+	.macro stockpilerecord
+	.byte 0xf9
+	.endm
 
 @ various command changed to more readable macros
 	.macro cancelmultiturnmoves battler:req
