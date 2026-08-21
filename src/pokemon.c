@@ -5310,7 +5310,8 @@ void CreateMonWithGenderNatureLetter(struct Pokemon *mon, u16 species, u8 level,
 }
 
 // This is only used to create Wally's Ralts.
-void CreateMaleMon(struct Pokemon *mon, u16 species, u8 level)
+// Forces female so it's consistent with Wally's later Gardevoir.
+void CreateFemaleMon(struct Pokemon *mon, u16 species, u8 level)
 {
     u32 personality;
     u32 otId;
@@ -5320,7 +5321,7 @@ void CreateMaleMon(struct Pokemon *mon, u16 species, u8 level)
         otId = Random32();
         personality = Random32();
     }
-    while (GetGenderFromSpeciesAndPersonality(species, personality) != MON_MALE);
+    while (GetGenderFromSpeciesAndPersonality(species, personality) != MON_FEMALE);
     CreateMon(mon, species, level, USE_RANDOM_IVS, TRUE, personality, OT_ID_PRESET, otId);
 }
 
