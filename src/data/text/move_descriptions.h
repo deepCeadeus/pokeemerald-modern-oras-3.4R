@@ -1015,15 +1015,15 @@ static const u8 sUproarDescription[] = _(
 
 static const u8 sStockpileDescription[] = _(
     "Charges up power for up to\n"
-    "3 turns. Raises Sp. Def");
+    "3 turns & raises Sp. Def.");
 
 static const u8 sSpitUpDescription[] = _(
     "Releases stockpiled power.\n"
     "May lower accuracy.");
 
 static const u8 sSwallowDescription[] = _(
-    "Absorbs stockpiled power\n"
-    "to cure status and restore HP.");
+    "Absorbs stockpiled power.\n"
+    "Cure status and restore HP.");
 
 static const u8 sHeatWaveDescription[] = _(
     "Exhales a hot breath on the\n"

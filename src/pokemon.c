@@ -6884,7 +6884,10 @@ s32 CalculateBaseDamage(struct BattlePokemon *attacker, struct BattlePokemon *de
     if (type == TYPE_WATER && attacker->ability == ABILITY_TORRENT && attacker->hp <= (attacker->maxHP / 3))
         gBattleMovePower = (150 * gBattleMovePower) / 100;
     if (type == TYPE_BUG && attacker->ability == ABILITY_SWARM && attacker->hp <= (attacker->maxHP / 3))
+    gBattleMovePower = (150 * gBattleMovePower) / 100;
+    if (type == TYPE_ELECTRIC && attacker->ability == ABILITY_LIGHTNING_ROD && attacker->hp <= (attacker->maxHP / 3))
         gBattleMovePower = (150 * gBattleMovePower) / 100;
+        
     if ((attacker->species == SPECIES_SPINDA) && ((Random() % 100) <= 2))
         gBattleMovePower = (200 * gBattleMovePower) / 100;
     if ((attacker->species == SPECIES_GROUDON) && (moveType == TYPE_FIRE))
