@@ -43,25 +43,6 @@ Updated to **ORAS Tileset Fork v3.4**.
 
 ---
 
-## Record Mixing & Secret Bases
-
-### Record Mixing
-Mixing records with original games remains largely compatible.
-
-Known issue:
-- Species not present in the original games display as “?”.
-
-This most notably affects alternate **Deoxys** forms. Base-form Deoxys functions normally.
-
-### Secret Base Fixes
-- Fixed Secret Base trainer encounters.
-- Restored intended **Level 50** battle scaling.
-- Pokémon levels now correctly revert after battle.
-
-Previously, Secret Base battles could permanently leave Pokémon at **Level 100**.
-
----
-
 ## Event & Map Fixes
 
 ### Deoxys Meteor Fix
@@ -81,11 +62,17 @@ Almost every Pokémon retains at least one original ability.
 ### Transfer Compatibility
 Pokémon using original moves and original abilities should generally transfer and function as expected. (TESTING)
 
-Many Pokémon received new secondary abilities, but original functionality was preserved wherever possible.
+### Record Mixing
+Mixing records with original games remains largely compatible.
+
+### Abilities
+Many Pokémon received new secondary abilities, but original main abilities was preserved wherever possible.
 
 ---
 
 ## Encounter Changes
+
+### Daytime Encounters
 
 ### Safari Zone
 **Scyther**
@@ -126,10 +113,12 @@ Slight changes to top floor and outside peak encounters.
 ### Night Encounters 
 
 - All major land routes have updated night encounters fishing, rocksmash, and surf included. 
+- Night time should feel different than day.
+- Treeko, Torchic, Mudkip and evolutions can be found in night encounters 
 - Check out the **Desert** 
 - Rare 1-2% encounters 
-- **Safari Zone**: wild, fishing, surf, and rocksmash updated.
-
+- **Safari Zone**: Wild, fishing, surf, and rocksmash updated.
+- **Safari Zone**: Starters and evos are more present
 - **Jagged Pass** and **Fiery Path** have night encounters 
  
 ---
@@ -340,6 +329,13 @@ Abilities can be changed using the **Ability Changer in Lilycove City**.
 
 ### Ability Reworks
 
+**LightningRod**
+- Works like Speed Boost for Sp. Atk. 
+- Conditional to require Rain for boosts to trigger.
+- Sceptile and Manectric benefit on rain teams.
+- Retains Electric Redirection in doubles.
+- No Electric Immunity added (Standard gen 3 mechanics here).
+
 **Forecast**
 - Recovers 1/8 HP in Weather (sandstorm is not considered weather).
 
@@ -395,6 +391,7 @@ Abilities can be changed using the **Ability Changer in Lilycove City**.
 
 **Illuminate**
 - 1.1× boost to Electric-type attacks. (Standard in base Modern Emerald)
+- 10% accuracy loss on opponents targeting pokemon with illuminate
 
 **Run Away**
 - 1.2× Defense and Special Defense below 50% HP.
